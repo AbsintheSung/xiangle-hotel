@@ -39,10 +39,14 @@ const swiperConfig = {
 
       <div class="absolute w-full top-1/2 z-20 left-1/2 -translate-x-1/2 -translate-y-1/2 px-3 md:px-20">
         <div class="w-full flex flex-col md:flex-row items-center justify-between">
-          <h2 class="basis-1/3 flex flex-col gap-y-2 font-bold text-primary-base">
-            <span class="text-4xl text-center md:text-start">享樂酒店</span>
-            <span class="text-2xl">Enjoyment Luxury Hotel</span>
-          </h2>
+          <div>
+            <h2 class="basis-1/3 flex flex-col gap-y-2 font-bold text-primary-base">
+              <span class="text-4xl text-center md:text-start">享樂酒店</span>
+              <span class="text-2xl">Enjoyment Luxury Hotel</span>
+            </h2>
+            <div class="hidden mt-10 w-[30vw] h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:block" />
+          </div>
+
           <div class="mt-5 mb-10 h-20 w-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:hidden"></div>
           <div class="ms-auto sm:ms-0 w-[calc(100%-3rem)] sm:w-fit border-t border-r border-[#F5F7F9] rounded-[80px] py-24 backdrop-blur-sm shadow-[0_10px_50px_rgba(0,0,0,0.5)]">
             <div class="-translate-x-12">
