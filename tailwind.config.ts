@@ -15,7 +15,8 @@ export default <Partial<Config>>{
       padding: '0.75rem', //16*0.75=12
     },
     fontFamily: {
-      'Noto-Sans-TC': ['Noto Sans TC', 'sans-serif']
+      'Noto-Serif-TC': ["Noto Serif TC", "serif"]
+
     },
     screens: {
       'ssm': '375px',
@@ -24,6 +25,7 @@ export default <Partial<Config>>{
       'lg': '992px',
       'xl': '1200px',
       '2xl': '1320px',
+      // '3xl': '1944px'
     },
     extend: {
       colors: {

@@ -1,6 +1,9 @@
 // @use "variables" as *;
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Noto+Serif+TC:wght@200..900&display=swap");
-$font-sans: "Noto Sans TC", sans-serif;
+// @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Noto+Serif+TC:wght@200..900&display=swap");
+// $font-sans: "Noto Sans TC", sans-serif;
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200..900&display=swap");
+$font-sans: "Noto Serif TC", serif;
 body {
   font-family: $font-sans;
 }
