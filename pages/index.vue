@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
+import decoDotGroupSvg from "@/assets/svg/deco-dot-group.svg";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, EffectCreative, Pagination } from "swiper/modules";
 // 引入所需的 Swiper 樣式
@@ -64,6 +65,65 @@ const swiperConfig = {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+    <section class="bg-primary-Tint">
+      <div class="relative container py-20 sm:py-32">
+        <div class="flex flex-col md:flex-row gap-x-6 gap-y-10">
+          <div class="md:w-1/6">
+            <div class="w-fit">
+              <h2 class="text-3xl md:text-4xl text-primary-base font-bold pe-10 pb-10">
+                最新
+                <br />
+                消息
+              </h2>
+              <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:block" />
+            </div>
+          </div>
+          <div class="md:w-5/6">
+            <ul class="flex flex-col gap-y-10">
+              <li class="flex flex-col items-center gap-6 sm:flex-row">
+                <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
+                  <picture>
+                    <source srcset="@/assets/images/desktop/home-news-1.png 474w, @/assets/images/mobile/home-news-sm-1.png 351w" media="(min-width: 576px)" />
+                    <img src="@/assets/images/mobile/home-news-sm-1.png" class="w-full max-h-[294px] h-full rounded-xl" alt="可看見海景及泳池的套房" />
+                  </picture>
+                </div>
+                <div class="flex flex-col gap-y-6">
+                  <h3 class="text-2xl md:text-3xl font-bold">秋季旅遊，豪華享受方案</h3>
+                  <p class="font-medium">秋天就是要來場豪華的旅遊！我們為您準備了一系列的秋季特別方案，包括舒適的住宿、美食饗宴，以及精彩的活動。不論您是想來一趟浪漫之旅，還是想和家人共度美好時光，都能在這裡找到最適合的方案。</p>
+                </div>
+              </li>
+              <li class="flex flex-col items-center gap-6 sm:flex-row">
+                <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
+                  <picture>
+                    <source srcset="@/assets/images/desktop/home-news-2.png 474w, @/assets/images/mobile/home-news-sm-2.png 351w" media="(min-width: 576px)" />
+                    <img src="@/assets/images/mobile/home-news-sm-2.png" class="w-full max-h-[294px] h-full rounded-xl" alt="可看見海景及泳池的套房" />
+                  </picture>
+                </div>
+                <div class="flex flex-col gap-y-6">
+                  <h3 class="text-2xl md:text-3xl font-bold">輕鬆住房專案</h3>
+                  <p class="font-medium">我們知道，有時候您只是需要一個舒適的地方放鬆心情。因此，我們推出了「輕鬆住房專案」，讓您無壓力地享受住宿。不管是短期的休息，還是長期的住宿，我們都會以最貼心的服務，讓您感到賓至如歸。</p>
+                </div>
+              </li>
+              <li class="flex flex-col items-center gap-6 sm:flex-row">
+                <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
+                  <picture>
+                    <source srcset="@/assets/images/desktop/home-news-3.png 474w, @/assets/images/mobile/home-news-sm-3.png 351w" media="(min-width: 576px)" />
+                    <img src="@/assets/images/mobile/home-news-sm-3.png" class="w-full max-h-[294px] h-full rounded-xl" alt="可看見海景及泳池的套房" />
+                  </picture>
+                </div>
+                <div class="flex flex-col gap-y-6">
+                  <h3 class="text-2xl md:text-3xl font-bold">耶誕快樂，住房送禮</h3>
+                  <p class="font-medium">聖誕節來臨，我們為您準備了特別的禮物！在聖誕期間訂房，不僅有特別優惠，還會送上我們精心準備的聖誕禮物。讓我們一起慶祝這個溫馨的節日吧！</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <TheSvg :class="'hidden absolute top-[100px] right-3  w-[200px] h-[200px] lg:block 3xl:translate-x-24 4xl:translate-x-32'" :svgSrc="decoDotGroupSvg" svgId="deco-dot-group" />
+        <TheSvg :class="'hidden absolute bottom-0 translate-y-20 w-[200px] h-[200px] lg:block 3xl:-translate-x-24 4xl:-translate-x-32'" :svgSrc="decoDotGroupSvg" svgId="deco-dot-group" />
       </div>
     </section>
   </main>

@@ -13,6 +13,14 @@ export default <Partial<Config>>{
     container: {
       center: true,
       padding: '0.75rem', //16*0.75=12
+      screens: {
+        'ssm': '100%',
+        'sm': '100%',
+        'md': '100%',
+        'lg': '100%',
+        'xl': '100%',
+        '2xl': '1320px'
+      }
     },
     fontFamily: {
       'Noto-Serif-TC': ["Noto Serif TC", "serif"]
@@ -25,7 +33,9 @@ export default <Partial<Config>>{
       'lg': '992px',
       'xl': '1200px',
       '2xl': '1320px',
-      // '3xl': '1944px'
+      '3xl': "1550px",
+      '4xl': '1700px',
+      '5xl': '1944px'
     },
     extend: {
       colors: {
