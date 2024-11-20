@@ -38,6 +38,9 @@ export default <Partial<Config>>{
       '5xl': '1944px'
     },
     extend: {
+      backgroundImage: {
+        'home-about': "url('@/assets/images/desktop/home-about.png')"
+      },
       colors: {
         primary: {
           120: "#7B6651", //Dark

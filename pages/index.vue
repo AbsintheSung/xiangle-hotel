@@ -126,6 +126,30 @@ const swiperConfig = {
         <TheSvg :class="'hidden absolute bottom-0 translate-y-20 w-[200px] h-[200px] lg:block 3xl:-translate-x-24 4xl:-translate-x-32'" :svgSrc="decoDotGroupSvg" svgId="deco-dot-group" />
       </div>
     </section>
+    <section class="bg-black pt-28 pb-32">
+      <div class="bg-home-about bg-cover bg-center bg-no-repeat">
+        <div class="container">
+          <div class="text-white flex justify-end gap-x-6 translate-y-10 md:translate-y-20">
+            <div class="w-full md:w-5/6 flex flex-col p-6 gap-y-10 md:gap-y-20 md:p-20 border-s border-b border-white bg-[linear-gradient(180deg,rgba(20,15,10,0.8)_0%,rgba(190,156,124,0.8)_100%)] rounded-[80px_80px_0px_80px] backdrop-blur-[10px]">
+              <div class="p-2 flex items-center gap-x-10">
+                <h2 class="font-bold text-3xl md:text-5xl text-nowrap">
+                  關於
+                  <br />
+                  我們
+                </h2>
+                <div class="w-full md:w-40 h-[2px] bg-white"></div>
+              </div>
+              <div class="p-2 flex flex-col gap-y-4 md:gap-y-10">
+                <p>享樂酒店，位於美麗島高雄的心臟地帶，是這座城市的璀璨瑰寶與傲人地標。 我們的存在，不僅僅是為了提供奢華的住宿體驗，更是為了將高雄的美麗與活力，獻給每一位蒞臨的旅客。</p>
+                <p>我們的酒店，擁有時尚典雅的裝潢，每一個細節都充滿著藝術與設計的精緻。 我們的員工，都以熱情的服務與專業的態度，讓每一位客人都能感受到賓至如歸的溫暖。</p>
+                <p>在這裡，您可以遙望窗外，欣賞高雄的城市景色，感受這座城市的繁華與活力；您也可以舒適地坐在我們的餐廳，品嚐精緻的佳餚，體驗無與倫比的味覺盛宴。</p>
+                <p>享樂酒店，不僅是您在高雄的住宿之選，更是您感受高雄魅力的最佳舞台。我們期待著您的蒞臨，讓我們共同編織一段難忘的高雄故事。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
 
