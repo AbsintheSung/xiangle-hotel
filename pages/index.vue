@@ -1,14 +1,17 @@
 <script setup lang="ts">
+//使用 TheSvg 組件的 svg deco-line-group-horizontal-sm系列的會異常，這類型使用 css backackgroundImage方式處理
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
-import decoDotGroupSvg from "@/assets/svg/deco-dot-group.svg";
+import decoDotGroupSvg from "@/assets/svg/sprite/deco-dot-group.svg";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation, EffectCreative, Pagination } from "swiper/modules";
+import { Navigation, EffectCreative, Pagination, Autoplay } from "swiper/modules";
 // 引入所需的 Swiper 樣式
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
+// const roomSwiper = ref(null);
+const roomSwiper: Ref<typeof Swiper | null> = ref(null);
 const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-1" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-2" },
@@ -22,7 +25,29 @@ const swiperConfig = {
   loop: true,
   pagination: {
     dynamicBullets: true,
+    clickable: true,
   },
+};
+const swiperConfig2 = {
+  modules: [Navigation, EffectCreative, Pagination, Autoplay],
+  slidesPerView: 1,
+  spaceBetween: 0,
+  loop: true,
+  pagination: {
+    dynamicBullets: true,
+    clickable: true,
+  },
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false,
+  },
+};
+const slidePrev = () => {
+  roomSwiper.value?.$el.swiper.slidePrev();
+};
+
+const slideNext = () => {
+  roomSwiper.value?.$el.swiper.slideNext();
 };
 </script>
 
@@ -58,7 +83,7 @@ const swiperConfig = {
               <p class="mt-6 mb-24 text-base lg:text-2xl 2xl:text-3xl text-white font-semibold">我們致力於為您提供無與倫比的奢華體驗與優質服務</p>
             </div>
             <div class="-translate-x-12">
-              <RouterLink to="/" class="w-full flex items-center justify-end gap-x-4 bg-white md:bg-primary-base p-5 md:p-[40px] rounded-md">
+              <RouterLink to="/" class="test w-full flex items-center justify-end gap-x-4 bg-white md:bg-primary-base p-5 md:p-[40px] rounded-md">
                 <p class="text-base text-black md:text-2xl md:text-white font-bold">立即訂房</p>
                 <p class="h-[1px] bg-black md:bg-white w-28"></p>
               </RouterLink>
@@ -150,11 +175,40 @@ const swiperConfig = {
         </div>
       </div>
     </section>
+    <section class="relative bg-black py-10 md:py-[120px]">
+      <div class="horizontal hidden xl:block 2xl:top-40"></div>
+      <div class="px-3 flex flex-col md:flex-row items-center gap-x-20 gap-y-6">
+        <Swiper ref="roomSwiper" v-bind="swiperConfig2" class="room-sweiper w-full lg:w-1/2">
+          <SwiperSlide v-for="(num, index) in 5" :key="index">
+            <picture>
+              <source srcset="@/assets/images/desktop/home-room-1.png" media="(min-width:768px)" />
+              <img class="w-full object-cover" src="@/assets/images/mobile/home-room-sm-1.png" alt="room-a" />
+            </picture>
+          </SwiperSlide>
+        </Swiper>
+        <div class="me-auto flex flex-col gap-y-10 text-white mt-auto">
+          <div class="flex flex-col gap-y-4">
+            <h2 class="text-4xl lg:text-5xl font-bold">尊爵雙人房</h2>
+            <p>享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
+          </div>
+          <p class="text-3xl font-bold">NT$ 10,000</p>
+          <RouterLink to="/" class="w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md">
+            <p class="text-base text-nowrap text-black md:text-2xl font-bold">查看更多</p>
+            <p class="h-[1px] bg-black w-28"></p>
+          </RouterLink>
+          <div class="flex items-center justify-end text-primary-base">
+            <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
+            <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 </template>
 
 <style scoped lang="scss">
 .swiper :deep(.swiper-pagination) {
+  margin: 0 auto;
   bottom: 24px;
 }
 
@@ -169,5 +223,18 @@ const swiperConfig = {
 .swiper :deep(.swiper-pagination-bullet-active) {
   width: 60px;
   background-color: #bf9d7d;
+}
+.room-sweiper {
+  // width: 50%;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.horizontal {
+  position: absolute;
+  width: 60%;
+  height: 150px;
+  right: 0;
+  z-index: 10;
+  background-image: url("@/assets/svg/deco-line-group-horizontal-full.svg");
 }
 </style>

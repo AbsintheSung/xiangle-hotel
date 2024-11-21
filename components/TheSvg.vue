@@ -8,15 +8,11 @@ defineProps({
     type: String,
     default: "",
   },
-  customClass: {
-    type: String,
-    default: "",
-  },
 });
 </script>
 
 <template>
-  <svg :class="customClass">
+  <svg>
     <use :href="`${svgSrc}#${svgId}`"></use>
   </svg>
 </template>
