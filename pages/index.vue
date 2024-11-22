@@ -3,6 +3,16 @@
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
 import decoDotGroupSvg from "@/assets/svg/sprite/deco-dot-group.svg";
+import delicacy1 from "@/assets/images/desktop/home-food-1.png";
+import delicacy2 from "@/assets/images/desktop/home-food-2.png";
+import delicacy3 from "@/assets/images/desktop/home-food-3.png";
+import delicacy4 from "@/assets/images/desktop/home-food-4.png";
+import delicacy5 from "@/assets/images/desktop/home-food-5.png";
+import delicacySm1 from "@/assets/images/mobile/home-food-sm-1.png";
+import delicacySm2 from "@/assets/images/mobile/home-food-sm-2.png";
+import delicacySm3 from "@/assets/images/mobile/home-food-sm-3.png";
+import delicacySm4 from "@/assets/images/mobile/home-food-sm-4.png";
+import delicacySm5 from "@/assets/images/mobile/home-food-sm-5.png";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation, EffectCreative, Pagination, Autoplay } from "swiper/modules";
 // 引入所需的 Swiper 樣式
@@ -18,6 +28,34 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
+const delicacyList = ref([
+  {
+    imgSrc: delicacySm1,
+    imgSrcset: delicacy1,
+    alt: "delicacy-1",
+  },
+  {
+    imgSrc: delicacySm2,
+    imgSrcset: delicacy2,
+    alt: "delicacy-2",
+  },
+  {
+    imgSrc: delicacySm3,
+    imgSrcset: delicacy3,
+    alt: "delicacy-3",
+  },
+  {
+    imgSrc: delicacySm4,
+    imgSrcset: delicacy4,
+    alt: "delicacy-4",
+  },
+  {
+    imgSrc: delicacySm5,
+    imgSrcset: delicacy5,
+    alt: "delicacy-5",
+  },
+]);
+
 const swiperConfig = {
   modules: [Navigation, EffectCreative, Pagination],
   slidesPerView: 1,
@@ -40,6 +78,27 @@ const swiperConfig2 = {
   autoplay: {
     delay: 5000,
     disableOnInteraction: false,
+  },
+};
+const swiperConfig3 = {
+  modules: [Navigation, EffectCreative, Pagination, Autoplay],
+  slidesPerView: 1.2,
+  spaceBetween: "24px",
+  loop: true,
+  autoplay: {
+    delay: 5000,
+    disableOnInteraction: false,
+  },
+  breakpoints: {
+    375: {
+      slidesPerView: 1.2,
+    },
+    768: {
+      slidesPerView: 2.2,
+    },
+    1024: {
+      slidesPerView: 3.2,
+    },
   },
 };
 const slidePrev = () => {
@@ -201,6 +260,40 @@ const slideNext = () => {
             <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
           </div>
         </div>
+      </div>
+    </section>
+    <section class="bg-primary-Tint py-20 lg:py-[120px]">
+      <div class="container">
+        <div class="flex items-center py-10 md:py-20">
+          <h2 class="flex flex-col text-nowrap gap-y-1 text-3xl md:text-4xl text-primary-base font-bold pe-10">
+            <span>佳餚</span>
+            <span>美饌</span>
+          </h2>
+          <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white sm:w-1/6" />
+        </div>
+
+        <Swiper ref="roomSwiper" v-bind="swiperConfig3">
+          <SwiperSlide v-for="(delicacyItem, index) in delicacyList" :key="index">
+            <div class="relative">
+              <picture>
+                <source :srcset="delicacyItem.imgSrcset" media="(min-width:768px)" />
+                <img class="w-full object-cover min-h-[400px] max-h-[600px] rounded-xl" :src="delicacyItem.imgSrc" alt="room-a" />
+              </picture>
+              <div class="absolute bottom-0 p-4 flex flex-col gap-y-4 text-white backdrop-blur-sm md:p-6 md:gap-y-6">
+                <div class="font-bold text-nowrap flex items-center justify-between">
+                  <h3 class="text-2xl">海霸</h3>
+                  <p class="flex items-center gap-x-2 md:gap-x-4">
+                    <time>SUN-MON</time>
+                    <time>11:00 - 20:30</time>
+                  </p>
+                </div>
+                <div>
+                  <p>以新鮮海產料理聞名，我們的專業廚師選用高雄當地的海鮮，每一道菜都充滿海洋的鮮美與清甜。無論是烤魚、蒸蝦還是煮蛤蜊，都能讓您品嚐到最新鮮的海洋風味。</p>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide>
+        </Swiper>
       </div>
     </section>
   </main>
