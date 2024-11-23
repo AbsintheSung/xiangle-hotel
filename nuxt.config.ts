@@ -4,9 +4,9 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxtjs/tailwindcss',
-    'nuxt-icon'
+    'nuxt-icon',
   ],
-  css: ['~/assets/tailwind.css', '~/assets/scss/index.scss'],
+  css: ['~/assets/scss/index.scss', '~/assets/tailwind.css',],
   vite: {
     css: {
       preprocessorOptions: {

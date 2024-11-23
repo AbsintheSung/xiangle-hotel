@@ -296,9 +296,56 @@ const slideNext = () => {
         </Swiper>
       </div>
     </section>
+    <section class="relative bg-black py-20 md:py-28">
+      <div class="container">
+        <div class="flex items-center py-10 md:py-20">
+          <h2 class="flex flex-col text-nowrap gap-y-1 text-3xl md:text-4xl text-primary-base font-bold pe-10">
+            <span>交通</span>
+            <span>方式</span>
+          </h2>
+          <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white sm:w-1/6" />
+        </div>
+        <div class="py-1 md:py-6">
+          <p class="py-4 text-white">台灣高雄市新興區六角路123號</p>
+          <picture>
+              <source
+                srcset="@/assets/images/desktop/home-map.png"
+                media="(min-width: 576px)"
+              >
+              <img
+                class="w-full"
+                src="@/assets/images/mobile/home-map-sm.png"
+                alt="描述地圖中酒店所在的位置"
+              >
+            </picture>
+        </div>
+        <ul class="text-white flex flex-col gap-6 flex-nowrap sm:flex-row">
+          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6">
+            <Icon class="text-primary-base text-2xl" name="material-symbols:directions-car"></Icon>
+            <div class="flex flex-col gap-y-2">
+              <h3 class="font-bold text-xl md:text-2xl">自行開車</h3>
+              <p class="font-medium">如果您選擇自行開車，可以透過國道一號下高雄交流道，往市區方向行駛，並依路標指示即可抵達「享樂酒店」。飯店內設有停車場，讓您停車方便。</p>
+            </div>
+          </li>
+          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6"">
+            <Icon class="text-primary-base text-2xl" name="material-symbols:train"></Icon>
+            <div class="flex flex-col gap-y-2">
+              <h3 class="font-bold text-xl md:text-2xl">高鐵/火車</h3>
+              <p class="font-medium">如果您是搭乘高鐵或火車，可於左營站下車，外頭有計程車站，搭乘計程車約20分鐘即可抵達。或者您也可以轉乘捷運紅線至中央公園站下車，步行約10分鐘便可抵達。</p>
+            </div>
+          </li>
+          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6"">
+            <Icon class="text-primary-base text-2xl" name="gis:car"></Icon>
+            <div class="flex flex-col gap-y-2">
+              <h3 class="font-bold text-xl md:text-2xl">禮賓車服務</h3>
+              <p class="font-medium">承億酒店提供禮賓專車接送服務，但因目的地遠近會有不同的收費，請撥打電話將由專人為您服務洽詢專線：(07)123-4567</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
   </main>
 </template>
-
 <style scoped lang="scss">
 .swiper :deep(.swiper-pagination) {
   margin: 0 auto;
@@ -318,7 +365,6 @@ const slideNext = () => {
   background-color: #bf9d7d;
 }
 .room-sweiper {
-  // width: 50%;
   margin-left: 0px;
   margin-right: 0px;
 }
