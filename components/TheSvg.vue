@@ -8,11 +8,15 @@ defineProps({
     type: String,
     default: "",
   },
+  color: {
+    type: String,
+    default: "none", // 使用 CSS 的颜色
+  },
 });
 </script>
 
 <template>
-  <svg>
+  <svg :style="{ fill: color }">
     <use :href="`${svgSrc}#${svgId}`"></use>
   </svg>
 </template>
