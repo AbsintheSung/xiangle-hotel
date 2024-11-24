@@ -5,6 +5,10 @@ import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
 import decoDotGroupSvg from "@/assets/svg/sprite/deco-dot-group.svg";
 import logoWhite from "@/assets/svg/sprite/logo-white.svg"
 import logoPrimary from "@/assets/svg/sprite/logo-primary.svg"
+import horizontalFull from "@/assets/svg/sprite/deco-line-group-horizontal-full.svg"
+import horizontalSm from "@/assets/svg/sprite/deco-line-group-horizontal-sm.svg"
+import horizontal from "@/assets/svg/sprite/deco-line-group-horizontal.svg"
+import vertical from "@/assets/svg/sprite/deco-line-group-vertical.svg"
 import delicacy1 from "@/assets/images/desktop/home-food-1.png";
 import delicacy2 from "@/assets/images/desktop/home-food-2.png";
 import delicacy3 from "@/assets/images/desktop/home-food-3.png";
@@ -238,7 +242,8 @@ const slideNext = () => {
     </section>
     <section class="relative bg-black py-10 md:py-[120px]">
       <div class="horizontal hidden xl:block 2xl:top-40"></div>
-      <div class="px-3 flex flex-col md:flex-row items-center gap-x-20 gap-y-6">
+      <div class="my-wave hidden md:block"></div>
+      <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
         <Swiper ref="roomSwiper" v-bind="swiperConfig2" class="room-sweiper w-full lg:w-1/2">
           <SwiperSlide v-for="(num, index) in 5" :key="index">
             <picture>
@@ -247,7 +252,7 @@ const slideNext = () => {
             </picture>
           </SwiperSlide>
         </Swiper>
-        <div class="me-auto flex flex-col gap-y-10 text-white mt-auto">
+        <div class="flex flex-col gap-y-10 text-white mt-auto ">
           <div class="flex flex-col gap-y-4">
             <h2 class="text-4xl lg:text-5xl font-bold">尊爵雙人房</h2>
             <p>享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
@@ -264,16 +269,16 @@ const slideNext = () => {
         </div>
       </div>
     </section>
-    <section class="bg-primary-Tint py-20 lg:py-[120px]">
-      <div class="container">
-        <div class="flex items-center py-10 md:py-20">
+    <section class="relative bg-primary-Tint py-20 lg:py-[120px]">
+      <TheSvg class="hidden absolute left-10 z-10 w-[180px] h-[1068px] 4xl:block" :svgSrc="vertical" svgId="deco-line-group-vertical"></TheSvg>
+      <div class="container ">
+        <div class="flex items-center mb-10 md:mb-20">
           <h2 class="flex flex-col text-nowrap gap-y-1 text-3xl md:text-4xl text-primary-base font-bold pe-10">
             <span>佳餚</span>
             <span>美饌</span>
           </h2>
           <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white sm:w-1/6" />
         </div>
-
         <Swiper ref="roomSwiper" v-bind="swiperConfig3">
           <SwiperSlide v-for="(delicacyItem, index) in delicacyList" :key="index">
             <div class="relative">
@@ -300,7 +305,7 @@ const slideNext = () => {
     </section>
     <section class="relative bg-black py-20 md:py-28">
       <div class="container">
-        <div class="flex items-center py-10 md:py-20">
+        <div class="flex items-center mb-10 md:mb-20">
           <h2 class="flex flex-col text-nowrap gap-y-1 text-3xl md:text-4xl text-primary-base font-bold pe-10">
             <span>交通</span>
             <span>方式</span>
@@ -426,5 +431,15 @@ const slideNext = () => {
   right: 0;
   z-index: 10;
   background-image: url("@/assets/svg/deco-line-group-horizontal-full.svg");
+}
+.my-wave{
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  transform: translateY(50%);
+  right: 0;
+  // z-index: -1;
+  background-image: url("@/assets/svg/deco-wave-bg.svg");
+  background-repeat: no-repeat;
 }
 </style>
