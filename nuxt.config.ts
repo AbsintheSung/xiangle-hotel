@@ -2,10 +2,8 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: [
-    '@nuxtjs/tailwindcss'
-  ],
-  css: ['~/assets/tailwind.css', '~/assets/scss/index.scss'],
+  modules: ['@nuxtjs/tailwindcss', 'nuxt-icon', '@vueuse/nuxt'],
+  css: ['~/assets/scss/index.scss', '~/assets/tailwind.css',],
   vite: {
     css: {
       preprocessorOptions: {
