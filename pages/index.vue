@@ -141,9 +141,11 @@ onMounted(() => {
   
   <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
     <div class="px-3 py-6 flex items-center justify-between md:px-20">
-      <div>
-        <TheSvg color="#ffffff" class="w-[196px] h-[72px]"  :svgSrc="logoWhite" svgId="logo-white"></TheSvg>
-      </div>
+      <h1>
+        <RouterLink to="/">
+          <TheSvg color="#ffffff" class="w-[196px] h-[72px]"  :svgSrc="logoWhite" svgId="logo-white"></TheSvg>
+        </RouterLink>
+      </h1>
       <ul class="hidden  items-center gap-x-4 font-bold text-white md:flex">
         <li >
           <RouterLink class="block p-4" to="/">
@@ -227,9 +229,10 @@ onMounted(() => {
               <p class="mt-6 mb-24 text-base lg:text-2xl 2xl:text-3xl text-white font-semibold">我們致力於為您提供無與倫比的奢華體驗與優質服務</p>
             </div>
             <div class="-translate-x-12">
-              <RouterLink to="/" class="test w-full flex items-center justify-end gap-x-4 bg-white md:bg-primary-base p-5 md:p-[40px] rounded-md">
-                <p class="text-base text-black md:text-2xl md:text-white font-bold">立即訂房</p>
-                <p class="h-[1px] bg-black md:bg-white w-28"></p>
+              <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
+                <p class="z-10 text-base text-black md:text-2xl  font-bold group-hover:text-white">立即訂房</p>
+                <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
+                <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0 "></div>
               </RouterLink>
             </div>
           </div>
@@ -337,9 +340,14 @@ onMounted(() => {
             <p>享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
           </div>
           <p class="text-3xl font-bold">NT$ 10,000</p>
-          <RouterLink to="/" class="w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md">
+          <!-- <RouterLink to="/" class="w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md">
             <p class="text-base text-nowrap text-black md:text-2xl font-bold">查看更多</p>
             <p class="h-[1px] bg-black w-28"></p>
+          </RouterLink> -->
+          <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md  transition duration-300 ease-in-out group overflow-hidden">
+            <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
+            <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
+            <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0 "></div>
           </RouterLink>
           <div class="flex items-center justify-end text-primary-base">
             <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
