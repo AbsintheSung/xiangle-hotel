@@ -26,33 +26,33 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
-const delicacyList = ref([
-  {
-    imgSrc: delicacySm1,
-    imgSrcset: delicacy1,
-    alt: "delicacy-1",
-  },
-  {
-    imgSrc: delicacySm2,
-    imgSrcset: delicacy2,
-    alt: "delicacy-2",
-  },
-  {
-    imgSrc: delicacySm3,
-    imgSrcset: delicacy3,
-    alt: "delicacy-3",
-  },
-  {
-    imgSrc: delicacySm4,
-    imgSrcset: delicacy4,
-    alt: "delicacy-4",
-  },
-  {
-    imgSrc: delicacySm5,
-    imgSrcset: delicacy5,
-    alt: "delicacy-5",
-  },
-]);
+// const delicacyList = ref([
+//   {
+//     imgSrc: delicacySm1,
+//     imgSrcset: delicacy1,
+//     alt: "delicacy-1",
+//   },
+//   {
+//     imgSrc: delicacySm2,
+//     imgSrcset: delicacy2,
+//     alt: "delicacy-2",
+//   },
+//   {
+//     imgSrc: delicacySm3,
+//     imgSrcset: delicacy3,
+//     alt: "delicacy-3",
+//   },
+//   {
+//     imgSrc: delicacySm4,
+//     imgSrcset: delicacy4,
+//     alt: "delicacy-4",
+//   },
+//   {
+//     imgSrc: delicacySm5,
+//     imgSrcset: delicacy5,
+//     alt: "delicacy-5",
+//   },
+// ]);
 
 const swiperConfig = {
   modules: [Navigation, EffectCreative, Pagination],
@@ -99,12 +99,20 @@ const swiperConfig3 = {
     },
   },
 };
+const roomsNum = ref(0)
 const slidePrev = () => {
-  roomSwiper.value?.$el.swiper.slidePrev();
+  // roomSwiper.value?.$el.swiper.slidePrev();
+  roomsNum.value = (roomsNum.value - 1 + getRoomsDataLength.value) % getRoomsDataLength.value; // 加 4 避免負數，然後取模
+  
+  console.log(roomsNum.value)
+  console.log(getRoomsData.value)
 };
 
 const slideNext = () => {
-  roomSwiper.value?.$el.swiper.slideNext();
+  // roomSwiper.value?.$el.swiper.slideNext();
+  roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value; // 直接取模
+  console.log(roomsNum.value)
+  console.log(getRoomsData.value)
 };
 
 const isOpenMenu = ref(false)
@@ -126,6 +134,94 @@ onMounted(() => {
     newHeaderY > 0 ? isScrolled.value = true : isScrolled.value = false
   },{immediate:true})
 })
+
+type NewsItem = {
+  _id: string;
+  title: string;
+  description: string;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+type ResponseNews = {
+  data: {
+    status: boolean;
+    result: NewsItem[];
+  };
+}
+type Delicacy={
+  _id: string,
+  title: string,
+  description: string,
+  diningTime: string,
+  image: string,
+  createdAt: string,
+  updatedAt: string
+}
+type ResponseDelicacy = {
+  data: {
+    status: boolean;
+    result: Delicacy[];
+  };
+}
+
+type Rooms = {
+  _id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  imageUrlList: string[];
+  areaInfo: string;
+  bedInfo: string;
+  maxPeople: number;
+  price: number;
+  status: number;
+  layoutInfo: {
+    title: string;
+    isProvide: boolean;
+  }[];
+  facilityInfo: {
+    title: string;
+    isProvide: boolean;
+  }[];
+  amenityInfo: {
+    title: string;
+    isProvide: boolean;
+  }[];
+  createdAt: string;
+  updatedAt: string;
+}
+type ResponseRooms = {
+  data: {
+    status: boolean;
+    result: Rooms[];
+  };
+}
+
+
+const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
+const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
+const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
+const getNewsDataList = computed(() => {
+  return newsDataList.value?.data.result ?? [];
+});
+const getCulinaryDataList = computed(() => {
+  const data = culinaryDataList.value?.data.result.map((item)=>{
+    const [month, time] = item.diningTime.split(' ');
+    return{
+      ...item,
+      month,
+      time,
+    }
+  })
+  return data
+});
+const getRoomsData = computed(()=>{
+  return roomsDataList.value?.data.result[roomsNum.value]
+})
+const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.length || 0);
+
 
 
 </script>
@@ -247,7 +343,16 @@ onMounted(() => {
           </div>
           <div class="md:w-5/6">
             <ul class="flex flex-col gap-y-10">
-              <li class="flex flex-col items-center gap-6 sm:flex-row">
+              <li class="flex flex-col items-center gap-6 sm:flex-row" v-for="newsItem in getNewsDataList" :key="newsItem._id">
+                <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
+                  <img :src="newsItem.image" class="w-full max-h-[294px] h-full rounded-xl" :alt="newsItem.title" />
+                </div>
+                <div class="flex flex-col gap-y-6">
+                  <h3 class="text-2xl md:text-3xl font-bold">{{newsItem.title}}</h3>
+                  <p class="font-medium">{{newsItem.description}}</p>
+                </div>
+              </li>
+              <!-- <li class="flex flex-col items-center gap-6 sm:flex-row">
                 <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
                   <picture>
                     <source srcset="@/assets/images/desktop/home-news-1.png 474w, @/assets/images/mobile/home-news-sm-1.png 351w" media="(min-width: 576px)" />
@@ -282,7 +387,7 @@ onMounted(() => {
                   <h3 class="text-2xl md:text-3xl font-bold">耶誕快樂，住房送禮</h3>
                   <p class="font-medium">聖誕節來臨，我們為您準備了特別的禮物！在聖誕期間訂房，不僅有特別優惠，還會送上我們精心準備的聖誕禮物。讓我們一起慶祝這個溫馨的節日吧！</p>
                 </div>
-              </li>
+              </li> -->
             </ul>
           </div>
         </div>
@@ -316,8 +421,8 @@ onMounted(() => {
       </div>
     </section>
     <section class="relative bg-black py-10 md:py-[120px] overflow-x-hidden">
-      <TheSvgIcon class="text-primary-base w-[1920px] static z-10 lg:absolute lg:left-1/3 " name="deco-line-group-horizontal-full"></TheSvgIcon>
-      <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
+      <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3 " name="deco-line-group-horizontal-full"></TheSvgIcon>
+      <!-- <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
         <Swiper ref="roomSwiper" v-bind="swiperConfig2" class="room-sweiper w-full lg:w-1/2">
           <SwiperSlide v-for="(num, index) in 5" :key="index">
             <picture>
@@ -343,6 +448,33 @@ onMounted(() => {
             <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
           </div>
         </div>
+      </div> -->
+      <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
+        <Swiper ref="roomSwiper" v-bind="swiperConfig2" class="room-sweiper w-full lg:w-1/2">
+          <SwiperSlide v-for="(imgItem, index) in getRoomsData?.imageUrlList" :key="index">
+            <picture>
+              <!-- <source srcset="@/assets/images/desktop/home-room-1.png" media="(min-width:768px)" /> -->
+              <img class="w-full object-cover  max-h-[900px]" :src="imgItem" :alt="imgItem+index" />
+            </picture>
+          </SwiperSlide>
+        </Swiper>
+        <div class="flex flex-col w-full lg:w-1/3  gap-y-10 text-white mt-auto ">
+         
+          <div class="flex flex-col gap-y-4">
+            <h2 class="text-4xl lg:text-5xl font-bold">{{getRoomsData?.name}}</h2>
+            <p>{{getRoomsData?.description}}</p>
+          </div>
+          <p class="text-3xl font-bold">NT$ {{getRoomsData?.price}}</p>
+          <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md  transition duration-300 ease-in-out group overflow-hidden">
+            <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
+            <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
+            <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0 "></div>
+          </RouterLink>
+          <div class="flex items-center justify-end text-primary-base">
+            <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
+            <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
+          </div>
+        </div>
       </div>
     </section>
     <section class="relative bg-primary-Tint py-20 lg:py-[120px]">
@@ -356,8 +488,8 @@ onMounted(() => {
           </h2>
           <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white sm:w-1/6" />
         </div>
-        <Swiper ref="roomSwiper" v-bind="swiperConfig3">
-          <SwiperSlide v-for="(delicacyItem, index) in delicacyList" :key="index">
+        <Swiper v-bind="swiperConfig3">
+          <!-- <SwiperSlide v-for="(delicacyItem, index) in delicacyList" :key="index">
             <div class="relative">
               <picture>
                 <source :srcset="delicacyItem.imgSrcset" media="(min-width:768px)" />
@@ -373,6 +505,26 @@ onMounted(() => {
                 </div>
                 <div>
                   <p>以新鮮海產料理聞名，我們的專業廚師選用高雄當地的海鮮，每一道菜都充滿海洋的鮮美與清甜。無論是烤魚、蒸蝦還是煮蛤蜊，都能讓您品嚐到最新鮮的海洋風味。</p>
+                </div>
+              </div>
+            </div>
+          </SwiperSlide> -->
+          <SwiperSlide v-for="(culinaryItem, index) in getCulinaryDataList" :key="culinaryItem._id">
+            <div class="relative">
+              <picture>
+             
+                <img class="w-full object-cover min-h-[400px] max-h-[600px] rounded-xl" :src="culinaryItem.image" :alt="culinaryItem.title" />
+              </picture>
+              <div class="absolute bottom-0 p-4 flex flex-col gap-y-4 text-white backdrop-blur-sm md:p-6 md:gap-y-6">
+                <div class="font-bold text-nowrap flex items-center justify-between">
+                  <h3 class="text-2xl">{{culinaryItem.title}}</h3>
+                  <p class="flex items-center gap-x-2 md:gap-x-4">
+                    <time>{{culinaryItem.month}}</time>
+                    <time>{{culinaryItem.time}}</time>
+                  </p>
+                </div>
+                <div>
+                  <p>{{culinaryItem.description}}</p>
                 </div>
               </div>
             </div>
