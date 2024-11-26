@@ -1,14 +1,6 @@
 <script setup lang="ts">
-//使用 TheSvg 組件的 svg deco-line-group-horizontal-sm系列的會異常，這類型使用 css backackgroundImage方式處理
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
-import decoDotGroupSvg from "@/assets/svg/sprite/deco-dot-group.svg";
-import logoWhite from "@/assets/svg/sprite/logo-white.svg"
-import logoPrimary from "@/assets/svg/sprite/logo-primary.svg"
-import horizontalFull from "@/assets/svg/sprite/deco-line-group-horizontal-full.svg"
-import horizontalSm from "@/assets/svg/sprite/deco-line-group-horizontal-sm.svg"
-import horizontal from "@/assets/svg/sprite/deco-line-group-horizontal.svg"
-import vertical from "@/assets/svg/sprite/deco-line-group-vertical.svg"
 import delicacy1 from "@/assets/images/desktop/home-food-1.png";
 import delicacy2 from "@/assets/images/desktop/home-food-2.png";
 import delicacy3 from "@/assets/images/desktop/home-food-3.png";
@@ -135,6 +127,7 @@ onMounted(() => {
   },{immediate:true})
 })
 
+
 </script>
 
 <template>
@@ -143,7 +136,7 @@ onMounted(() => {
     <div class="px-3 py-6 flex items-center justify-between md:px-20">
       <h1>
         <RouterLink to="/">
-          <TheSvg color="#ffffff" class="w-[196px] h-[72px]"  :svgSrc="logoWhite" svgId="logo-white"></TheSvg>
+          <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
         </RouterLink>
       </h1>
       <ul class="hidden  items-center gap-x-4 font-bold text-white md:flex">
@@ -294,8 +287,8 @@ onMounted(() => {
           </div>
         </div>
 
-        <TheSvg :class="'hidden absolute top-[100px] right-3  w-[200px] h-[200px] lg:block 3xl:translate-x-24 4xl:translate-x-32'" :svgSrc="decoDotGroupSvg" svgId="deco-dot-group" />
-        <TheSvg :class="'hidden absolute bottom-0 translate-y-20 w-[200px] h-[200px] lg:block 3xl:-translate-x-24 4xl:-translate-x-32'" :svgSrc="decoDotGroupSvg" svgId="deco-dot-group" />
+        <TheSvgIcon class='hidden absolute top-[100px] right-3  w-[200px] h-[200px] lg:block 3xl:translate-x-24 4xl:translate-x-32' name="deco-dot-group"></TheSvgIcon>
+        <TheSvgIcon class='hidden absolute bottom-0 translate-y-20 w-[200px] h-[200px] lg:block 3xl:-translate-x-24 4xl:-translate-x-32' name="deco-dot-group"></TheSvgIcon>
       </div>
     </section>
     <section class="bg-black pt-28 pb-32">
@@ -322,28 +315,24 @@ onMounted(() => {
         </div>
       </div>
     </section>
-    <section class="relative bg-black py-10 md:py-[120px]">
-      <div class="horizontal hidden xl:block 2xl:top-40"></div>
-      <div class="my-wave hidden md:block"></div>
+    <section class="relative bg-black py-10 md:py-[120px] overflow-x-hidden">
+      <TheSvgIcon class="text-primary-base w-[1920px] static z-10 lg:absolute lg:left-1/3 " name="deco-line-group-horizontal-full"></TheSvgIcon>
       <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
         <Swiper ref="roomSwiper" v-bind="swiperConfig2" class="room-sweiper w-full lg:w-1/2">
           <SwiperSlide v-for="(num, index) in 5" :key="index">
             <picture>
               <source srcset="@/assets/images/desktop/home-room-1.png" media="(min-width:768px)" />
-              <img class="w-full object-cover" src="@/assets/images/mobile/home-room-sm-1.png" alt="room-a" />
+              <img class="w-full object-cover  max-h-[900px]" src="@/assets/images/mobile/home-room-sm-1.png" alt="room-a" />
             </picture>
           </SwiperSlide>
         </Swiper>
         <div class="flex flex-col gap-y-10 text-white mt-auto ">
+         
           <div class="flex flex-col gap-y-4">
             <h2 class="text-4xl lg:text-5xl font-bold">尊爵雙人房</h2>
             <p>享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
           </div>
           <p class="text-3xl font-bold">NT$ 10,000</p>
-          <!-- <RouterLink to="/" class="w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md">
-            <p class="text-base text-nowrap text-black md:text-2xl font-bold">查看更多</p>
-            <p class="h-[1px] bg-black w-28"></p>
-          </RouterLink> -->
           <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md  transition duration-300 ease-in-out group overflow-hidden">
             <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
             <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
@@ -357,7 +346,8 @@ onMounted(() => {
       </div>
     </section>
     <section class="relative bg-primary-Tint py-20 lg:py-[120px]">
-      <TheSvg class="hidden absolute left-10 z-10 w-[180px] h-[1068px] 4xl:block" :svgSrc="vertical" svgId="deco-line-group-vertical"></TheSvg>
+   
+      <TheSvgIcon class="hidden text-primary-base absolute left-10 z-10 w-[180px] h-[1068px] 4xl:block" name="deco-line-group-vertical" ></TheSvgIcon>
       <div class="container ">
         <div class="flex items-center mb-10 md:mb-20">
           <h2 class="flex flex-col text-nowrap gap-y-1 text-3xl md:text-4xl text-primary-base font-bold pe-10">
@@ -445,7 +435,7 @@ onMounted(() => {
       <div class="flex flex-col gap-y-10 md:flex-row md:justify-between md:items-center">
         <div class="flex flex-col gap-y-10">
           <RouterLink to="/">
-            <TheSvg color="#ffffff" class="w-[196px] h-[72px]"  :svgSrc="logoWhite" svgId="logo-white"></TheSvg>
+            <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
           </RouterLink>
           <div class="flex gap-x-4">
             <RouterLink to="/">
@@ -510,24 +500,6 @@ onMounted(() => {
 .room-sweiper {
   margin-left: 0px;
   margin-right: 0px;
-}
-.horizontal {
-  position: absolute;
-  width: 60%;
-  height: 150px;
-  right: 0;
-  z-index: 10;
-  background-image: url("@/assets/svg/deco-line-group-horizontal-full.svg");
-}
-.my-wave{
-  position: absolute;
-  width: 100%;
-  height: 50%;
-  transform: translateY(50%);
-  right: 0;
-  // z-index: -1;
-  background-image: url("@/assets/svg/deco-wave-bg.svg");
-  background-repeat: no-repeat;
 }
 
 .fade-enter-active,

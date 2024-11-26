@@ -1,8 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import path from 'path'
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', 'nuxt-icon', '@vueuse/nuxt'],
+  modules: ['@nuxtjs/tailwindcss', 'nuxt-icon', '@vueuse/nuxt', '@nuxt/image'],
   css: ['~/assets/scss/index.scss', '~/assets/tailwind.css',],
   vite: {
     css: {
@@ -11,7 +13,14 @@ export default defineNuxtConfig({
           additionalData: '@use "@/assets/scss/_variables.scss" as *;'
         }
       }
-    }
+    },
+    plugins: [
+      createSvgIconsPlugin({
+        iconDirs: [path.resolve(process.cwd(), 'assets/svg')],
+        symbolId: '[dir]/[name]',
+        customDomId: '__svg__icons__dom__',
+      }),
+    ],
   },
   vue: {
     compilerOptions: {

@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import "virtual:svg-icons-register";
+</script>
 <template>
   <NuxtPage />
 </template>
