@@ -1,24 +1,20 @@
 <script setup lang="ts">
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
-import delicacy1 from "@/assets/images/desktop/home-food-1.png";
-import delicacy2 from "@/assets/images/desktop/home-food-2.png";
-import delicacy3 from "@/assets/images/desktop/home-food-3.png";
-import delicacy4 from "@/assets/images/desktop/home-food-4.png";
-import delicacy5 from "@/assets/images/desktop/home-food-5.png";
-import delicacySm1 from "@/assets/images/mobile/home-food-sm-1.png";
-import delicacySm2 from "@/assets/images/mobile/home-food-sm-2.png";
-import delicacySm3 from "@/assets/images/mobile/home-food-sm-3.png";
-import delicacySm4 from "@/assets/images/mobile/home-food-sm-4.png";
-import delicacySm5 from "@/assets/images/mobile/home-food-sm-5.png";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation, EffectCreative, Pagination, Autoplay } from "swiper/modules";
+import { homeMain, homeRooms, homeCulinary } from "@/utils/swiperConfigs";
+import type { ResponseNews, ResponseRooms, ResponseDelicacy } from "@/types/home";
 // 引入所需的 Swiper 樣式
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
-// const roomSwiper = ref(null);
+
+const windowScroll = useWindowScroll()
+const headerY = ref(windowScroll.y)
+const isScrolled = ref(false)
+const roomsNum = ref(0)
+const isOpenMenu = ref(false)
 const roomSwiper: Ref<typeof Swiper | null> = ref(null);
 const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-1" },
@@ -26,186 +22,13 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
-// const delicacyList = ref([
-//   {
-//     imgSrc: delicacySm1,
-//     imgSrcset: delicacy1,
-//     alt: "delicacy-1",
-//   },
-//   {
-//     imgSrc: delicacySm2,
-//     imgSrcset: delicacy2,
-//     alt: "delicacy-2",
-//   },
-//   {
-//     imgSrc: delicacySm3,
-//     imgSrcset: delicacy3,
-//     alt: "delicacy-3",
-//   },
-//   {
-//     imgSrc: delicacySm4,
-//     imgSrcset: delicacy4,
-//     alt: "delicacy-4",
-//   },
-//   {
-//     imgSrc: delicacySm5,
-//     imgSrcset: delicacy5,
-//     alt: "delicacy-5",
-//   },
-// ]);
-
-const swiperConfig = {
-  modules: [Navigation, EffectCreative, Pagination],
-  slidesPerView: 1,
-  spaceBetween: 0,
-  loop: true,
-  pagination: {
-    dynamicBullets: true,
-    clickable: true,
-  },
-};
-const swiperConfig2 = {
-  modules: [Navigation, EffectCreative, Pagination, Autoplay],
-  slidesPerView: 1,
-  spaceBetween: 0,
-  loop: true,
-  pagination: {
-    dynamicBullets: true,
-    clickable: true,
-  },
-  autoplay: {
-    delay: 5000,
-    disableOnInteraction: false,
-  },
-};
-const swiperConfig3 = {
-  modules: [Navigation, EffectCreative, Pagination, Autoplay],
-  slidesPerView: 1.2,
-  spaceBetween: "24px",
-  loop: true,
-  autoplay: {
-    delay: 5000,
-    disableOnInteraction: false,
-  },
-  breakpoints: {
-    375: {
-      slidesPerView: 1.2,
-    },
-    768: {
-      slidesPerView: 2.2,
-    },
-    1024: {
-      slidesPerView: 3.2,
-    },
-  },
-};
-const roomsNum = ref(0)
-const slidePrev = () => {
-  // roomSwiper.value?.$el.swiper.slidePrev();
-  roomsNum.value = (roomsNum.value - 1 + getRoomsDataLength.value) % getRoomsDataLength.value; // 加 4 避免負數，然後取模
-  
-  console.log(roomsNum.value)
-  console.log(getRoomsData.value)
-};
-
-const slideNext = () => {
-  // roomSwiper.value?.$el.swiper.slideNext();
-  roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value; // 直接取模
-  console.log(roomsNum.value)
-  console.log(getRoomsData.value)
-};
-
-const isOpenMenu = ref(false)
-const handleMenu = ()=>{
-  isOpenMenu.value = true
-}
-const handleCloseMenu = ()=>{
-  isOpenMenu.value = false
-}
-
-
-const windowScroll = useWindowScroll()
-const headerY = ref(windowScroll.y)
-const isScrolled = ref(false)
-
-
-onMounted(() => {
-  watch(()=>headerY.value,(newHeaderY)=>{
-    newHeaderY > 0 ? isScrolled.value = true : isScrolled.value = false
-  },{immediate:true})
-})
-
-type NewsItem = {
-  _id: string;
-  title: string;
-  description: string;
-  image: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-type ResponseNews = {
-  data: {
-    status: boolean;
-    result: NewsItem[];
-  };
-}
-type Delicacy={
-  _id: string,
-  title: string,
-  description: string,
-  diningTime: string,
-  image: string,
-  createdAt: string,
-  updatedAt: string
-}
-type ResponseDelicacy = {
-  data: {
-    status: boolean;
-    result: Delicacy[];
-  };
-}
-
-type Rooms = {
-  _id: string;
-  name: string;
-  description: string;
-  imageUrl: string;
-  imageUrlList: string[];
-  areaInfo: string;
-  bedInfo: string;
-  maxPeople: number;
-  price: number;
-  status: number;
-  layoutInfo: {
-    title: string;
-    isProvide: boolean;
-  }[];
-  facilityInfo: {
-    title: string;
-    isProvide: boolean;
-  }[];
-  amenityInfo: {
-    title: string;
-    isProvide: boolean;
-  }[];
-  createdAt: string;
-  updatedAt: string;
-}
-type ResponseRooms = {
-  data: {
-    status: boolean;
-    result: Rooms[];
-  };
-}
-
-
 const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
 const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
 const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
 const getNewsDataList = computed(() => {
   return newsDataList.value?.data.result ?? [];
 });
+
 const getCulinaryDataList = computed(() => {
   const data = culinaryDataList.value?.data.result.map((item)=>{
     const [month, time] = item.diningTime.split(' ');
@@ -217,11 +40,41 @@ const getCulinaryDataList = computed(() => {
   })
   return data
 });
+
 const getRoomsData = computed(()=>{
   return roomsDataList.value?.data.result[roomsNum.value]
 })
+
 const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.length || 0);
 
+
+const handleMenu = ()=>{
+  isOpenMenu.value = true
+}
+const handleCloseMenu = ()=>{
+  isOpenMenu.value = false
+}
+
+const slidePrev = () => {
+  roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
+  roomSwiper.value?.$el.swiper.autoplay?.start(); //執行上面，自動輪播失效，須重啟
+  roomsNum.value = (roomsNum.value - 1 + getRoomsDataLength.value) % getRoomsDataLength.value; 
+
+};
+
+const slideNext = () => {
+  roomSwiper.value?.$el.swiper.slideTo(0, 0); 
+  roomSwiper.value?.$el.swiper.autoplay?.start();
+  roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value; 
+
+};
+
+
+onMounted(() => {
+  watch(()=>headerY.value,(newHeaderY)=>{
+    newHeaderY > 0 ? isScrolled.value = true : isScrolled.value = false
+  },{immediate:true})
+})
 
 
 </script>
@@ -289,7 +142,7 @@ const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.lengt
   </header>
   <main>
     <section class="relative">
-      <Swiper v-bind="swiperConfig" class="h-full">
+      <Swiper ref="roomSwiper" v-bind="homeMain" class="h-full">
         <SwiperSlide v-for="heroItem in HomeHeroImgList" :key="heroItem.alt">
           <picture>
             <source :srcset="heroItem.imgSrcset" media="(min-width:576px)" />
@@ -352,42 +205,6 @@ const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.lengt
                   <p class="font-medium">{{newsItem.description}}</p>
                 </div>
               </li>
-              <!-- <li class="flex flex-col items-center gap-6 sm:flex-row">
-                <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
-                  <picture>
-                    <source srcset="@/assets/images/desktop/home-news-1.png 474w, @/assets/images/mobile/home-news-sm-1.png 351w" media="(min-width: 576px)" />
-                    <img src="@/assets/images/mobile/home-news-sm-1.png" class="w-full max-h-[294px] h-full rounded-xl" alt="可看見海景及泳池的套房" />
-                  </picture>
-                </div>
-                <div class="flex flex-col gap-y-6">
-                  <h3 class="text-2xl md:text-3xl font-bold">秋季旅遊，豪華享受方案</h3>
-                  <p class="font-medium">秋天就是要來場豪華的旅遊！我們為您準備了一系列的秋季特別方案，包括舒適的住宿、美食饗宴，以及精彩的活動。不論您是想來一趟浪漫之旅，還是想和家人共度美好時光，都能在這裡找到最適合的方案。</p>
-                </div>
-              </li>
-              <li class="flex flex-col items-center gap-6 sm:flex-row">
-                <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
-                  <picture>
-                    <source srcset="@/assets/images/desktop/home-news-2.png 474w, @/assets/images/mobile/home-news-sm-2.png 351w" media="(min-width: 576px)" />
-                    <img src="@/assets/images/mobile/home-news-sm-2.png" class="w-full max-h-[294px] h-full rounded-xl" alt="可看見海景及泳池的套房" />
-                  </picture>
-                </div>
-                <div class="flex flex-col gap-y-6">
-                  <h3 class="text-2xl md:text-3xl font-bold">輕鬆住房專案</h3>
-                  <p class="font-medium">我們知道，有時候您只是需要一個舒適的地方放鬆心情。因此，我們推出了「輕鬆住房專案」，讓您無壓力地享受住宿。不管是短期的休息，還是長期的住宿，我們都會以最貼心的服務，讓您感到賓至如歸。</p>
-                </div>
-              </li>
-              <li class="flex flex-col items-center gap-6 sm:flex-row">
-                <div class="w-full sm:w-2/5 flex-shrink-0 sm:self-stretch">
-                  <picture>
-                    <source srcset="@/assets/images/desktop/home-news-3.png 474w, @/assets/images/mobile/home-news-sm-3.png 351w" media="(min-width: 576px)" />
-                    <img src="@/assets/images/mobile/home-news-sm-3.png" class="w-full max-h-[294px] h-full rounded-xl" alt="可看見海景及泳池的套房" />
-                  </picture>
-                </div>
-                <div class="flex flex-col gap-y-6">
-                  <h3 class="text-2xl md:text-3xl font-bold">耶誕快樂，住房送禮</h3>
-                  <p class="font-medium">聖誕節來臨，我們為您準備了特別的禮物！在聖誕期間訂房，不僅有特別優惠，還會送上我們精心準備的聖誕禮物。讓我們一起慶祝這個溫馨的節日吧！</p>
-                </div>
-              </li> -->
             </ul>
           </div>
         </div>
@@ -422,38 +239,10 @@ const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.lengt
     </section>
     <section class="relative bg-black py-10 md:py-[120px] overflow-x-hidden">
       <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3 " name="deco-line-group-horizontal-full"></TheSvgIcon>
-      <!-- <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
-        <Swiper ref="roomSwiper" v-bind="swiperConfig2" class="room-sweiper w-full lg:w-1/2">
-          <SwiperSlide v-for="(num, index) in 5" :key="index">
-            <picture>
-              <source srcset="@/assets/images/desktop/home-room-1.png" media="(min-width:768px)" />
-              <img class="w-full object-cover  max-h-[900px]" src="@/assets/images/mobile/home-room-sm-1.png" alt="room-a" />
-            </picture>
-          </SwiperSlide>
-        </Swiper>
-        <div class="flex flex-col gap-y-10 text-white mt-auto ">
-         
-          <div class="flex flex-col gap-y-4">
-            <h2 class="text-4xl lg:text-5xl font-bold">尊爵雙人房</h2>
-            <p>享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
-          </div>
-          <p class="text-3xl font-bold">NT$ 10,000</p>
-          <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md  transition duration-300 ease-in-out group overflow-hidden">
-            <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
-            <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
-            <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0 "></div>
-          </RouterLink>
-          <div class="flex items-center justify-end text-primary-base">
-            <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
-            <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
-          </div>
-        </div>
-      </div> -->
       <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
-        <Swiper ref="roomSwiper" v-bind="swiperConfig2" class="room-sweiper w-full lg:w-1/2">
+        <Swiper ref="roomSwiper" v-bind="homeRooms" class="room-sweiper w-full lg:w-1/2">
           <SwiperSlide v-for="(imgItem, index) in getRoomsData?.imageUrlList" :key="index">
             <picture>
-              <!-- <source srcset="@/assets/images/desktop/home-room-1.png" media="(min-width:768px)" /> -->
               <img class="w-full object-cover  max-h-[900px]" :src="imgItem" :alt="imgItem+index" />
             </picture>
           </SwiperSlide>
@@ -488,27 +277,7 @@ const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.lengt
           </h2>
           <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white sm:w-1/6" />
         </div>
-        <Swiper v-bind="swiperConfig3">
-          <!-- <SwiperSlide v-for="(delicacyItem, index) in delicacyList" :key="index">
-            <div class="relative">
-              <picture>
-                <source :srcset="delicacyItem.imgSrcset" media="(min-width:768px)" />
-                <img class="w-full object-cover min-h-[400px] max-h-[600px] rounded-xl" :src="delicacyItem.imgSrc" alt="room-a" />
-              </picture>
-              <div class="absolute bottom-0 p-4 flex flex-col gap-y-4 text-white backdrop-blur-sm md:p-6 md:gap-y-6">
-                <div class="font-bold text-nowrap flex items-center justify-between">
-                  <h3 class="text-2xl">海霸</h3>
-                  <p class="flex items-center gap-x-2 md:gap-x-4">
-                    <time>SUN-MON</time>
-                    <time>11:00 - 20:30</time>
-                  </p>
-                </div>
-                <div>
-                  <p>以新鮮海產料理聞名，我們的專業廚師選用高雄當地的海鮮，每一道菜都充滿海洋的鮮美與清甜。無論是烤魚、蒸蝦還是煮蛤蜊，都能讓您品嚐到最新鮮的海洋風味。</p>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide> -->
+        <Swiper v-bind="homeCulinary">
           <SwiperSlide v-for="(culinaryItem, index) in getCulinaryDataList" :key="culinaryItem._id">
             <div class="relative">
               <picture>
