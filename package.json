@@ -17,8 +17,10 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@nuxt/image": "^1.8.1",
     "@nuxtjs/tailwindcss": "^6.12.2",
     "nuxt-icon": "^1.0.0-beta.7",
-    "sass": "^1.81.0"
+    "sass": "^1.81.0",
+    "vite-plugin-svg-icons": "^2.0.1"
   }
 }
