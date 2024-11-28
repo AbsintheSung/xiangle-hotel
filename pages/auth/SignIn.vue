@@ -6,12 +6,12 @@
         <img class="w-full" src="@/assets/images/desktop/login-hero.png" alt="登入大圖" />
       </div>
       <div class="container h-full flex-1 flex flex-col items-center justify-center gap-y-10">
-        <div class="w-full flex flex-col justify-start items-center gap-y-2 sm:w-1/2">
+        <div class="w-full flex flex-col justify-start items-center gap-y-2 sm:w-2/3 4xl:w-1/2">
           <h2 class="w-full font-bold text-start text-primary-base">享樂酒店，誠摯歡迎</h2>
           <p class="w-full text-3xl text-start font-bold text-white sm:text-4xl md:text-5xl">立即開始旅程</p>
         </div>
 
-        <form class="w-full flex flex-col items-center gap-y-4 text-white sm:w-1/2">
+        <form class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
           <div class="w-full flex flex-col gap-y-2">
             <label class="font-bold">電子信箱</label>
             <input class="p-4 text-black font-bold rounded-lg" />
@@ -32,9 +32,9 @@
           </div>
         </form>
 
-        <div class="w-full flex justify-start items-center gap-x-2 font-medium sm:w-1/2">
+        <div class="w-full flex justify-start items-center gap-x-2 font-medium sm:w-2/3 4xl:w-1/2">
           <p class="text-white">沒有會員嗎?</p>
-          <NuxtLink to="/" class="font-bold text-primary-base">前往註冊</NuxtLink>
+          <NuxtLink to="/auth/signup" class="font-bold text-primary-base">前往註冊</NuxtLink>
         </div>
       </div>
     </div>
