@@ -20,7 +20,11 @@
             <label>密碼</label>
             <input class="p-4 text-black rounded-lg" />
           </div>
-          <div class="w-full flex justify-end items-center font-medium">
+          <div class="w-full flex justify-between items-center font-medium">
+            <div class="flex items-end gap-2 text-neutral-0">
+              <input id="remember" type="checkbox" class="remember-checkbox" />
+              <label for="remember" class="font-bold cursor-pointer">記住帳號</label>
+            </div>
             <NuxtLink to="/" class="text-primary-base font-bold">忘記密碼?</NuxtLink>
           </div>
           <div class="w-full mt-6">
@@ -36,4 +40,35 @@
     </div>
   </main>
 </template>
-<style scoped></style>
+
+<style scoped lang="scss">
+.remember-checkbox {
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+  appearance: none;
+  background-color: white;
+  border-radius: 4px;
+  &:checked {
+    background-color: $primary-100;
+    border-color: $primary-100;
+    &::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      height: 14px;
+      width: 8px;
+      border-right: 2px solid white;
+      border-bottom: 2px solid white;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(191, 157, 125, 0.2); // #BF9D7D with opacity
+  }
+}
+</style>
