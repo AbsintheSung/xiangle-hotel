@@ -332,14 +332,14 @@ onMounted(() => {
               <p class="font-medium">如果您選擇自行開車，可以透過國道一號下高雄交流道，往市區方向行駛，並依路標指示即可抵達「享樂酒店」。飯店內設有停車場，讓您停車方便。</p>
             </div>
           </li>
-          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6"">
+          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6">
             <Icon class="text-primary-base text-2xl" name="material-symbols:train"></Icon>
             <div class="flex flex-col gap-y-2">
               <h3 class="font-bold text-xl md:text-2xl">高鐵/火車</h3>
               <p class="font-medium">如果您是搭乘高鐵或火車，可於左營站下車，外頭有計程車站，搭乘計程車約20分鐘即可抵達。或者您也可以轉乘捷運紅線至中央公園站下車，步行約10分鐘便可抵達。</p>
             </div>
           </li>
-          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6"">
+          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6">
             <Icon class="text-primary-base text-2xl" name="gis:car"></Icon>
             <div class="flex flex-col gap-y-2">
               <h3 class="font-bold text-xl md:text-2xl">禮賓車服務</h3>
