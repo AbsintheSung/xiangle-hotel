@@ -1,4 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const formState = ref("emailPasswordForm");
+
+const handleSetup = () => {
+  formState.value = "personalInfoForm";
+};
+
+const handleSignUp = () => {
+  console.log("發送註冊請求");
+};
+</script>
 <template>
   <main class="bg-black h-screen">
     <div class="flex items-center h-full gap-x-11">
@@ -25,7 +35,7 @@
           </div>
         </div>
 
-        <!-- <form class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
+        <form v-if="formState === 'emailPasswordForm'" class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
           <div class="w-full flex flex-col gap-y-2">
             <label class="font-bold">電子信箱</label>
             <input type="email" class="p-4 text-black font-bold rounded-lg" placeholder="hello@exsample.com" />
@@ -36,14 +46,14 @@
           </div>
           <div class="w-full flex flex-col gap-y-2">
             <label class="font-bold">確認密碼</label>
-            <inputtype="password" class="p-4 text-black font-bold rounded-lg" placeholder="請再輸入同一次密碼" />
+            <input type="password" class="p-4 text-black font-bold rounded-lg" placeholder="請再輸入同一次密碼" />
           </div>
           <div class="w-full mt-6">
-            <button class="w-full py-4 bg-primary-base font-bold rounded-lg">下一步</button>
+            <button type="submit" class="w-full py-4 bg-primary-base font-bold rounded-lg" @click.prevent="handleSetup">下一步</button>
           </div>
-        </form> -->
+        </form>
 
-        <form class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
+        <form v-else-if="formState === 'personalInfoForm'" class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
           <div class="w-full flex flex-col gap-y-2">
             <label class="font-bold">姓名</label>
             <input type="text" class="p-4 text-black font-bold rounded-lg" placeholder="請輸入姓名" />
@@ -128,7 +138,7 @@
           </div>
 
           <div class="w-full mt-6">
-            <button class="w-full py-4 bg-primary-base font-bold rounded-lg">完成註冊</button>
+            <button class="w-full py-4 bg-primary-base font-bold rounded-lg" @click.prevent="handleSignUp">完成註冊</button>
           </div>
         </form>
 
