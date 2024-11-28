@@ -10,11 +10,11 @@ import "swiper/css/navigation";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
 
-const windowScroll = useWindowScroll()
-const headerY = ref(windowScroll.y)
-const isScrolled = ref(false)
-const roomsNum = ref(0)
-const isOpenMenu = ref(false)
+const windowScroll = useWindowScroll();
+const headerY = ref(windowScroll.y);
+const isScrolled = ref(false);
+const roomsNum = ref(0);
+const isOpenMenu = ref(false);
 const roomSwiper: Ref<typeof Swiper | null> = ref(null);
 const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-1" },
@@ -30,57 +30,54 @@ const getNewsDataList = computed(() => {
 });
 
 const getCulinaryDataList = computed(() => {
-  const data = culinaryDataList.value?.data.result.map((item)=>{
-    const [month, time] = item.diningTime.split(' ');
-    return{
+  const data = culinaryDataList.value?.data.result.map((item) => {
+    const [month, time] = item.diningTime.split(" ");
+    return {
       ...item,
       month,
       time,
-    }
-  })
-  return data
+    };
+  });
+  return data;
 });
 
-const getRoomsData = computed(()=>{
-  return roomsDataList.value?.data.result[roomsNum.value]
-})
+const getRoomsData = computed(() => {
+  return roomsDataList.value?.data.result[roomsNum.value];
+});
 
 const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.length || 0);
 
-
-const handleMenu = ()=>{
-  isOpenMenu.value = true
-}
-const handleCloseMenu = ()=>{
-  isOpenMenu.value = false
-}
+const handleMenu = () => {
+  isOpenMenu.value = true;
+};
+const handleCloseMenu = () => {
+  isOpenMenu.value = false;
+};
 
 const slidePrev = () => {
   roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
   roomSwiper.value?.$el.swiper.autoplay?.start(); //執行上面，自動輪播失效，須重啟
-  roomsNum.value = (roomsNum.value - 1 + getRoomsDataLength.value) % getRoomsDataLength.value; 
-
+  roomsNum.value = (roomsNum.value - 1 + getRoomsDataLength.value) % getRoomsDataLength.value;
 };
 
 const slideNext = () => {
-  roomSwiper.value?.$el.swiper.slideTo(0, 0); 
+  roomSwiper.value?.$el.swiper.slideTo(0, 0);
   roomSwiper.value?.$el.swiper.autoplay?.start();
-  roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value; 
-
+  roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
 };
 
-
 onMounted(() => {
-  watch(()=>headerY.value,(newHeaderY)=>{
-    newHeaderY > 0 ? isScrolled.value = true : isScrolled.value = false
-  },{immediate:true})
-})
-
-
+  watch(
+    () => headerY.value,
+    (newHeaderY) => {
+      newHeaderY > 0 ? (isScrolled.value = true) : (isScrolled.value = false);
+    },
+    { immediate: true }
+  );
+});
 </script>
 
 <template>
-  
   <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
     <div class="px-3 py-6 flex items-center justify-between md:px-20">
       <h1>
@@ -88,21 +85,15 @@ onMounted(() => {
           <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
         </RouterLink>
       </h1>
-      <ul class="hidden  items-center gap-x-4 font-bold text-white md:flex">
-        <li >
-          <RouterLink class="block p-4" to="/">
-            客房旅宿
-          </RouterLink>    
+      <ul class="hidden items-center gap-x-4 font-bold text-white md:flex">
+        <li>
+          <RouterLink class="block p-4" to="/">客房旅宿</RouterLink>
         </li>
-        <li >
-          <RouterLink class="block p-4" to="/">
-            會員登入
-          </RouterLink>
+        <li>
+          <RouterLink class="block p-4" to="/">會員登入</RouterLink>
         </li>
         <li class="bg-primary-base rounded-xl">
-          <RouterLink class="block py-4 px-8" to="/">
-            立即訂房
-          </RouterLink>
+          <RouterLink class="block py-4 px-8" to="/">立即訂房</RouterLink>
         </li>
       </ul>
       <div class="md:hidden">
@@ -121,19 +112,13 @@ onMounted(() => {
         <div class="w-full">
           <ul class="flex flex-col items-center gap-y-4 font-bold text-white">
             <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">
-                客房旅宿
-              </RouterLink>
+              <RouterLink class="block p-4 w-full" to="/">客房旅宿</RouterLink>
             </li>
             <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">
-                會員登入
-              </RouterLink>
+              <RouterLink class="block p-4 w-full" to="/">會員登入</RouterLink>
             </li>
             <li class="w-full text-center bg-primary-base rounded-xl">
-              <RouterLink class="block p-4 w-full" to="/">
-                立即訂房
-              </RouterLink>
+              <RouterLink class="block p-4 w-full" to="/">立即訂房</RouterLink>
             </li>
           </ul>
         </div>
@@ -172,9 +157,9 @@ onMounted(() => {
             </div>
             <div class="-translate-x-12">
               <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
-                <p class="z-10 text-base text-black md:text-2xl  font-bold group-hover:text-white">立即訂房</p>
+                <p class="z-10 text-base text-black md:text-2xl font-bold group-hover:text-white">立即訂房</p>
                 <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
-                <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0 "></div>
+                <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
               </RouterLink>
             </div>
           </div>
@@ -201,16 +186,16 @@ onMounted(() => {
                   <img :src="newsItem.image" class="w-full max-h-[294px] h-full rounded-xl" :alt="newsItem.title" />
                 </div>
                 <div class="flex flex-col gap-y-6">
-                  <h3 class="text-2xl md:text-3xl font-bold">{{newsItem.title}}</h3>
-                  <p class="font-medium">{{newsItem.description}}</p>
+                  <h3 class="text-2xl md:text-3xl font-bold">{{ newsItem.title }}</h3>
+                  <p class="font-medium">{{ newsItem.description }}</p>
                 </div>
               </li>
             </ul>
           </div>
         </div>
 
-        <TheSvgIcon class='hidden absolute top-[100px] right-3  w-[200px] h-[200px] lg:block 3xl:translate-x-24 4xl:translate-x-32' name="deco-dot-group"></TheSvgIcon>
-        <TheSvgIcon class='hidden absolute bottom-0 translate-y-20 w-[200px] h-[200px] lg:block 3xl:-translate-x-24 4xl:-translate-x-32' name="deco-dot-group"></TheSvgIcon>
+        <TheSvgIcon class="hidden absolute top-[100px] right-3 w-[200px] h-[200px] lg:block 3xl:translate-x-24 4xl:translate-x-32" name="deco-dot-group"></TheSvgIcon>
+        <TheSvgIcon class="hidden absolute bottom-0 translate-y-20 w-[200px] h-[200px] lg:block 3xl:-translate-x-24 4xl:-translate-x-32" name="deco-dot-group"></TheSvgIcon>
       </div>
     </section>
     <section class="bg-black pt-28 pb-32">
@@ -238,26 +223,25 @@ onMounted(() => {
       </div>
     </section>
     <section class="relative bg-black py-10 md:py-[120px] overflow-x-hidden">
-      <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3 " name="deco-line-group-horizontal-full"></TheSvgIcon>
+      <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3" name="deco-line-group-horizontal-full"></TheSvgIcon>
       <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
         <Swiper ref="roomSwiper" v-bind="homeRooms" class="room-sweiper w-full lg:w-1/2">
           <SwiperSlide v-for="(imgItem, index) in getRoomsData?.imageUrlList" :key="index">
             <picture>
-              <img class="w-full object-cover  max-h-[900px]" :src="imgItem" :alt="imgItem+index" />
+              <img class="w-full object-cover max-h-[900px]" :src="imgItem" :alt="imgItem + index" />
             </picture>
           </SwiperSlide>
         </Swiper>
-        <div class="flex flex-col w-full lg:w-1/3  gap-y-10 text-white mt-auto ">
-         
+        <div class="flex flex-col w-full lg:w-1/3 gap-y-10 text-white mt-auto">
           <div class="flex flex-col gap-y-4">
-            <h2 class="text-4xl lg:text-5xl font-bold">{{getRoomsData?.name}}</h2>
-            <p>{{getRoomsData?.description}}</p>
+            <h2 class="text-4xl lg:text-5xl font-bold">{{ getRoomsData?.name }}</h2>
+            <p>{{ getRoomsData?.description }}</p>
           </div>
-          <p class="text-3xl font-bold">NT$ {{getRoomsData?.price}}</p>
-          <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md  transition duration-300 ease-in-out group overflow-hidden">
+          <p class="text-3xl font-bold">NT$ {{ getRoomsData?.price }}</p>
+          <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
             <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
             <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
-            <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0 "></div>
+            <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
           </RouterLink>
           <div class="flex items-center justify-end text-primary-base">
             <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
@@ -267,9 +251,8 @@ onMounted(() => {
       </div>
     </section>
     <section class="relative bg-primary-Tint py-20 lg:py-[120px]">
-   
-      <TheSvgIcon class="hidden text-primary-base absolute left-10 z-10 w-[180px] h-[1068px] 4xl:block" name="deco-line-group-vertical" ></TheSvgIcon>
-      <div class="container ">
+      <TheSvgIcon class="hidden text-primary-base absolute left-10 z-10 w-[180px] h-[1068px] 4xl:block" name="deco-line-group-vertical"></TheSvgIcon>
+      <div class="container">
         <div class="flex items-center mb-10 md:mb-20">
           <h2 class="flex flex-col text-nowrap gap-y-1 text-3xl md:text-4xl text-primary-base font-bold pe-10">
             <span>佳餚</span>
@@ -281,19 +264,18 @@ onMounted(() => {
           <SwiperSlide v-for="(culinaryItem, index) in getCulinaryDataList" :key="culinaryItem._id">
             <div class="relative">
               <picture>
-             
                 <img class="w-full object-cover min-h-[400px] max-h-[600px] rounded-xl" :src="culinaryItem.image" :alt="culinaryItem.title" />
               </picture>
               <div class="absolute bottom-0 p-4 flex flex-col gap-y-4 text-white backdrop-blur-sm md:p-6 md:gap-y-6">
                 <div class="font-bold text-nowrap flex items-center justify-between">
-                  <h3 class="text-2xl">{{culinaryItem.title}}</h3>
+                  <h3 class="text-2xl">{{ culinaryItem.title }}</h3>
                   <p class="flex items-center gap-x-2 md:gap-x-4">
-                    <time>{{culinaryItem.month}}</time>
-                    <time>{{culinaryItem.time}}</time>
+                    <time>{{ culinaryItem.month }}</time>
+                    <time>{{ culinaryItem.time }}</time>
                   </p>
                 </div>
                 <div>
-                  <p>{{culinaryItem.description}}</p>
+                  <p>{{ culinaryItem.description }}</p>
                 </div>
               </div>
             </div>
@@ -313,16 +295,9 @@ onMounted(() => {
         <div class="py-1 md:py-6">
           <p class="py-4 text-white">台灣高雄市新興區六角路123號</p>
           <picture>
-              <source
-                srcset="@/assets/images/desktop/home-map.png"
-                media="(min-width: 576px)"
-              >
-              <img
-                class="w-full"
-                src="@/assets/images/mobile/home-map-sm.png"
-                alt="描述地圖中酒店所在的位置"
-              >
-            </picture>
+            <source srcset="@/assets/images/desktop/home-map.png" media="(min-width: 576px)" />
+            <img class="w-full" src="@/assets/images/mobile/home-map-sm.png" alt="描述地圖中酒店所在的位置" />
+          </picture>
         </div>
         <ul class="text-white flex flex-col gap-6 flex-nowrap sm:flex-row">
           <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6">
@@ -332,14 +307,14 @@ onMounted(() => {
               <p class="font-medium">如果您選擇自行開車，可以透過國道一號下高雄交流道，往市區方向行駛，並依路標指示即可抵達「享樂酒店」。飯店內設有停車場，讓您停車方便。</p>
             </div>
           </li>
-          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6"">
+          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6">
             <Icon class="text-primary-base text-2xl" name="material-symbols:train"></Icon>
             <div class="flex flex-col gap-y-2">
               <h3 class="font-bold text-xl md:text-2xl">高鐵/火車</h3>
               <p class="font-medium">如果您是搭乘高鐵或火車，可於左營站下車，外頭有計程車站，搭乘計程車約20分鐘即可抵達。或者您也可以轉乘捷運紅線至中央公園站下車，步行約10分鐘便可抵達。</p>
             </div>
           </li>
-          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6"">
+          <li class="flex-1 flex flex-col gap-y-2 md:gap-y-6">
             <Icon class="text-primary-base text-2xl" name="gis:car"></Icon>
             <div class="flex flex-col gap-y-2">
               <h3 class="font-bold text-xl md:text-2xl">禮賓車服務</h3>
@@ -349,9 +324,8 @@ onMounted(() => {
         </ul>
       </div>
     </section>
-    
   </main>
-  <footer class="py-20 bg-black ">
+  <footer class="py-20 bg-black">
     <div class="container flex flex-col gap-y-10">
       <div class="flex flex-col gap-y-10 md:flex-row md:justify-between md:items-center">
         <div class="flex flex-col gap-y-10">
@@ -367,7 +341,7 @@ onMounted(() => {
             </RouterLink>
           </div>
         </div>
-        <ul class="text-white grid  gap-x-20 gap-y-4  md:grid-cols-2 md:gap-y-10">
+        <ul class="text-white grid gap-x-20 gap-y-4 md:grid-cols-2 md:gap-y-10">
           <li>
             <p class="font-bold">TEL:</p>
             <p>
@@ -394,9 +368,8 @@ onMounted(() => {
       </div>
       <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between text-white">
         <address>806023 台灣高雄市新興區六角路123號</address>
-        <p> &copy; 享樂酒店 2023 All Rights Reserved.</p>
+        <p>&copy; 享樂酒店 2023 All Rights Reserved.</p>
       </div>
-
     </div>
   </footer>
 </template>
