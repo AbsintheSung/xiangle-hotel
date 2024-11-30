@@ -1,13 +1,118 @@
 <script setup lang="ts">
-const formState = ref("emailPasswordForm");
+//emailPasswordForm 跟  personalInfoForm 2個狀態表單
+const formState = ref("personalInfoForm");
+import * as zod from "zod";
+import { useField, useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
 
-const handleSetup = () => {
-  formState.value = "personalInfoForm";
-};
+// 定義表單驗證 Schema
+const userFormSchema = zod
+  .object({
+    email: zod.string().email({ message: "請輸入有效的電子郵件地址" }),
+    password: zod
+      .string()
+      .min(6, { message: "至少需要 6 個字元且含一個英文字母" })
+      .regex(/[A-Za-z]/, { message: "必須包含至少一個英文字母" }),
+    confirmPassword: zod.string().min(1, { message: "必填" }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({
+        code: zod.ZodIssueCode.custom,
+        path: ["confirmPassword"],
+        message: "密碼與確認密碼不一致",
+      });
+    }
+  });
 
-const handleSignUp = () => {
-  console.log("發送註冊請求");
-};
+// 使用 vee-validate 初始化表單
+const { handleSubmit, resetForm } = useForm({
+  validationSchema: toTypedSchema(userFormSchema),
+  initialValues: {
+    email: "",
+    password: "",
+    confirmPassword: "",
+  },
+});
+const { value: email, errorMessage: emailError } = useField("email");
+const { value: password, errorMessage: passwordError } = useField("password");
+const { value: confirmPassword, errorMessage: confirmPasswordError } = useField("confirmPassword");
+
+// 處理表單提交
+const handleSetup = handleSubmit(
+  (values) => {
+    console.log("表單提交成功", values);
+    resetForm();
+    formState.value = "personalInfoForm";
+  },
+  (errors) => {
+    console.log("表單驗證失敗", errors);
+  }
+);
+
+//另一個表單驗證
+const personalInfoSchema = zod.object({
+  name: zod.string().min(1, { message: "姓名為必填" }),
+  phone: zod.string().refine((value) => {
+    const taiwanPhoneRegex = /^09\d{8}$/;
+    return taiwanPhoneRegex.test(value);
+  }, "請輸入有效的台灣電話號碼"),
+  year: zod.string().min(1, { message: "請選取正確日期" }),
+  month: zod.string().min(1, { message: "請選取正確日期" }),
+  day: zod.string().min(1, { message: "請選取正確日期" }),
+  city: zod.string().min(1, { message: "請填入和選取正確地址" }),
+  district: zod.string().min(1, { message: "請填入和選取正確地址" }),
+  detailAddress: zod.string().min(1, { message: "請填入和選取正確地址" }),
+  agreeToTerms: zod.boolean().refine((value) => value === true, {
+    message: "必須同意條款才能註冊",
+  }),
+});
+const { handleSubmit: handlePersonForm, resetForm: resetPersonForm } = useForm({
+  validationSchema: toTypedSchema(personalInfoSchema),
+  initialValues: {
+    name: "",
+    phone: "",
+    year: "",
+    month: "",
+    day: "",
+    city: "",
+    district: "",
+    detailAddress: "",
+    agreeToTerms: false,
+  },
+});
+const { value: name, errorMessage: nameError } = useField("name");
+const { value: phone, errorMessage: phoneError } = useField("phone");
+const { value: year, errorMessage: yearError } = useField("year");
+const { value: month, errorMessage: monthError } = useField("month");
+const { value: day, errorMessage: dayError } = useField("day");
+
+const { value: city, errorMessage: cityError } = useField("city");
+const { value: district, errorMessage: districtError } = useField("district");
+const { value: detailAddress, errorMessage: detailAddressError } = useField("detailAddress");
+const { value: agreeToTerms, errorMessage: agreeToTermsError } = useField("agreeToTerms");
+
+// 添加一個計算屬性來整合日期錯誤訊息
+const dateErrorMessage = computed(() => {
+  const hasError = [yearError.value, monthError.value, dayError.value].some((error) => error !== undefined);
+  return hasError ? "請選取正確日期" : undefined;
+});
+
+// 添加一個計算屬性來整合地址錯誤訊息
+const addressErrorMessage = computed(() => {
+  const hasError = [cityError.value, districtError.value, detailAddressError.value].some((error) => error !== undefined);
+  return hasError ? "請填入和選取正確地址" : undefined;
+});
+
+const handleSignUp = handlePersonForm(
+  (values) => {
+    console.log("表單提交成功", values);
+    resetPersonForm();
+  },
+  (errors) => {
+    console.log("表單驗證失敗", errors);
+  }
+);
 </script>
 <template>
   <main class="bg-black h-screen">
@@ -35,38 +140,53 @@ const handleSignUp = () => {
           </div>
         </div>
 
-        <form v-if="formState === 'emailPasswordForm'" class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
-          <div class="w-full flex flex-col gap-y-2">
+        <form @submit.prevent="handleSetup" v-if="formState === 'emailPasswordForm'" class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
+          <div class="relative w-full flex flex-col gap-y-2">
             <label class="font-bold">電子信箱</label>
-            <input type="email" class="p-4 text-black font-bold rounded-lg" placeholder="hello@exsample.com" />
+            <input v-model="email" type="email" class="p-4 text-black font-bold rounded-lg" placeholder="hello@exsample.com" />
+            <Transition name="error-mes-anime">
+              <span v-if="emailError !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">{{ emailError }}</span>
+            </Transition>
           </div>
-          <div class="w-full flex flex-col gap-y-2">
+          <div class="relative w-full flex flex-col gap-y-2">
             <label class="font-bold">密碼</label>
-            <input type="password" class="p-4 text-black font-bold rounded-lg" placeholder="請輸入密碼" />
+            <input v-model="password" type="password" class="p-4 text-black font-bold rounded-lg" placeholder="請輸入密碼" />
+            <Transition name="error-mes-anime">
+              <span v-if="passwordError !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">{{ passwordError }}</span>
+            </Transition>
           </div>
-          <div class="w-full flex flex-col gap-y-2">
+          <div class="relative w-full flex flex-col gap-y-2">
             <label class="font-bold">確認密碼</label>
-            <input type="password" class="p-4 text-black font-bold rounded-lg" placeholder="請再輸入同一次密碼" />
+            <input v-model="confirmPassword" type="password" class="p-4 text-black font-bold rounded-lg" placeholder="請再輸入同一次密碼" />
+            <Transition name="error-mes-anime">
+              <span v-if="confirmPasswordError !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">{{ confirmPasswordError }}</span>
+            </Transition>
           </div>
           <div class="w-full mt-6">
-            <button type="submit" class="w-full py-4 bg-primary-base font-bold rounded-lg" @click.prevent="handleSetup">下一步</button>
+            <button type="submit" class="w-full py-4 bg-primary-base font-bold rounded-lg">下一步</button>
           </div>
         </form>
 
         <form v-else-if="formState === 'personalInfoForm'" class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
-          <div class="w-full flex flex-col gap-y-2">
+          <div class="relative w-full flex flex-col gap-y-2">
             <label class="font-bold">姓名</label>
-            <input type="text" class="p-4 text-black font-bold rounded-lg" placeholder="請輸入姓名" />
+            <input v-model="name" type="text" class="p-4 text-black font-bold rounded-lg" placeholder="請輸入姓名" />
+            <Transition name="error-mes-anime">
+              <span v-if="nameError !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">{{ nameError }}</span>
+            </Transition>
           </div>
-          <div class="w-full flex flex-col gap-y-2">
+          <div class="relative w-full flex flex-col gap-y-2">
             <label class="font-bold">手機號碼</label>
-            <input type="phone" class="p-4 text-black font-bold rounded-lg" placeholder="請輸入手機號碼" />
+            <input v-model="phone" type="phone" class="p-4 text-black font-bold rounded-lg" placeholder="請輸入手機號碼" />
+            <Transition name="error-mes-anime">
+              <span v-if="phoneError !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">{{ phoneError }}</span>
+            </Transition>
           </div>
           <div class="w-full flex flex-col gap-y-2">
             <label class="font-bold">生日</label>
-            <div class="w-full flex items-center gap-x-2">
+            <div class="relative w-full flex items-center gap-x-2">
               <div class="relative flex-1 w-full">
-                <select class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
+                <select v-model="year" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">年</option>
                   <option>2000</option>
                   <option>2001</option>
@@ -77,7 +197,7 @@ const handleSignUp = () => {
                 </div>
               </div>
               <div class="relative flex-1 w-full">
-                <select class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
+                <select v-model="month" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">月</option>
                   <option>1</option>
                   <option>2</option>
@@ -88,7 +208,7 @@ const handleSignUp = () => {
                 </div>
               </div>
               <div class="relative flex-1 w-full">
-                <select class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
+                <select v-model="day" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">日</option>
                   <option>1</option>
                   <option>2</option>
@@ -98,13 +218,18 @@ const handleSignUp = () => {
                   <Icon class="text-2xl text-black" name="ic:baseline-keyboard-arrow-down"></Icon>
                 </div>
               </div>
+              <Transition name="error-mes-anime">
+                <span v-if="dateErrorMessage !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">
+                  {{ dateErrorMessage }}
+                </span>
+              </Transition>
             </div>
           </div>
-          <div class="w-full flex flex-col gap-y-2">
+          <div class="relative w-full flex flex-col gap-y-2">
             <label class="font-bold">地址</label>
-            <div class="flex items-center gap-x-2">
-              <div class="relative flex-1 w-full">
-                <select class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
+            <div class="relative flex items-center gap-x-2">
+              <div class="flex-1 w-full">
+                <select v-model="city" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">城市</option>
                   <option>台北市</option>
                   <option>台中市</option>
@@ -115,7 +240,7 @@ const handleSignUp = () => {
                 </div>
               </div>
               <div class="relative flex-1 w-full">
-                <select class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
+                <select v-model="district" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">地區</option>
                   <option>1</option>
                   <option>2</option>
@@ -126,15 +251,23 @@ const handleSignUp = () => {
                 </div>
               </div>
             </div>
-
-            <input type="text" class="p-4 text-black fond-bold rounded-lg" placeholder="請輸入詳細地址" />
+            <input v-model="detailAddress" type="text" class="p-4 text-black fond-bold rounded-lg" placeholder="請輸入詳細地址" />
+            <Transition name="error-mes-anime">
+              <span v-if="addressErrorMessage !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">
+                {{ addressErrorMessage }}
+              </span>
+            </Transition>
           </div>
 
-          <div class="w-full flex justify-start items-end gap-2 text-neutral-0">
-            <input id="signup-terms" type="checkbox" class="terms-checkbox" />
-            <label for="signup-terms" class="font-bold text-white cursor-pointer">
-              <NuxtLink to="/auth/signup" class="hover:underline">我已閱讀並同意本網站個資使用規範</NuxtLink>
-            </label>
+          <div class="relative w-full flex justify-start items-end gap-2 text-neutral-0">
+            <input v-model="agreeToTerms" id="signup-terms" type="checkbox" class="terms-checkbox" />
+            <label for="signup-terms" class="font-bold text-white cursor-pointer">已同意本網站個資使用規範</label>
+            <NuxtLink to="/auth/signup" class="hover:underline">規範條款</NuxtLink>
+            <Transition name="error-mes-anime">
+              <span v-if="agreeToTermsError !== undefined" class="absolute left-0 bottom-0 font-bold text-[16px] text-alert-base translate-y-6">
+                {{ agreeToTermsError }}
+              </span>
+            </Transition>
           </div>
 
           <div class="w-full mt-6">
@@ -180,5 +313,14 @@ const handleSignUp = () => {
     outline: none;
     box-shadow: 0 0 0 2px rgba(191, 157, 125, 0.2); // #BF9D7D with opacity
   }
+}
+.error-mes-anime-enter-active,
+.error-mes-anime-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.error-mes-anime-enter-from,
+.error-mes-anime-leave-to {
+  opacity: 0;
 }
 </style>
