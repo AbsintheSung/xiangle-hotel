@@ -113,6 +113,48 @@ const handleSignUp = handlePersonForm(
     console.log("表單驗證失敗", errors);
   }
 );
+
+const { $dayjs } = useNuxtApp();
+const yearOptions = computed(() => {
+  const currentYear = $dayjs().year();
+  const startYear = currentYear - 100;
+  return Array.from({ length: currentYear - startYear + 1 }, (_, i) => currentYear - i);
+});
+
+// 生成月份選項（1-12月）
+const monthOptions = computed(() => {
+  return Array.from({ length: 12 }, (_, i) => i + 1);
+});
+
+// 根據選擇的年月生成對應的日期選項
+const dayOptions = computed(() => {
+  if (!year.value || !month.value) {
+    return Array.from({ length: 31 }, (_, i) => i + 1);
+  }
+
+  const daysInMonth = $dayjs(`${year.value}-${month.value}-01`).daysInMonth();
+  return Array.from({ length: daysInMonth }, (_, i) => i + 1);
+});
+
+// 監聽年月的變化，確保日期在合法範圍內
+watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
+  if (newYear !== oldYear) {
+    // 如果年份變化，重置月份和日期
+    month.value = "";
+    day.value = "";
+  } else if (newMonth !== oldMonth) {
+    // 如果月份變化，重置日期
+    day.value = "";
+  }
+
+  // 確保日期在合法範圍內
+  if (newYear && newMonth) {
+    const daysInMonth = $dayjs(`${newYear}-${newMonth}-01`).daysInMonth();
+    if (Number(day.value) > daysInMonth) {
+      day.value = String(daysInMonth);
+    }
+  }
+});
 </script>
 <template>
   <main class="bg-black h-screen">
@@ -188,9 +230,12 @@ const handleSignUp = handlePersonForm(
               <div class="relative flex-1 w-full">
                 <select v-model="year" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">年</option>
-                  <option>2000</option>
+                  <!-- <option>2000</option>
                   <option>2001</option>
-                  <option>2002</option>
+                  <option>2002</option> -->
+                  <option v-for="y in yearOptions" :key="y" :value="String(y)">
+                    {{ y }}
+                  </option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                   <Icon class="text-2xl text-black" name="ic:baseline-keyboard-arrow-down"></Icon>
@@ -199,9 +244,12 @@ const handleSignUp = handlePersonForm(
               <div class="relative flex-1 w-full">
                 <select v-model="month" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">月</option>
-                  <option>1</option>
+                  <!-- <option>1</option>
                   <option>2</option>
-                  <option>3</option>
+                  <option>3</option> -->
+                  <option v-for="m in monthOptions" :key="m" :value="String(m)">
+                    {{ m }}
+                  </option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                   <Icon class="text-2xl text-black" name="ic:baseline-keyboard-arrow-down"></Icon>
@@ -210,9 +258,12 @@ const handleSignUp = handlePersonForm(
               <div class="relative flex-1 w-full">
                 <select v-model="day" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">日</option>
-                  <option>1</option>
+                  <!-- <option>1</option>
                   <option>2</option>
-                  <option>3</option>
+                  <option>3</option> -->
+                  <option v-for="d in dayOptions" :key="d" :value="String(d)">
+                    {{ d }}
+                  </option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                   <Icon class="text-2xl text-black" name="ic:baseline-keyboard-arrow-down"></Icon>
