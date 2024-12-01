@@ -1,10 +1,11 @@
 <script setup lang="ts">
-//emailPasswordForm 跟  personalInfoForm 2個狀態表單
-const formState = ref("personalInfoForm");
 import * as zod from "zod";
 import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
-
+import { taiwanCity } from "~/content/city";
+//emailPasswordForm 跟  personalInfoForm 2個狀態表單
+const formState = ref("personalInfoForm");
+const { $dayjs } = useNuxtApp();
 // 定義表單驗證 Schema
 const userFormSchema = zod
   .object({
@@ -81,12 +82,12 @@ const { handleSubmit: handlePersonForm, resetForm: resetPersonForm } = useForm({
     agreeToTerms: false,
   },
 });
+
 const { value: name, errorMessage: nameError } = useField("name");
 const { value: phone, errorMessage: phoneError } = useField("phone");
 const { value: year, errorMessage: yearError } = useField("year");
 const { value: month, errorMessage: monthError } = useField("month");
 const { value: day, errorMessage: dayError } = useField("day");
-
 const { value: city, errorMessage: cityError } = useField("city");
 const { value: district, errorMessage: districtError } = useField("district");
 const { value: detailAddress, errorMessage: detailAddressError } = useField("detailAddress");
@@ -114,7 +115,6 @@ const handleSignUp = handlePersonForm(
   }
 );
 
-const { $dayjs } = useNuxtApp();
 const yearOptions = computed(() => {
   const currentYear = $dayjs().year();
   const startYear = currentYear - 100;
@@ -138,12 +138,8 @@ const dayOptions = computed(() => {
 
 // 監聽年月的變化，確保日期在合法範圍內
 watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
-  if (newYear !== oldYear) {
-    // 如果年份變化，重置月份和日期
-    month.value = "";
-    day.value = "";
-  } else if (newMonth !== oldMonth) {
-    // 如果月份變化，重置日期
+  // 如果年份或月份變化，重置日期
+  if (newYear !== oldYear || newMonth !== oldMonth) {
     day.value = "";
   }
 
@@ -151,10 +147,42 @@ watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
   if (newYear && newMonth) {
     const daysInMonth = $dayjs(`${newYear}-${newMonth}-01`).daysInMonth();
     if (Number(day.value) > daysInMonth) {
-      day.value = String(daysInMonth);
+      day.value = String(daysInMonth); // 限制日期到該月份最大天數
     }
   }
 });
+
+//處理城市地區
+const cityOptions = computed(() => taiwanCity.map((city) => city.name));
+const districtOptions = computed(() => {
+  const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
+  return cityData ? cityData.districts : []; // 如果找不到城市，返回空陣列
+});
+
+// const zipOptions = computed(() => {
+//   if (city.value && district.value) {
+//     const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
+//     const districtsData = cityData?.districts.find((districtItem) => districtItem.name === district.value);
+//     return districtsData?.zip.toString();
+//   }
+//   if (city.value) {
+//     const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
+//     if (cityData) {
+//       return cityData.districts.map((district) => district.zip);
+//     }
+//   }
+
+//   // 若未選擇城市，返回所有郵遞區號
+//   return taiwanCity.flatMap((city) => city.districts.map((district) => district.zip));
+// });
+
+//當城市改變時候，初始化地區，確保城市地區一致
+watch(
+  () => city.value,
+  () => {
+    district.value = "";
+  }
+);
 </script>
 <template>
   <main class="bg-black h-screen">
@@ -279,12 +307,13 @@ watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
           <div class="relative w-full flex flex-col gap-y-2">
             <label class="font-bold">地址</label>
             <div class="relative flex items-center gap-x-2">
-              <div class="flex-1 w-full">
+              <div class="relative flex-1 w-full">
                 <select v-model="city" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">城市</option>
-                  <option>台北市</option>
+                  <option v-for="cityItem in cityOptions" :key="cityItem" :value="cityItem">{{ cityItem }}</option>
+                  <!-- <option>台北市</option>
                   <option>台中市</option>
-                  <option>高雄市</option>
+                  <option>高雄市</option> -->
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                   <Icon class="text-2xl text-black" name="ic:baseline-keyboard-arrow-down"></Icon>
@@ -293,9 +322,10 @@ watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
               <div class="relative flex-1 w-full">
                 <select v-model="district" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">地區</option>
-                  <option>1</option>
+                  <option v-for="districtItem in districtOptions" :key="districtItem.zip" :value="districtItem.name">{{ districtItem.name }}</option>
+                  <!-- <option>1</option>
                   <option>2</option>
-                  <option>3</option>
+                  <option>3</option> -->
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
                   <Icon class="text-2xl text-black" name="ic:baseline-keyboard-arrow-down"></Icon>
