@@ -3,9 +3,24 @@ import * as zod from "zod";
 import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { taiwanCity } from "~/content/city";
+import type { SignUpForm } from "~/types/auth";
 //emailPasswordForm 跟  personalInfoForm 2個狀態表單
-const formState = ref("personalInfoForm");
+const formState = ref("emailPasswordForm");
 const { $dayjs } = useNuxtApp();
+const signUpForm = ref<SignUpForm>({
+  name: "",
+  email: "",
+  password: "",
+  phone: "",
+  birthday: "", //字串，格式為 yyyy/mm/dd
+  address: {
+    zipcode: null, //會傳入 number
+    detail: "",
+    city: "",
+    county: "",
+  },
+});
+
 // 定義表單驗證 Schema
 const userFormSchema = zod
   .object({
@@ -35,6 +50,7 @@ const { handleSubmit, resetForm } = useForm({
     confirmPassword: "",
   },
 });
+
 const { value: email, errorMessage: emailError } = useField("email");
 const { value: password, errorMessage: passwordError } = useField("password");
 const { value: confirmPassword, errorMessage: confirmPasswordError } = useField("confirmPassword");
@@ -43,8 +59,10 @@ const { value: confirmPassword, errorMessage: confirmPasswordError } = useField(
 const handleSetup = handleSubmit(
   (values) => {
     console.log("表單提交成功", values);
-    resetForm();
+    signUpForm.value.email = email.value as string;
+    signUpForm.value.password = password.value as string;
     formState.value = "personalInfoForm";
+    resetForm();
   },
   (errors) => {
     console.log("表單驗證失敗", errors);
@@ -62,7 +80,7 @@ const personalInfoSchema = zod.object({
   month: zod.string().min(1, { message: "請選取正確日期" }),
   day: zod.string().min(1, { message: "請選取正確日期" }),
   city: zod.string().min(1, { message: "請填入和選取正確地址" }),
-  district: zod.string().min(1, { message: "請填入和選取正確地址" }),
+  county: zod.string().min(1, { message: "請填入和選取正確地址" }),
   detailAddress: zod.string().min(1, { message: "請填入和選取正確地址" }),
   agreeToTerms: zod.boolean().refine((value) => value === true, {
     message: "必須同意條款才能註冊",
@@ -77,7 +95,7 @@ const { handleSubmit: handlePersonForm, resetForm: resetPersonForm } = useForm({
     month: "",
     day: "",
     city: "",
-    district: "",
+    county: "",
     detailAddress: "",
     agreeToTerms: false,
   },
@@ -89,7 +107,7 @@ const { value: year, errorMessage: yearError } = useField("year");
 const { value: month, errorMessage: monthError } = useField("month");
 const { value: day, errorMessage: dayError } = useField("day");
 const { value: city, errorMessage: cityError } = useField("city");
-const { value: district, errorMessage: districtError } = useField("district");
+const { value: county, errorMessage: countyError } = useField("county");
 const { value: detailAddress, errorMessage: detailAddressError } = useField("detailAddress");
 const { value: agreeToTerms, errorMessage: agreeToTermsError } = useField("agreeToTerms");
 
@@ -101,14 +119,28 @@ const dateErrorMessage = computed(() => {
 
 // 添加一個計算屬性來整合地址錯誤訊息
 const addressErrorMessage = computed(() => {
-  const hasError = [cityError.value, districtError.value, detailAddressError.value].some((error) => error !== undefined);
+  const hasError = [cityError.value, countyError.value, detailAddressError.value].some((error) => error !== undefined);
   return hasError ? "請填入和選取正確地址" : undefined;
 });
 
 const handleSignUp = handlePersonForm(
   (values) => {
     console.log("表單提交成功", values);
+    const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
+    const districtsData = cityData?.districts.find((districtItem) => districtItem.name === county.value);
+    const birthday: string = `${year.value}/${month.value}/${day.value}`;
+    const zipcode: number = Number(districtsData?.zip);
+
+    signUpForm.value.name = name.value as string;
+    signUpForm.value.phone = phone.value as string;
+    signUpForm.value.birthday = birthday;
+    signUpForm.value.address.city = city.value as string;
+    signUpForm.value.address.county = county.value as string;
+    signUpForm.value.address.detail = detailAddress.value as string;
+    signUpForm.value.address.zipcode = zipcode;
+
     resetPersonForm();
+    // console.log(signUpForm.value);
   },
   (errors) => {
     console.log("表單驗證失敗", errors);
@@ -138,6 +170,8 @@ const dayOptions = computed(() => {
 
 // 監聽年月的變化，確保日期在合法範圍內
 watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
+  if (newYear === "" && newMonth === "") return;
+
   // 如果年份或月份變化，重置日期
   if (newYear !== oldYear || newMonth !== oldMonth) {
     day.value = "";
@@ -154,33 +188,17 @@ watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
 
 //處理城市地區
 const cityOptions = computed(() => taiwanCity.map((city) => city.name));
-const districtOptions = computed(() => {
+const countyOptions = computed(() => {
   const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
   return cityData ? cityData.districts : []; // 如果找不到城市，返回空陣列
 });
 
-// const zipOptions = computed(() => {
-//   if (city.value && district.value) {
-//     const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
-//     const districtsData = cityData?.districts.find((districtItem) => districtItem.name === district.value);
-//     return districtsData?.zip.toString();
-//   }
-//   if (city.value) {
-//     const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
-//     if (cityData) {
-//       return cityData.districts.map((district) => district.zip);
-//     }
-//   }
-
-//   // 若未選擇城市，返回所有郵遞區號
-//   return taiwanCity.flatMap((city) => city.districts.map((district) => district.zip));
-// });
-
 //當城市改變時候，初始化地區，確保城市地區一致
 watch(
   () => city.value,
-  () => {
-    district.value = "";
+  (newCity) => {
+    if (newCity === "") return;
+    county.value = "";
   }
 );
 </script>
@@ -320,9 +338,9 @@ watch(
                 </div>
               </div>
               <div class="relative flex-1 w-full">
-                <select v-model="district" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
+                <select v-model="county" class="appearance-none w-full p-4 text-black font-bold rounded-lg bg-white cursor-pointer">
                   <option disabled value="">地區</option>
-                  <option v-for="districtItem in districtOptions" :key="districtItem.zip" :value="districtItem.name">{{ districtItem.name }}</option>
+                  <option v-for="countyItem in countyOptions" :key="countyItem.zip" :value="countyItem.name">{{ countyItem.name }}</option>
                   <!-- <option>1</option>
                   <option>2</option>
                   <option>3</option> -->
