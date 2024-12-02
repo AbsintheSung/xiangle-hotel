@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const router = useRouter();
 const windowScroll = useWindowScroll();
 const headerY = ref(windowScroll.y);
 const isScrolled = ref(false);
@@ -9,6 +10,11 @@ const handleMenu = () => {
 const handleCloseMenu = () => {
   isOpenMenu.value = false;
 };
+
+// 使用路由的 afterEach 監聽導航完成
+router.afterEach(() => {
+  isOpenMenu.value = false; // 每次導航後初始化 isOpenMenu
+});
 onMounted(() => {
   watch(
     () => headerY.value,
@@ -18,24 +24,30 @@ onMounted(() => {
     { immediate: true }
   );
 });
+defineProps({
+  isShowUlList: {
+    type: Boolean,
+    default: true,
+  },
+});
 </script>
 <template>
   <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
     <div class="px-3 py-6 flex items-center justify-between md:px-20">
       <h1>
-        <RouterLink to="/">
+        <NuxtLink to="/">
           <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
-        </RouterLink>
+        </NuxtLink>
       </h1>
-      <ul class="hidden items-center gap-x-4 font-bold text-white md:flex">
+      <ul class="hidden items-center gap-x-4 font-bold text-white md:flex" v-show="isShowUlList">
         <li>
-          <RouterLink class="block p-4" to="/">客房旅宿</RouterLink>
+          <NuxtLink class="block p-4" to="/">客房旅宿</NuxtLink>
         </li>
         <li>
-          <RouterLink class="block p-4" to="/">會員登入</RouterLink>
+          <NuxtLink class="block p-4" to="/auth/signin">會員登入</NuxtLink>
         </li>
         <li class="bg-primary-base rounded-xl">
-          <RouterLink class="block py-4 px-8" to="/">立即訂房</RouterLink>
+          <NuxtLink class="block py-4 px-8" to="/">立即訂房</NuxtLink>
         </li>
       </ul>
       <div class="md:hidden">
@@ -54,13 +66,13 @@ onMounted(() => {
         <div class="w-full">
           <ul class="flex flex-col items-center gap-y-4 font-bold text-white">
             <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">客房旅宿</RouterLink>
+              <NuxtLink class="block p-4 w-full" to="/">客房旅宿</NuxtLink>
             </li>
             <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">會員登入</RouterLink>
+              <NuxtLink class="block p-4 w-full" to="/auth/signin">會員登入</NuxtLink>
             </li>
             <li class="w-full text-center bg-primary-base rounded-xl">
-              <RouterLink class="block p-4 w-full" to="/">立即訂房</RouterLink>
+              <NuxtLink class="block p-4 w-full" to="/">立即訂房</NuxtLink>
             </li>
           </ul>
         </div>
