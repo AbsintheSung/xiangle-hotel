@@ -1,4 +1,44 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import * as zod from "zod";
+import { useField, useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import SigninForm from "./components/SigninForm.vue";
+
+// // 定義表單驗證 Schema
+// const userFormSchema = zod.object({
+//   email: zod.string().email({ message: "請輸入有效的電子郵件地址" }),
+//   password: zod
+//     .string()
+//     .min(6, { message: "至少需要 6 個字元且含一個英文字母" })
+//     .regex(/[A-Za-z]/, { message: "必須包含至少一個英文字母" }),
+// });
+
+// // 使用 vee-validate 初始化表單
+// const { handleSubmit, resetForm } = useForm({
+//   validationSchema: toTypedSchema(userFormSchema),
+//   initialValues: {
+//     email: "",
+//     password: "",
+//   },
+// });
+// const { value: email, errorMessage: emailError } = useField("email");
+// const { value: password, errorMessage: passwordError } = useField("password");
+
+// // 處理表單提交
+// const onSubmit = handleSubmit(
+//   (values) => {
+//     console.log("表單提交成功");
+//     console.log("初始化前", values, "信箱:", email.value, "密碼", password.value);
+//     resetForm(); // 初始化表單
+//     console.log("初始化後", values, "信箱:", email.value, "密碼", password.value);
+//   },
+//   (errors) => {
+//     console.log("表單驗證失敗");
+//     console.log(emailError);
+//     console.log(errors);
+//   }
+// );
+</script>
 <template>
   <main class="bg-black h-screen">
     <div class="flex items-center h-full gap-x-11">
@@ -11,16 +51,23 @@
           <p class="w-full text-3xl text-start font-bold text-white sm:text-4xl md:text-5xl">立即開始旅程</p>
         </div>
 
-        <form class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
-          <div class="w-full flex flex-col gap-y-2">
+        <SigninForm />
+        <!-- <form @submit="onSubmit" class="w-full flex flex-col items-center text-white sm:w-2/3 4xl:w-1/2">
+          <div class="relative w-full pb-6 flex flex-col gap-y-2">
             <label class="font-bold">電子信箱</label>
-            <input class="p-4 text-black font-bold rounded-lg" />
+            <input name="email" type="email" v-model="email" class="p-4 text-black font-bold rounded-lg" />
+            <Transition name="error-mes-anime">
+              <span v-if="emailError !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base">{{ emailError }}</span>
+            </Transition>
           </div>
-          <div class="w-full flex flex-col gap-y-2">
+          <div class="relative w-full pb-6 flex flex-col gap-y-2">
             <label class="font-bold">密碼</label>
-            <input class="p-4 text-black font-bold rounded-lg" />
+            <input name="password" v-model="password" class="p-4 text-black font-bold rounded-lg" />
+            <Transition name="error-mes-anime">
+              <span v-if="passwordError !== undefined" class="absolute right-0 bottom-0 font-bold text-[16px] text-alert-base">{{ passwordError }}</span>
+            </Transition>
           </div>
-          <div class="w-full flex justify-between items-center font-medium">
+          <div class="py-4 w-full flex justify-between items-center font-medium">
             <div class="flex items-end gap-2 text-neutral-0">
               <input id="remember" type="checkbox" class="remember-checkbox" />
               <label for="remember" class="font-bold cursor-pointer">記住帳號</label>
@@ -28,9 +75,9 @@
             <NuxtLink to="/" class="text-primary-base font-bold">忘記密碼?</NuxtLink>
           </div>
           <div class="w-full mt-6">
-            <button class="w-full py-4 bg-primary-base font-bold rounded-lg">會員登入</button>
+            <button type="submit" class="w-full py-4 bg-primary-base font-bold rounded-lg">會員登入</button>
           </div>
-        </form>
+        </form> -->
 
         <div class="w-full flex justify-start items-center gap-x-2 font-medium sm:w-2/3 4xl:w-1/2">
           <p class="text-white">沒有會員嗎?</p>
@@ -70,5 +117,14 @@
     outline: none;
     box-shadow: 0 0 0 2px rgba(191, 157, 125, 0.2); // #BF9D7D with opacity
   }
+}
+.error-mes-anime-enter-active,
+.error-mes-anime-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.error-mes-anime-enter-from,
+.error-mes-anime-leave-to {
+  opacity: 0;
 }
 </style>

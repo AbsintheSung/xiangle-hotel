@@ -11,11 +11,15 @@
   },
   "dependencies": {
     "@iconify/vue": "^4.1.2",
+    "@vee-validate/nuxt": "^4.14.7",
+    "@vee-validate/zod": "^4.14.7",
     "@vueuse/nuxt": "^11.3.0",
+    "dayjs": "^1.11.13",
     "nuxt": "^3.14.159",
     "swiper": "^11.1.14",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@iconify-json/ic": "^1.2.1",
