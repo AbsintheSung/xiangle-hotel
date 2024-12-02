@@ -2,6 +2,9 @@
 import "virtual:svg-icons-register";
 </script>
 <template>
-  <NuxtPage />
+  <!-- <NuxtPage /> -->
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 <style></style>
