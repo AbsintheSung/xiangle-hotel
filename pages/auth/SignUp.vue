@@ -4,8 +4,10 @@ import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { taiwanCity } from "~/content/city";
 import type { SignUpForm } from "~/types/auth";
+import ProgressLine from "./components/ProgressLine.vue";
 //emailPasswordForm 跟  personalInfoForm 2個狀態表單
 const formState = ref("emailPasswordForm");
+const isFormValidated = ref(false);
 const { $dayjs } = useNuxtApp();
 const signUpForm = ref<SignUpForm>({
   name: "",
@@ -214,19 +216,8 @@ watch(
           <p class="w-full text-3xl text-start font-bold text-white sm:text-4xl md:text-5xl">立即註冊</p>
         </div>
 
-        <div class="w-full flex justify-between items-center gap-x-2 sm:w-2/3 4xl:w-1/2">
-          <div class="flex flex-col items-center gap-y-1">
-            <div class="w-8 h-8 bg-primary-base rounded-full"></div>
-            <p class="font-bold text-white">輸入信箱及密碼</p>
-          </div>
-
-          <div class="flex-1 h-[2px] bg-[#ECECEC]"></div>
-
-          <div class="flex flex-col items-center gap-y-1">
-            <div class="w-8 h-8 bg-primary-base rounded-full"></div>
-            <p class="font-bold text-white">填寫基本資料</p>
-          </div>
-        </div>
+        <!-- 進度條狀態 -->
+        <ProgressLine :formState="formState" :isFormValidated="isFormValidated" />
 
         <form @submit.prevent="handleSetup" v-if="formState === 'emailPasswordForm'" class="w-full flex flex-col items-center gap-y-4 text-white sm:w-2/3 4xl:w-1/2">
           <div class="relative w-full flex flex-col gap-y-2">
