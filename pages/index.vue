@@ -10,11 +10,11 @@ import "swiper/css/navigation";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
 
-const windowScroll = useWindowScroll();
-const headerY = ref(windowScroll.y);
-const isScrolled = ref(false);
+// const windowScroll = useWindowScroll();
+// const headerY = ref(windowScroll.y);
+// const isScrolled = ref(false);
 const roomsNum = ref(0);
-const isOpenMenu = ref(false);
+// const isOpenMenu = ref(false);
 const roomSwiper: Ref<typeof Swiper | null> = ref(null);
 const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-1" },
@@ -47,12 +47,12 @@ const getRoomsData = computed(() => {
 
 const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.length || 0);
 
-const handleMenu = () => {
-  isOpenMenu.value = true;
-};
-const handleCloseMenu = () => {
-  isOpenMenu.value = false;
-};
+// const handleMenu = () => {
+//   isOpenMenu.value = true;
+// };
+// const handleCloseMenu = () => {
+//   isOpenMenu.value = false;
+// };
 
 const slidePrev = () => {
   roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
@@ -66,19 +66,19 @@ const slideNext = () => {
   roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
 };
 
-onMounted(() => {
-  watch(
-    () => headerY.value,
-    (newHeaderY) => {
-      newHeaderY > 0 ? (isScrolled.value = true) : (isScrolled.value = false);
-    },
-    { immediate: true }
-  );
-});
+// onMounted(() => {
+//   watch(
+//     () => headerY.value,
+//     (newHeaderY) => {
+//       newHeaderY > 0 ? (isScrolled.value = true) : (isScrolled.value = false);
+//     },
+//     { immediate: true }
+//   );
+// });
 </script>
 
 <template>
-  <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
+  <!-- <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
     <div class="px-3 py-6 flex items-center justify-between md:px-20">
       <h1>
         <RouterLink to="/">
@@ -124,7 +124,7 @@ onMounted(() => {
         </div>
       </div>
     </Transition>
-  </header>
+  </header> -->
   <main>
     <section class="relative">
       <Swiper ref="roomSwiper" v-bind="homeMain" class="h-full">
