@@ -325,7 +325,7 @@ const slideNext = () => {
       </div>
     </section>
   </main>
-  <footer class="py-20 bg-black">
+  <!-- <footer class="py-20 bg-black">
     <div class="container flex flex-col gap-y-10">
       <div class="flex flex-col gap-y-10 md:flex-row md:justify-between md:items-center">
         <div class="flex flex-col gap-y-10">
@@ -371,7 +371,7 @@ const slideNext = () => {
         <p>&copy; 享樂酒店 2023 All Rights Reserved.</p>
       </div>
     </div>
-  </footer>
+  </footer> -->
 </template>
 <style scoped lang="scss">
 .swiper :deep(.swiper-pagination) {
