@@ -8,10 +8,10 @@ export type NewsItem = {
 }
 
 export type ResponseNews = {
-  data: {
-    status: boolean;
-    result: NewsItem[];
-  };
+  // data: {
+  status: boolean;
+  result: NewsItem[];
+  // };
 }
 
 export type Delicacy = {
@@ -24,10 +24,10 @@ export type Delicacy = {
   updatedAt: string
 }
 export type ResponseDelicacy = {
-  data: {
-    status: boolean;
-    result: Delicacy[];
-  };
+  // data: {
+  status: boolean;
+  result: Delicacy[];
+  // };
 }
 
 export type Rooms = {
@@ -58,8 +58,8 @@ export type Rooms = {
 }
 
 export type ResponseRooms = {
-  data: {
-    status: boolean;
-    result: Rooms[];
-  };
+  // data: {
+  status: boolean;
+  result: Rooms[];
+  // };
 }
