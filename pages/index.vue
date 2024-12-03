@@ -156,11 +156,11 @@ const slideNext = () => {
               <p class="mt-6 mb-24 text-base lg:text-2xl 2xl:text-3xl text-white font-semibold">我們致力於為您提供無與倫比的奢華體驗與優質服務</p>
             </div>
             <div class="-translate-x-12">
-              <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
+              <NuxtLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
                 <p class="z-10 text-base text-black md:text-2xl font-bold group-hover:text-white">立即訂房</p>
                 <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
                 <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
-              </RouterLink>
+              </NuxtLink>
             </div>
           </div>
         </div>
@@ -238,11 +238,11 @@ const slideNext = () => {
             <p>{{ getRoomsData?.description }}</p>
           </div>
           <p class="text-3xl font-bold">NT$ {{ getRoomsData?.price }}</p>
-          <RouterLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
+          <NuxtLink to="/rooms" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
             <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
             <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
             <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
-          </RouterLink>
+          </NuxtLink>
           <div class="flex items-center justify-end text-primary-base">
             <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
             <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
