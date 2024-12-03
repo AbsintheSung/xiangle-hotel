@@ -23,16 +23,16 @@ defineProps<{
             <p class="font-medium text-[14px] md:text-base">享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
           </div>
           <div class="flex items-center gap-x-4">
-            <div class="w-[97px] h-[97px] p-4 border border-neutral-300 rounded-xl flex flex-col gap-y-2">
+            <div class="w-[97px] h-[97px] p-3 border border-neutral-300 rounded-xl flex flex-col gap-y-2">
               <Icon class="text-2xl text-primary-base" name="fluent:slide-size-24-filled" />
               <p class="font-bold">{{ roomItem.areaInfo }}</p>
             </div>
-            <div class="w-[97px] h-[97px] p-4 border border-neutral-300 rounded-xl flex flex-col gap-y-2">
-              <Icon class="text-2xl text-primary-base" name="material-symbols:king-bed" />
+            <div class="w-[97px] h-[97px] p-3 border border-neutral-300 rounded-xl flex flex-col gap-y-2">
+              <Icon class="text-2xl text-primary-base" name="fluent:bed-24-filled" />
               <p class="font-bold">{{ roomItem.bedInfo }}</p>
             </div>
-            <div class="w-[97px] h-[97px] p-4 border border-neutral-300 rounded-xl flex flex-col gap-y-2">
-              <Icon class="text-2xl text-primary-base" name="ic:baseline-person" />
+            <div class="w-[97px] h-[97px] p-3 border border-neutral-300 rounded-xl flex flex-col gap-y-2">
+              <Icon class="text-2xl text-primary-base" name="fluent:person-24-filled" />
               <p class="font-bold">{{ `1-${roomItem.maxPeople}人` }}</p>
             </div>
           </div>
