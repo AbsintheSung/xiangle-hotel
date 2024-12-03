@@ -41,7 +41,7 @@ defineProps({
       </h1>
       <ul class="hidden items-center gap-x-4 font-bold text-white md:flex" v-show="isShowUlList">
         <li>
-          <NuxtLink class="block p-4" to="/">客房旅宿</NuxtLink>
+          <NuxtLink class="block p-4" to="/rooms">客房旅宿</NuxtLink>
         </li>
         <li>
           <NuxtLink class="block p-4" to="/auth/signin">會員登入</NuxtLink>
@@ -66,7 +66,7 @@ defineProps({
         <div class="w-full">
           <ul class="flex flex-col items-center gap-y-4 font-bold text-white">
             <li class="w-full text-center">
-              <NuxtLink class="block p-4 w-full" to="/">客房旅宿</NuxtLink>
+              <NuxtLink class="block p-4 w-full" to="/rooms">客房旅宿</NuxtLink>
             </li>
             <li class="w-full text-center">
               <NuxtLink class="block p-4 w-full" to="/auth/signin">會員登入</NuxtLink>

@@ -1,4 +1,5 @@
 import { Navigation, EffectCreative, Pagination, Autoplay } from "swiper/modules";
+//index.vue 網站首頁用到的 Swiper 設定
 export const homeMain = {
   modules: [Navigation, EffectCreative, Pagination],
   slidesPerView: 1,
@@ -45,4 +46,26 @@ export const homeCulinary = {
       slidesPerView: 3.2,
     },
   },
+};
+
+// 房型首頁 用到的 Swiper 設定
+export const roomsHome = {
+  modules: [Navigation, EffectCreative, Pagination],
+  slidesPerView: 1,
+  spaceBetween: 0,
+  loop: true,
+  pagination: {
+    dynamicBullets: true,
+    clickable: true,
+  },
+};
+export const roomsCards = {
+  modules: [Navigation, Pagination, EffectCreative],
+  slidesPerView: 1,
+  spaceBetween: 0,
+  loop: true,
+  pagination: {
+    clickable: true,
+  },
+  navigation: true, // 預設不顯示導航按鈕
 };
