@@ -26,11 +26,11 @@ const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
 const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
 const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
 const getNewsDataList = computed(() => {
-  return newsDataList.value?.data.result ?? [];
+  return newsDataList.value?.result ?? [];
 });
 
 const getCulinaryDataList = computed(() => {
-  const data = culinaryDataList.value?.data.result.map((item) => {
+  const data = culinaryDataList.value?.result.map((item) => {
     const [month, time] = item.diningTime.split(" ");
     return {
       ...item,
@@ -42,10 +42,10 @@ const getCulinaryDataList = computed(() => {
 });
 
 const getRoomsData = computed(() => {
-  return roomsDataList.value?.data.result[roomsNum.value];
+  return roomsDataList.value?.result[roomsNum.value];
 });
 
-const getRoomsDataLength = computed(() => roomsDataList.value?.data.result.length || 0);
+const getRoomsDataLength = computed(() => roomsDataList.value?.result.length || 0);
 
 // const handleMenu = () => {
 //   isOpenMenu.value = true;
