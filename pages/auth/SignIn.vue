@@ -4,9 +4,9 @@ import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import SigninForm from "./components/SigninForm.vue";
 //使用 auth 的 layouts布局
-definePageMeta({
-  layout: "auth",
-});
+// definePageMeta({
+//   layout: "auth",
+// });
 // // 定義表單驗證 Schema
 // const userFormSchema = zod.object({
 //   email: zod.string().email({ message: "請輸入有效的電子郵件地址" }),

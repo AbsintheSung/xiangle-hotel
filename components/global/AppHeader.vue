@@ -1,9 +1,24 @@
 <script setup lang="ts">
+const route = useRoute();
 const router = useRouter();
 const windowScroll = useWindowScroll();
 const headerY = ref(windowScroll.y);
 const isScrolled = ref(false);
 const isOpenMenu = ref(false);
+
+const isShowUlList = computed(() => {
+  const authRoutes = ["auth-SignIn", "auth-SignUp"];
+  return authRoutes.includes(route.name as string);
+});
+const isNeedsBackground = computed(() => {
+  const authRoutes = ["index", "rooms"];
+  return authRoutes.includes(route.name as string);
+});
+const isFixed = computed(() => {
+  const authRoutes = ["index", "rooms", "auth-SignIn", "auth-SignUp"];
+  return authRoutes.includes(route.name as string);
+});
+
 const handleMenu = () => {
   isOpenMenu.value = true;
 };
@@ -15,6 +30,7 @@ const handleCloseMenu = () => {
 router.afterEach(() => {
   isOpenMenu.value = false; // 每次導航後初始化 isOpenMenu
 });
+
 onMounted(() => {
   watch(
     () => headerY.value,
@@ -24,22 +40,16 @@ onMounted(() => {
     { immediate: true }
   );
 });
-defineProps({
-  isShowUlList: {
-    type: Boolean,
-    default: true,
-  },
-});
 </script>
 <template>
-  <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
+  <header class="w-full z-30 transition-all duration-300 ease-in-out" :class="[{ 'bg-black fixed': isScrolled || !isNeedsBackground }, { fixed: isFixed }]">
     <div class="px-3 py-6 flex items-center justify-between md:px-20">
       <h1>
         <NuxtLink to="/">
           <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
         </NuxtLink>
       </h1>
-      <ul class="hidden items-center gap-x-4 font-bold text-white md:flex" v-show="isShowUlList">
+      <ul class="hidden items-center gap-x-4 font-bold text-white md:flex" v-show="!isShowUlList">
         <li>
           <NuxtLink class="block p-4" to="/rooms">客房旅宿</NuxtLink>
         </li>
