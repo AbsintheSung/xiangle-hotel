@@ -310,7 +310,7 @@ const getSwiperWidth = computed(() => {
           </ul>
         </div>
         <div class="relative hidden md:block w-5/12">
-          <div class="sticky top-32 p-10 flex flex-col gap-y-10 bg-white rounded-[20px]">
+          <div class="sticky top-40 p-10 flex flex-col gap-y-10 bg-white rounded-[20px]">
             <p class="pb-4 text-2xl font-bold border-b border-neutral-200">預定房型</p>
             <div class="flex flex-col gap-y-2">
               <h3 class="text-4xl font-bold">尊爵雙人房</h3>
