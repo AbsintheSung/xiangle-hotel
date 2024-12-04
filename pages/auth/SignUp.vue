@@ -205,9 +205,9 @@ watch(
 );
 
 //使用 auth 的 layouts布局
-definePageMeta({
-  layout: "auth",
-});
+// definePageMeta({
+//   layout: "auth",
+// });
 </script>
 <template>
   <main class="bg-black h-screen">

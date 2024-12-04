@@ -1,6 +1,12 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const route = useRoute();
+const isHiddeFooter = computed(() => {
+  const authRoutes = ["auth-SignIn", "auth-SignUp"];
+  return authRoutes.includes(route.name as string);
+});
+</script>
 <template>
-  <footer class="py-20 bg-black">
+  <footer class="py-20 bg-black" :class="{ hidden: isHiddeFooter }">
     <div class="container flex flex-col gap-y-10">
       <div class="flex flex-col gap-y-10 md:flex-row md:justify-between md:items-center">
         <div class="flex flex-col gap-y-10">
