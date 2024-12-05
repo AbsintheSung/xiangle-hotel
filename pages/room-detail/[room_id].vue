@@ -1,5 +1,20 @@
 <script setup lang="ts">
 import { Swiper, SwiperSlide } from "swiper/vue";
+const totalGuests = ref<number>(0); //房客人數
+const minGuests = (): void => {
+  if (totalGuests.value === 0) {
+    totalGuests.value = 0;
+  } else {
+    totalGuests.value--;
+  }
+};
+const addGuests = (): void => {
+  if (totalGuests.value === 4) {
+    totalGuests.value = 4;
+  } else {
+    totalGuests.value++;
+  }
+};
 
 const data = {
   status: true,
@@ -128,12 +143,29 @@ const VDatePickerRow = computed(() => {
 //dialog
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
 
-const isOpen = ref(false);
-const closeModal = () => {
-  isOpen.value = false;
+const isDateOpen = ref(false);
+const closeDateModal = () => {
+  isDateOpen.value = false;
 };
-const openModal = () => {
-  isOpen.value = true;
+const openDateModal = () => {
+  isDateOpen.value = true;
+};
+const checkDate = () => {
+  if (dateRange.value.start === "" || dateRange.value.end === "") {
+    return;
+  }
+  if (windowWidthSize.value > 768) {
+    closeDateModal();
+  } else {
+    closeDateModal();
+    openConfirmModal();
+  }
+};
+const clearDate = () => {
+  dateRange.value = {
+    start: "",
+    end: "",
+  };
 };
 
 const isOpenConfirm = ref(false);
@@ -158,7 +190,7 @@ const dateRange = ref({
 // 日期格式 (用於日曆標題與選擇格式)
 const masks = ref({
   title: "西元 YYYY 年 MM 月", // 日曆標題顯示格式
-  modelValue: "YYYY-MM-DD", // 日期選擇的值格式
+  modelValue: "YYYY/MM/DD", // 日期選擇的值格式
 });
 
 // 日期限制
@@ -185,6 +217,9 @@ const totalNights = computed(() => {
   const end = $dayjs(dateRange.value.end);
   return end.diff(start, "day"); // 返回天數差
 });
+
+import DateDialog from "./components/DateDialog.vue";
+import CheckDialog from "./components/CheckDialog.vue";
 </script>
 <template>
   <main class="bg-primary-Tint">
@@ -390,22 +425,22 @@ const totalNights = computed(() => {
               <p>享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
             </div>
             <div class="w-full flex flex-col flex-wrap gap-y-4 gap-x-2 items-center lg:flex-row">
-              <div class="p-4 flex-1 flex flex-col border rounded-lg hover:cursor-pointer">
+              <div class="p-4 flex-1 flex flex-col border rounded-lg hover:cursor-pointer" @click="openDateModal">
                 <label class="pointer-events-none">入住</label>
-                <input class="pointer-events-none focus:outline-none" readonly type="date" />
+                <input type="date" v-model="dateRange.start" class="pointer-events-none focus:outline-none" readonly />
               </div>
-              <div class="p-4 flex-1 flex flex-col border rounded-lg hover:cursor-pointer">
+              <div class="p-4 flex-1 flex flex-col border rounded-lg hover:cursor-pointer" @click="openDateModal">
                 <label class="pointer-events-none">退房</label>
-                <input class="pointer-events-none focus:outline-none" readonly type="date" />
+                <input type="date" v-model="dateRange.end" class="pointer-events-none focus:outline-none" readonly />
               </div>
               <div class="w-full font-bold flex justify-between items-center">
                 <p>人數</p>
                 <div class="flex items-center gap-x-4">
-                  <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full">
+                  <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full" @click="minGuests">
                     <Icon name="fluent:minimize-24-regular" />
                   </button>
-                  <p class="px-1">{{ 1 }}</p>
-                  <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full">
+                  <p class="px-1">{{ totalGuests }}</p>
+                  <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full" @click="addGuests">
                     <Icon name="fluent:add-24-filled" />
                   </button>
                 </div>
@@ -423,7 +458,7 @@ const totalNights = computed(() => {
     <!-- <div class="fixed inset-0 flex items-center justify-center">
       <button type="button" @click="openConfirmModal" class="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">Open dialog</button>
     </div> -->
-    <TransitionRoot class="md:hidden" appear :show="isOpenConfirm" as="template">
+    <!-- <TransitionRoot class="md:hidden" appear :show="isOpenConfirm" as="template">
       <Dialog as="div" @close="closeConfirmModal" class="relative z-50">
         <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
           <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
@@ -463,10 +498,10 @@ const totalNights = computed(() => {
           </div>
         </div>
       </Dialog>
-    </TransitionRoot>
+    </TransitionRoot> -->
 
-    <TransitionRoot appear :show="isOpen" as="template">
-      <Dialog as="div" @close="closeModal" class="relative z-50">
+    <!-- <TransitionRoot appear :show="isDateOpen" as="template">
+      <Dialog as="div" @close="closeDateModal" class="relative z-50">
         <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
           <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
         </TransitionChild>
@@ -523,14 +558,49 @@ const totalNights = computed(() => {
           </div>
         </div>
       </Dialog>
-    </TransitionRoot>
+    </TransitionRoot> -->
+
+    <CheckDialog 
+      v-model:dateRange="dateRange" 
+      :isOpenConfirm="isOpenConfirm" 
+      :totalNights="totalNights" 
+      :closeConfirmModal="closeConfirmModal" 
+      :openConfirmModal="openConfirmModal" 
+      :totalGuests="totalGuests" 
+      :addGuests="addGuests" 
+      :minGuests="minGuests" 
+    />
+    <DateDialog 
+      v-model:dateRange="dateRange" 
+      :isDateOpen="isDateOpen" 
+      :windowWidthSize="windowWidthSize" 
+      :VDatePickerRow="VDatePickerRow" 
+      :VDatePickerCol="VDatePickerCol" 
+      :masks="masks" :minDate="minDate" 
+      :maxDate="maxDate" 
+      :totalNights="totalNights" 
+      :closeDateModal="closeDateModal" 
+      :openDateModal="openDateModal" 
+      :checkDate="checkDate" 
+      :clearDate="clearDate" 
+    />
     <section class="w-full bottom-0 fixed md:hidden bg-neutral-200">
-      <div class="p-3 flex items-center justify-between gap-x-1">
-        <div class="flex-1 flex flex-col items-center gap-y-1">
-          <p>資訊1</p>
-          <p>資訊2</p>
+      <div v-if="dateRange.start === '' || dateRange.end === ''" class="p-3 flex items-center justify-between gap-x-1">
+        <div class="flex-1 flex items-center gap-y-1">
+          <p class="font-bold text-primary-base sm:text-2xl" v-number-format="1000"></p>
+          <p>&nbsp; / &nbsp; 晚</p>
         </div>
-        <button class="px-8 py-4 text-base font-bold text-white bg-primary-base sm:px-12 rounded-lg">查看可訂日期</button>
+        <button class="px-8 py-4 text-base font-bold text-white bg-primary-base sm:px-12 rounded-lg" @click="openDateModal">查看可訂日期</button>
+      </div>
+      <div v-else class="p-3 flex items-center justify-between gap-x-1">
+        <div class="flex-1 flex flex-col gap-x-1">
+          <div class="flex items-center">
+            <p class="font-bold text-primary-base gap-x-1 sm:text-2xl" v-number-format="1000"></p>
+            <p>&nbsp;/&nbsp; {{ totalNights }}晚&nbsp;/&nbsp;2人&nbsp;</p>
+          </div>
+          <p>{{ dateRange.start }} - {{ dateRange.end }}</p>
+        </div>
+        <button class="px-8 py-4 text-base font-bold text-white bg-primary-base sm:px-12 rounded-lg">立即預訂</button>
       </div>
     </section>
   </main>
