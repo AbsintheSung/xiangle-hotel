@@ -120,9 +120,70 @@ const VDatePickerCol = computed(() => {
 const VDatePickerRow = computed(() => {
   return windowWidthSize.value > 768 ? 1 : 2;
 });
-const date = ref({
-  start: new Date(2024, 11, 24),
-  end: new Date(2024, 11, 25),
+// const date = ref({
+//   start: "",
+//   end: "",
+// });
+
+//dialog
+import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from "@headlessui/vue";
+
+const isOpen = ref(false);
+const closeModal = () => {
+  isOpen.value = false;
+};
+const openModal = () => {
+  isOpen.value = true;
+};
+
+const isOpenConfirm = ref(false);
+const closeConfirmModal = () => {
+  isOpenConfirm.value = false;
+};
+const openConfirmModal = () => {
+  isOpenConfirm.value = true;
+};
+
+//處理時間
+const { $dayjs } = useNuxtApp();
+
+// 日期選擇範圍
+const dateRange = ref({
+  // start: $dayjs().format("YYYY-MM-DD"), // 當前日期
+  // end: $dayjs().add(1, "day").format("YYYY-MM-DD"), // 次日日期
+  start: "",
+  end: "",
+});
+
+// 日期格式 (用於日曆標題與選擇格式)
+const masks = ref({
+  title: "西元 YYYY 年 MM 月", // 日曆標題顯示格式
+  modelValue: "YYYY-MM-DD", // 日期選擇的值格式
+});
+
+// 日期限制
+const minDate = ref($dayjs().toDate()); // 最早可選當天
+const maxDate = ref($dayjs().add(1, "year").toDate()); // 最晚可選下一年同一天
+
+// 監聽並格式化日期選擇器輸出
+watch(dateRange, (newVal) => {
+  console.log(newVal);
+  if (newVal.start) {
+    newVal.start = $dayjs(newVal.start).format("YYYY-MM-DD");
+  }
+  if (newVal.end) {
+    newVal.end = $dayjs(newVal.end).format("YYYY-MM-DD");
+  }
+});
+// 計算總共晚數（使用 computed）
+const totalNights = computed(() => {
+  // 檢查 start 和 end 是否為有效日期
+  if (!dateRange.value.start || !dateRange.value.end) {
+    return 0; // 如果有一個值為空，返回 0 晚
+  }
+  const start = $dayjs(dateRange.value.start);
+  const end = $dayjs(dateRange.value.end);
+  return end.diff(start, "day"); // 返回天數差
 });
 </script>
 <template>
@@ -329,11 +390,13 @@ const date = ref({
               <p>享受高級的住宿體驗，尊爵雙人房提供給您舒適寬敞的空間和精緻的裝潢。</p>
             </div>
             <div class="w-full flex flex-col flex-wrap gap-y-4 gap-x-2 items-center lg:flex-row">
-              <div class="p-4 flex-1">
-                <p>日期資訊</p>
+              <div class="p-4 flex-1 flex flex-col border rounded-lg hover:cursor-pointer">
+                <label class="pointer-events-none">入住</label>
+                <input class="pointer-events-none focus:outline-none" readonly type="date" />
               </div>
-              <div class="p-4 flex-1">
-                <p>日期資訊</p>
+              <div class="p-4 flex-1 flex flex-col border rounded-lg hover:cursor-pointer">
+                <label class="pointer-events-none">退房</label>
+                <input class="pointer-events-none focus:outline-none" readonly type="date" />
               </div>
               <div class="w-full font-bold flex justify-between items-center">
                 <p>人數</p>
@@ -354,7 +417,113 @@ const date = ref({
         </div>
       </div>
     </section>
-    <VDatePicker v-model.range="date" :columns="VDatePickerCol" :rows="VDatePickerRow" />
+    <!-- <div class="fixed inset-0 flex items-center justify-center">
+      <button type="button" @click="openModal" class="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">Open dialog</button>
+    </div> -->
+    <!-- <div class="fixed inset-0 flex items-center justify-center">
+      <button type="button" @click="openConfirmModal" class="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">Open dialog</button>
+    </div> -->
+    <TransitionRoot class="md:hidden" appear :show="isOpenConfirm" as="template">
+      <Dialog as="div" @close="closeConfirmModal" class="relative z-50">
+        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+        </TransitionChild>
+        <div class="w-full fixed bottom-0 overflow-y-auto">
+          <div class="flex w-full min-h-full items-center justify-center text-center">
+            <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
+              <DialogPanel class="py-4 w-full flex flex-col gap-y-10 rounded-2xl bg-white shadow-xl transform overflow-hidden transition-all md:w-2xl md:max-w-2xl">
+                <div class="-mt-4 px-6 py-2 flex flex-col gap-y-4 bg-neutral-300">
+                  <button class="self-start flex items-center justify-center">
+                    <Icon class="text-3xl border-none" name="fluent:dismiss-24-filled" />
+                  </button>
+                  <div class="flex items-center gap-x-2">
+                    <p class="text-2xl text-start font-bold">{{ totalNights }}晚</p>
+                    <p class="font-medium">{{ dateRange.start }} - {{ dateRange.end }}</p>
+                  </div>
+                </div>
+                <div class="px-6 flex flex-col gap-y-4">
+                  <p class="text-start font-bold text-xl">選擇人數</p>
+                  <p class="text-start font-medium">此房型最多供 4 人居住，不接受寵物入住。</p>
+                  <div class="flex items-center gap-x-4">
+                    <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full">
+                      <Icon name="fluent:minimize-24-regular" />
+                    </button>
+                    <p class="px-1">{{ 1 }}</p>
+                    <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full">
+                      <Icon name="fluent:add-24-filled" />
+                    </button>
+                  </div>
+                </div>
+                <div class="px-6 font-bold flex items-center gap-x-4">
+                  <button class="flex-1 py-4 rounded-lg">重新選擇日期</button>
+                  <button class="flex-1 py-4 text-white bg-primary-base rounded-lg">儲存</button>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
+
+    <TransitionRoot appear :show="isOpen" as="template">
+      <Dialog as="div" @close="closeModal" class="relative z-50">
+        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+        </TransitionChild>
+        <div class="fixed inset-0 overflow-y-auto">
+          <div class="flex w-full min-h-full items-center justify-center p-4 text-center">
+            <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
+              <DialogPanel class="p-6 w-full flex flex-col gap-y-10 rounded-2xl bg-white shadow-xl transform overflow-hidden transition-all md:w-2xl md:max-w-2xl">
+                <template v-if="windowWidthSize > 768" #default>
+                  <div class="hidden items-center justify-between md:flex">
+                    <div class="flex flex-col gap-y-2">
+                      <p class="text-2xl text-start font-bold">{{ totalNights }}晚</p>
+                      <p class="font-medium">{{ dateRange.start }} - {{ dateRange.end }}</p>
+                    </div>
+                    <div class="flex items-center gap-x-2 font-medium">
+                      <div class="w-44 p-4 flex flex-col gap-y-2 border boprder-black rounded-lg">
+                        <p class="text-[12px] text-start">入住</p>
+                        <p class="text-start">{{ dateRange.start }}</p>
+                      </div>
+                      <div class="w-44 p-4 flex flex-col gap-y-2 border boprder-black rounded-lg">
+                        <p class="text-[12px] text-start">退房</p>
+                        <p class="text-start">{{ dateRange.end }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <VDatePicker v-model.range="dateRange" :masks="masks" :columns="VDatePickerCol" :rows="VDatePickerRow" :min-date="minDate" :max-date="maxDate" expanded />
+                  <div class="w-full flex items-center justify-end gap-x-4 font-bold text-base">
+                    <button class="px-8 py-4 rounded-lg">清除日期</button>
+                    <button class="px-8 py-4 bg-primary-base text-white rounded-lg">確定日期</button>
+                  </div>
+                </template>
+                <template v-else #default>
+                  <div class="flex flex-col gap-y-2">
+                    <div class="flex items-center justify-start">
+                      <button class="flex items-center justify-center">
+                        <Icon class="text-3xl border-none" name="fluent:dismiss-24-filled" />
+                      </button>
+                    </div>
+                    <div>
+                      <p v-if="totalNights === 0" class="text-xl font-bold text-start">選擇入住與退房日期</p>
+                      <p v-else class="flex gap-x-3 items-center">
+                        <span class="text-xl font-bold">{{ totalNights }}晚</span>
+                        <span>{{ dateRange.start }} - {{ dateRange.end }}</span>
+                      </p>
+                    </div>
+                  </div>
+                  <VDatePicker v-model.range="dateRange" :masks="masks" :columns="VDatePickerCol" :rows="VDatePickerRow" :min-date="minDate" :max-date="maxDate" expanded />
+                  <div class="w-full flex items-center justify-end gap-x-4 font-bold text-base">
+                    <button class="px-8 py-4 rounded-lg">清除日期</button>
+                    <button class="px-8 py-4 bg-primary-base text-white rounded-lg">確定日期</button>
+                  </div>
+                </template>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
     <section class="w-full bottom-0 fixed md:hidden bg-neutral-200">
       <div class="p-3 flex items-center justify-between gap-x-1">
         <div class="flex-1 flex flex-col items-center gap-y-1">

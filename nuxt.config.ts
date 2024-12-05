@@ -1,12 +1,22 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
+
+// 添加這個型別擴充( TypeScript 不知道 headlessui 是 Nuxt 配置的有效屬性)
+declare module 'nuxt/schema' {
+  interface NuxtConfig {
+    headlessui?: {
+      prefix?: string
+    }
+  }
+}
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxt/icon',
+    'nuxt-headlessui',
     '@vueuse/nuxt',
     '@nuxt/image',
     '@vee-validate/nuxt',
@@ -35,4 +45,7 @@ export default defineNuxtConfig({
       isCustomElement: (tag) => tag.startsWith("swiper-"),
     },
   },
+  headlessui: {
+    prefix: 'Headless'
+  }
 })
