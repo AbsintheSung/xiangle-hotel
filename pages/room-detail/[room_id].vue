@@ -112,6 +112,18 @@ const getSwiperWidth = computed(() => {
   //因為裝置大於 768會隱藏，此時 width會是0。
   return swiperWidth.value > 0 ? true : false;
 });
+
+const { width: windowWidthSize } = useWindowSize();
+const VDatePickerCol = computed(() => {
+  return windowWidthSize.value > 768 ? 2 : 1;
+});
+const VDatePickerRow = computed(() => {
+  return windowWidthSize.value > 768 ? 1 : 2;
+});
+const date = ref({
+  start: new Date(2024, 11, 24),
+  end: new Date(2024, 11, 25),
+});
 </script>
 <template>
   <main class="bg-primary-Tint">
@@ -340,6 +352,16 @@ const getSwiperWidth = computed(() => {
             <button class="py-4 w-full text-white font-bold bg-primary-base rounded-lg">立即預定</button>
           </div>
         </div>
+      </div>
+    </section>
+    <VDatePicker v-model.range="date" :columns="VDatePickerCol" :rows="VDatePickerRow" />
+    <section class="w-full bottom-0 fixed md:hidden bg-neutral-200">
+      <div class="p-3 flex items-center justify-between gap-x-1">
+        <div class="flex-1 flex flex-col items-center gap-y-1">
+          <p>資訊1</p>
+          <p>資訊2</p>
+        </div>
+        <button class="px-8 py-4 text-base font-bold text-white bg-primary-base sm:px-12 rounded-lg">查看可訂日期</button>
       </div>
     </section>
   </main>

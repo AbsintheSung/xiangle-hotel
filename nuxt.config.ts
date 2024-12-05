@@ -4,7 +4,14 @@ import path from 'path'
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@nuxt/icon', '@vueuse/nuxt', '@nuxt/image', '@vee-validate/nuxt'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxt/icon',
+    '@vueuse/nuxt',
+    '@nuxt/image',
+    '@vee-validate/nuxt',
+    '@samk-dev/nuxt-vcalendar',
+  ],
   css: ['~/assets/scss/index.scss', '~/assets/tailwind.css',],
   vite: {
     css: {
