@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from "@headlessui/vue";
-type DateRange = {
-  start: string;
-  end: string;
-};
-const dateRange = defineModel<DateRange>("dateRange", { required: true });
+// type DateRange = {
+//   start: string;
+//   end: string;
+// };
+// const dateRange = defineModel<DateRange>("dateRange", { required: true });
+
 defineProps<{
   isOpenConfirm: boolean;
   totalGuests: number;
@@ -14,12 +15,14 @@ defineProps<{
   // minDate: Date;
   // maxDate: Date;
   totalNights: number;
+  formattedDateRange: string;
   // VDatePickerCol: number;
   // VDatePickerRow: number;
   closeConfirmModal: () => void;
   openConfirmModal: () => void;
-  minGuests: () => void;
+  reduceGuests: () => void;
   addGuests: () => void;
+  reSelectDate: () => void;
 }>();
 </script>
 <template>
@@ -38,24 +41,24 @@ defineProps<{
                 </button>
                 <div class="flex items-center gap-x-2">
                   <p class="text-2xl text-start font-bold">{{ totalNights }}晚</p>
-                  <p class="font-medium">{{ dateRange.start }} - {{ dateRange.end }}</p>
+                  <p class="font-medium">{{ formattedDateRange }}</p>
                 </div>
               </div>
               <div class="px-6 flex flex-col gap-y-4">
                 <p class="text-start font-bold text-xl">選擇人數</p>
                 <p class="text-start font-medium">此房型最多供 4 人居住，不接受寵物入住。</p>
                 <div class="flex items-center gap-x-4">
-                  <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full" @click="minGuests">
+                  <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full" @click="reduceGuests">
                     <Icon name="fluent:minimize-24-regular" />
                   </button>
-                  <p class="px-1">{{totalGuests}}</p>
+                  <p class="px-1">{{ totalGuests }}</p>
                   <button class="p-4 flex items-center justify-center border border-neutral-200 rounded-full" @click="addGuests">
                     <Icon name="fluent:add-24-filled" />
                   </button>
                 </div>
               </div>
               <div class="px-6 font-bold flex items-center gap-x-4">
-                <button class="flex-1 py-4 rounded-lg">重新選擇日期</button>
+                <button class="flex-1 py-4 rounded-lg" @click="reSelectDate">重新選擇日期</button>
                 <button class="flex-1 py-4 text-white bg-primary-base rounded-lg" @click="closeConfirmModal">儲存</button>
               </div>
             </DialogPanel>

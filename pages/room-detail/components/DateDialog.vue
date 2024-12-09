@@ -8,7 +8,9 @@ const dateRange = defineModel<DateRange>("dateRange", { required: true });
 defineProps<{
   isDateOpen: boolean;
   windowWidthSize: number;
+  calendarKey: number;
   // dateRange: { start: string; end: string };
+  formattedDateRange: string;
   masks: { title: string; modelValue: string };
   minDate: Date;
   maxDate: Date;
@@ -36,7 +38,7 @@ defineProps<{
                 <div class="hidden items-center justify-between md:flex">
                   <div class="flex flex-col gap-y-2">
                     <p class="text-2xl text-start font-bold">{{ totalNights }}晚</p>
-                    <p class="font-medium">{{ dateRange.start }} - {{ dateRange.end }}</p>
+                    <p class="font-medium">{{ formattedDateRange }}</p>
                   </div>
                   <div class="flex items-center gap-x-2 font-medium">
                     <div class="w-44 p-4 flex flex-col gap-y-2 border boprder-black rounded-lg">
@@ -49,7 +51,7 @@ defineProps<{
                     </div>
                   </div>
                 </div>
-                <VDatePicker v-model.range="dateRange" :masks="masks" :columns="VDatePickerCol" :rows="VDatePickerRow" :min-date="minDate" :max-date="maxDate" expanded />
+                <VDatePicker v-model.range="dateRange" :key="calendarKey" :masks="masks" :columns="VDatePickerCol" :rows="VDatePickerRow" :min-date="minDate" :max-date="maxDate" expanded />
                 <div class="w-full flex items-center justify-end gap-x-4 font-bold text-base">
                   <button class="px-8 py-4 rounded-lg" @click="clearDate">清除日期</button>
                   <button class="px-8 py-4 bg-primary-base text-white rounded-lg" @click="checkDate">確定日期</button>
@@ -66,11 +68,11 @@ defineProps<{
                     <p v-if="totalNights === 0" class="text-xl font-bold text-start">選擇入住與退房日期</p>
                     <p v-else class="flex gap-x-3 items-center">
                       <span class="text-xl font-bold">{{ totalNights }}晚</span>
-                      <span>{{ dateRange.start }} - {{ dateRange.end }}</span>
+                      <span>{{ formattedDateRange }}</span>
                     </p>
                   </div>
                 </div>
-                <VDatePicker v-model.range="dateRange" :masks="masks" :columns="VDatePickerCol" :rows="VDatePickerRow" :min-date="minDate" :max-date="maxDate" expanded />
+                <VDatePicker v-model.range="dateRange" :key="calendarKey" :masks="masks" :columns="VDatePickerCol" :rows="VDatePickerRow" :min-date="minDate" :max-date="maxDate" expanded />
                 <div class="w-full flex items-center justify-end gap-x-4 font-bold text-base">
                   <button class="px-8 py-4 rounded-lg" @click="clearDate">清除日期</button>
                   <button class="px-8 py-4 bg-primary-base text-white rounded-lg" @click="checkDate">確定日期</button>

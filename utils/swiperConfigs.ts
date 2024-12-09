@@ -69,3 +69,14 @@ export const roomsCards = {
   },
   navigation: true, // 預設不顯示導航按鈕
 };
+
+export const roomDetailCards = {
+  modules: [Navigation, Pagination, EffectCreative],
+  slidesPerView: 1,
+  spaceBetween: 0,
+  loop: true,
+  pagination: {
+    clickable: true,
+  },
+  navigation: false,
+};
