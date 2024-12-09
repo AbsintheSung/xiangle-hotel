@@ -42,7 +42,7 @@ onMounted(() => {
 });
 </script>
 <template>
-  <header class="w-full z-30 transition-all duration-300 ease-in-out" :class="[{ 'bg-black fixed': isScrolled || !isNeedsBackground }, { fixed: isFixed }]">
+  <header class="w-full z-30 transition-all duration-300 ease-in-out" :class="[{ 'bg-black': isScrolled || !isNeedsBackground }, { fixed: isScrolled || isFixed }]">
     <div class="px-3 py-6 flex items-center justify-between md:px-20">
       <h1>
         <NuxtLink to="/">
