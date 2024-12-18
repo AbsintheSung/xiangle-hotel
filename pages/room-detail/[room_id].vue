@@ -93,23 +93,23 @@ const groupedInfo = computed(() => ({
 }));
 
 //關閉 date的 dialog
-const closeDateModal = (): void  => {
+const closeDateModal = (): void => {
   isDateOpen.value = false;
 };
 //開啟 date的 dialog
-const openDateModal = (): void  => {
+const openDateModal = (): void => {
   isDateOpen.value = true;
 };
 //關閉 Confirm 的 dialog
-const closeConfirmModal = (): void  => {
+const closeConfirmModal = (): void => {
   isOpenConfirm.value = false;
 };
 //開啟 Confirm 的 dialog
-const openConfirmModal = (): void  => {
+const openConfirmModal = (): void => {
   isOpenConfirm.value = true;
 };
 // 控制 是否填入日期，來決定是否進行下一步
-const checkDate = (): void  => {
+const checkDate = (): void => {
   if (dateRange.value.start === "" || dateRange.value.end === "") {
     return;
   }
@@ -121,18 +121,17 @@ const checkDate = (): void  => {
   }
 };
 //清除日期，重新選擇
-const clearDate = (): void  => {
+const clearDate = (): void => {
   dateRange.value.start = "";
   dateRange.value.end = "";
   calendarKey.value++;
 };
 //手機板重新選擇日期
-const reSelectDate = (): void  => {
-  closeConfirmModal()
-  openDateModal()
-  clearDate()
+const reSelectDate = (): void => {
+  closeConfirmModal();
+  openDateModal();
+  clearDate();
 };
-
 
 //增加人數
 const reduceGuests = (): void => {
@@ -146,6 +145,28 @@ const addGuests = (): void => {
   if (guestLimits.value.canAdd) {
     totalGuests.value++;
   }
+};
+
+const canProceed = computed(() => {
+  // 確保兩個日期非空且格式正確
+  const dateFormat = "YYYY/MM/DD";
+  const isCheckInValid = $dayjs(dateRange.value.start, dateFormat, true).isValid();
+  const isCheckOutValid = $dayjs(dateRange.value.end, dateFormat, true).isValid();
+  return isCheckInValid && isCheckOutValid;
+});
+const reservate = (): void => {
+  if (canProceed.value) {
+    navigateTo({
+      path: "/booking",
+      query: {
+        roomId: "65251f6095429cd58654bf12",
+        checkInDate: dateRange.value.start,
+        checkOutDate: dateRange.value.end,
+        peopleNum: totalGuests.value,
+      },
+    });
+  }
+  console.log("資料填寫不完整");
 };
 
 // 監聽並格式化日期選擇器輸出
@@ -275,40 +296,14 @@ watch(dateRange, (newVal) => {
               </div>
             </div>
             <p class="font-bold text-primary-base sm:text-2xl" v-number-format="roomDetail?.result.price"></p>
-            <button class="py-4 w-full text-white font-bold bg-primary-base rounded-lg">立即預定</button>
+            <button class="py-4 w-full text-white font-bold bg-primary-base rounded-lg" @click="reservate">立即預定</button>
           </div>
         </div>
       </div>
     </section>
 
-    <CheckDialog 
-      v-model:dateRange="dateRange" 
-      :isOpenConfirm="isOpenConfirm" 
-      :totalNights="totalNights" 
-      :closeConfirmModal="closeConfirmModal" 
-      :openConfirmModal="openConfirmModal" 
-      :totalGuests="totalGuests" 
-      :addGuests="addGuests" 
-      :reduceGuests="reduceGuests" 
-      :reSelectDate=reSelectDate
-      :formattedDateRange="formattedDateRange" 
-    />
-    <DateDialog 
-      v-model:dateRange="dateRange" 
-      :isDateOpen="isDateOpen" 
-      :windowWidthSize="windowWidthSize" 
-      :VDatePickerRow="VDatePickerRow" 
-      :VDatePickerCol="VDatePickerCol" 
-      :masks="masks" :minDate="minDate" 
-      :maxDate="maxDate" 
-      :calendarKey="calendarKey"
-      :totalNights="totalNights" 
-      :closeDateModal="closeDateModal" 
-      :openDateModal="openDateModal" 
-      :checkDate="checkDate" 
-      :clearDate="clearDate" 
-      :formattedDateRange="formattedDateRange" 
-    />
+    <CheckDialog v-model:dateRange="dateRange" :isOpenConfirm="isOpenConfirm" :totalNights="totalNights" :closeConfirmModal="closeConfirmModal" :openConfirmModal="openConfirmModal" :totalGuests="totalGuests" :addGuests="addGuests" :reduceGuests="reduceGuests" :reSelectDate="reSelectDate" :formattedDateRange="formattedDateRange" />
+    <DateDialog v-model:dateRange="dateRange" :isDateOpen="isDateOpen" :windowWidthSize="windowWidthSize" :VDatePickerRow="VDatePickerRow" :VDatePickerCol="VDatePickerCol" :masks="masks" :minDate="minDate" :maxDate="maxDate" :calendarKey="calendarKey" :totalNights="totalNights" :closeDateModal="closeDateModal" :openDateModal="openDateModal" :checkDate="checkDate" :clearDate="clearDate" :formattedDateRange="formattedDateRange" />
 
     <section class="w-full bottom-0 fixed z-10 md:hidden bg-neutral-200">
       <div v-if="!isDateRangeComplete" class="p-3 flex items-center justify-between gap-x-1">
@@ -326,7 +321,7 @@ watch(dateRange, (newVal) => {
           </div>
           <p>{{ formattedDateRange }}</p>
         </div>
-        <button class="px-8 py-4 text-base font-bold text-white bg-primary-base sm:px-12 rounded-lg">立即預訂</button>
+        <button class="px-8 py-4 text-base font-bold text-white bg-primary-base sm:px-12 rounded-lg" @click="reservate">立即預訂</button>
       </div>
     </section>
   </main>
