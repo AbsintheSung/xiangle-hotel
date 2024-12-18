@@ -26,7 +26,7 @@ defineProps<{
 
 <template>
   <TransitionRoot appear :show="isDateOpen" as="template">
-    <Dialog as="div" @close="closeDateModal" class="relative z-50">
+    <Dialog as="div" @close="closeDateModal" class="relative z-50" :open="isDateOpen">
       <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
       </TransitionChild>

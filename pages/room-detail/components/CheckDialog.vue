@@ -27,7 +27,7 @@ defineProps<{
 </script>
 <template>
   <TransitionRoot class="md:hidden" appear :show="isOpenConfirm" as="template">
-    <Dialog as="div" @close="closeConfirmModal" class="relative z-50">
+    <Dialog as="div" @close="closeConfirmModal" class="relative z-50" :open="isOpenConfirm">
       <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
       </TransitionChild>
@@ -36,7 +36,7 @@ defineProps<{
           <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
             <DialogPanel class="py-4 w-full flex flex-col gap-y-10 rounded-2xl bg-white shadow-xl transform overflow-hidden transition-all md:w-2xl md:max-w-2xl">
               <div class="-mt-4 px-6 py-2 flex flex-col gap-y-4 bg-neutral-300">
-                <button class="self-start flex items-center justify-center">
+                <button class="self-start flex items-center justify-center" @click="closeConfirmModal">
                   <Icon class="text-3xl border-none" name="fluent:dismiss-24-filled" />
                 </button>
                 <div class="flex items-center gap-x-2">
