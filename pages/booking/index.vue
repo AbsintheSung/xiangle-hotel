@@ -215,8 +215,12 @@ const handleMemberInfo = () => {
   county.value = "三民區";
   detailAddress.value = "測試地址";
 };
+
+import LoadingOverlay from "./components/LoadingOverlay.vue";
+const isLoading = ref(false);
 </script>
 <template>
+  <LoadingOverlay :is-loading="isLoading" />
   <main class="py-10 md:py-[120px] bg-primary-Tint">
     <section class="container flex items-center gap-x-2">
       <NuxtLink class="p-1 w-fit flex items-center justify-center" :to="`/room-detail/${bookingData.roomId}`">
