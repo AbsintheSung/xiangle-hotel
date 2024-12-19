@@ -31,17 +31,73 @@ export default defineEventHandler((event) => {
           {
             "title": "市景",
             "isProvide": true
+          },
+          {
+            "title": "獨立衛浴",
+            "isProvide": true
+          },
+          {
+            "title": "樓層電梯",
+            "isProvide": true
           }
         ],
         "facilityInfo": [
           {
             "title": "平面電視",
             "isProvide": true
+          },
+          {
+            "title": "吹風機",
+            "isProvide": true
+          },
+          {
+            "title": "冰箱",
+            "isProvide": true
+          },
+          {
+            "title": "熱水壺",
+            "isProvide": true
+          },
+          {
+            "title": "檯燈",
+            "isProvide": true
+          },
+          {
+            "title": "衣櫥",
+            "isProvide": true
+          },
+          {
+            "title": "書桌",
+            "isProvide": true
           }
         ],
         "amenityInfo": [
           {
             "title": "衛生紙",
+            "isProvide": true
+          },
+          {
+            "title": "拖鞋",
+            "isProvide": true
+          },
+          {
+            "title": "沐浴用品",
+            "isProvide": true
+          },
+          {
+            "title": "刮鬍刀",
+            "isProvide": true
+          },
+          {
+            "title": "刷牙用品",
+            "isProvide": true
+          },
+          {
+            "title": "罐裝水",
+            "isProvide": true
+          },
+          {
+            "title": "梳子",
             "isProvide": true
           }
         ],

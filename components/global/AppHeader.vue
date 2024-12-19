@@ -43,7 +43,7 @@ onMounted(() => {
 </script>
 <template>
   <header class="w-full z-30 transition-all duration-300 ease-in-out" :class="[{ 'bg-black': isScrolled || !isNeedsBackground }, { fixed: isScrolled || isFixed }]">
-    <div class="px-3 py-6 flex items-center justify-between md:px-20">
+    <div class="px-3 py-6 flex items-center justify-between 3xl:px-20">
       <h1>
         <NuxtLink to="/">
           <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
