@@ -4,6 +4,8 @@ import { roomDetailCards } from "@/utils/swiperConfigs";
 import DateDialog from "./components/DateDialog.vue";
 import CheckDialog from "./components/CheckDialog.vue";
 import type { RoomDetailResponse } from "~/types/roomdetail";
+const config = useRuntimeConfig();
+const route = useRoute();
 const swiperContainer = ref<HTMLElement | null>(null);
 const { $dayjs } = useNuxtApp();
 const { width: windowWidthSize } = useWindowSize();
@@ -34,7 +36,7 @@ const masks = ref({
 const minDate = ref($dayjs().toDate()); // 最早可選當天
 const maxDate = ref($dayjs().add(1, "year").toDate()); // 最晚可選下一年同一天
 
-const { data: roomDetail } = await useFetch<RoomDetailResponse>(`https://nuxr3.zeabur.app/api/v1/rooms/${"66b0912cafe4327b9a56379c"}`);
+const { data: roomDetail } = await useFetch<RoomDetailResponse>(`${config.public.apiBase}/api/v1/rooms/${route.params.room_id}`);
 
 //判斷是否可以增減
 const guestLimits = computed(() => ({
