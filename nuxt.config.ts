@@ -39,6 +39,16 @@ export default defineNuxtConfig({
       }),
     ],
   },
+  runtimeConfig: {
+    // 私有
+    // apiSecret: process.env.NUXT_API_SECRET, // 可以被 NUXT_API_SECRET 覆蓋
+
+    // 公開
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_URL,
+      cookieName:process.env.NUXT_PUBLIC_API_URL,
+    }
+  },
   vue: {
     compilerOptions: {
       //所有以 "swiper-" 開頭標籤（如 <swiper-container>, <swiper-slide> 等）都將被視為自定義元素，而非未知的HTML元素。

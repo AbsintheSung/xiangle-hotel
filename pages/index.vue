@@ -75,6 +75,15 @@ const slideNext = () => {
 //     { immediate: true }
 //   );
 // });
+const config = useRuntimeConfig();
+
+// 服務器端可以使用 apiSecret
+// if (useNuxtApp().ssrContext) {
+//   console.log("服務端", config.apiSecret);
+// }
+
+// 兩端都可以使用 apiBase
+console.log("客戶端", config.public.apiBase);
 </script>
 
 <template>
