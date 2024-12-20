@@ -10,11 +10,8 @@ import "swiper/css/navigation";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
 
-// const windowScroll = useWindowScroll();
-// const headerY = ref(windowScroll.y);
-// const isScrolled = ref(false);
 const roomsNum = ref(0);
-// const isOpenMenu = ref(false);
+
 const roomSwiper: Ref<typeof Swiper | null> = ref(null);
 const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-1" },
@@ -47,13 +44,6 @@ const getRoomsData = computed(() => {
 
 const getRoomsDataLength = computed(() => roomsDataList.value?.result.length || 0);
 
-// const handleMenu = () => {
-//   isOpenMenu.value = true;
-// };
-// const handleCloseMenu = () => {
-//   isOpenMenu.value = false;
-// };
-
 const slidePrev = () => {
   roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
   roomSwiper.value?.$el.swiper.autoplay?.start(); //執行上面，自動輪播失效，須重啟
@@ -66,15 +56,6 @@ const slideNext = () => {
   roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
 };
 
-// onMounted(() => {
-//   watch(
-//     () => headerY.value,
-//     (newHeaderY) => {
-//       newHeaderY > 0 ? (isScrolled.value = true) : (isScrolled.value = false);
-//     },
-//     { immediate: true }
-//   );
-// });
 const config = useRuntimeConfig();
 
 // 服務器端可以使用 apiSecret
@@ -87,53 +68,6 @@ console.log("客戶端", config.public.apiBase);
 </script>
 
 <template>
-  <!-- <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
-    <div class="px-3 py-6 flex items-center justify-between md:px-20">
-      <h1>
-        <RouterLink to="/">
-          <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
-        </RouterLink>
-      </h1>
-      <ul class="hidden items-center gap-x-4 font-bold text-white md:flex">
-        <li>
-          <RouterLink class="block p-4" to="/">客房旅宿</RouterLink>
-        </li>
-        <li>
-          <RouterLink class="block p-4" to="/">會員登入</RouterLink>
-        </li>
-        <li class="bg-primary-base rounded-xl">
-          <RouterLink class="block py-4 px-8" to="/">立即訂房</RouterLink>
-        </li>
-      </ul>
-      <div class="md:hidden">
-        <button>
-          <Icon class="text-white text-3xl" name="gridicons:menu" @click="handleMenu"></Icon>
-        </button>
-      </div>
-    </div>
-    <Transition name="fade">
-      <div v-if="isOpenMenu" class="p-5 fixed inset-0 w-full h-full z-50 bg-black flex flex-col items-center justify-center">
-        <div class="absolute top-5 right-5">
-          <button @click="handleCloseMenu">
-            <Icon class="text-white text-3xl" name="gridicons:cross"></Icon>
-          </button>
-        </div>
-        <div class="w-full">
-          <ul class="flex flex-col items-center gap-y-4 font-bold text-white">
-            <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">客房旅宿</RouterLink>
-            </li>
-            <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">會員登入</RouterLink>
-            </li>
-            <li class="w-full text-center bg-primary-base rounded-xl">
-              <RouterLink class="block p-4 w-full" to="/">立即訂房</RouterLink>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </Transition>
-  </header> -->
   <main>
     <section class="relative">
       <Swiper ref="roomSwiper" v-bind="homeMain" class="h-full">
@@ -334,53 +268,6 @@ console.log("客戶端", config.public.apiBase);
       </div>
     </section>
   </main>
-  <!-- <footer class="py-20 bg-black">
-    <div class="container flex flex-col gap-y-10">
-      <div class="flex flex-col gap-y-10 md:flex-row md:justify-between md:items-center">
-        <div class="flex flex-col gap-y-10">
-          <RouterLink to="/">
-            <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
-          </RouterLink>
-          <div class="flex gap-x-4">
-            <RouterLink to="/">
-              <Icon class="text-white text-2xl" name="lineicons:line"></Icon>
-            </RouterLink>
-            <RouterLink to="/">
-              <Icon class="text-white text-2xl" name="lineicons:instagram-original"></Icon>
-            </RouterLink>
-          </div>
-        </div>
-        <ul class="text-white grid gap-x-20 gap-y-4 md:grid-cols-2 md:gap-y-10">
-          <li>
-            <p class="font-bold">TEL:</p>
-            <p>
-              <a href="tel:+886-7-1234567">+886-7-1234567</a>
-            </p>
-          </li>
-          <li>
-            <p class="font-bold">MAIL:</p>
-            <p>
-              <a href="mailto:elh@hexschool.com">elh@hexschool.com</a>
-            </p>
-          </li>
-          <li>
-            <p class="font-bold">FAX:</p>
-            <p>+886-7-1234567</p>
-          </li>
-          <li>
-            <p class="font-bold">WEB:</p>
-            <p>
-              <a href="https://www.elhhexschool.com.tw" target="_blank" rel="noopener noreferrer">www.elhhexschool.com.tw</a>
-            </p>
-          </li>
-        </ul>
-      </div>
-      <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between text-white">
-        <address>806023 台灣高雄市新興區六角路123號</address>
-        <p>&copy; 享樂酒店 2023 All Rights Reserved.</p>
-      </div>
-    </div>
-  </footer> -->
 </template>
 <style scoped lang="scss">
 .swiper :deep(.swiper-pagination) {
