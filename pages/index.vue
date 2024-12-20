@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
-
+const config = useRuntimeConfig();
 const roomsNum = ref(0);
 
 const roomSwiper: Ref<typeof Swiper | null> = ref(null);
@@ -19,9 +19,13 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
-const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
-const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
-const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
+// const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
+// const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
+// const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
+const { data: newsDataList } = await useFetch<ResponseNews>(`${config.public.apiBase}/api/v1/home/news`);
+const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`${config.public.apiBase}/api/v1/home/culinary`);
+const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
+
 const getNewsDataList = computed(() => {
   return newsDataList.value?.result ?? [];
 });
@@ -55,16 +59,6 @@ const slideNext = () => {
   roomSwiper.value?.$el.swiper.autoplay?.start();
   roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
 };
-
-const config = useRuntimeConfig();
-
-// 服務器端可以使用 apiSecret
-// if (useNuxtApp().ssrContext) {
-//   console.log("服務端", config.apiSecret);
-// }
-
-// 兩端都可以使用 apiBase
-console.log("客戶端", config.public.apiBase);
 </script>
 
 <template>
@@ -89,17 +83,17 @@ console.log("客戶端", config.public.apiBase);
             <div class="hidden mt-10 w-[30vw] h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:block" />
           </div>
 
-          <div class="mt-5 mb-10 h-20 w-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:hidden"></div>
-          <div class="ms-auto sm:ms-0 w-[calc(100%-3rem)] sm:w-fit border-t border-r border-[#F5F7F9] rounded-[80px] py-24 backdrop-blur-sm shadow-[0_10px_50px_rgba(0,0,0,0.5)]">
+          <div class="mt-5 mb-8 h-12 w-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:hidden"></div>
+          <div class="ms-auto py-2 sm:ms-0 w-[calc(100%-3rem)] sm:w-fit border-t border-r border-[#F5F7F9] rounded-[80px] md:py-24 backdrop-blur-sm shadow-[0_10px_50px_rgba(0,0,0,0.5)]">
             <div class="-translate-x-12">
-              <h3 class="flex flex-col gap-y-2 text-5xl lg:text-6xl 2xl:text-8xl text-white font-bold">
+              <h3 class="flex flex-col gap-y-2 text-3xl lg:text-6xl 2xl:text-8xl text-white font-bold">
                 <span>高雄</span>
                 <span>豪華住宿之選</span>
               </h3>
               <p class="mt-6 mb-24 text-base lg:text-2xl 2xl:text-3xl text-white font-semibold">我們致力於為您提供無與倫比的奢華體驗與優質服務</p>
             </div>
             <div class="-translate-x-12">
-              <NuxtLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
+              <NuxtLink to="/rooms" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
                 <p class="z-10 text-base text-black md:text-2xl font-bold group-hover:text-white">立即訂房</p>
                 <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
                 <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
@@ -180,7 +174,7 @@ console.log("客戶端", config.public.apiBase);
             <h2 class="text-4xl lg:text-5xl font-bold">{{ getRoomsData?.name }}</h2>
             <p>{{ getRoomsData?.description }}</p>
           </div>
-          <p class="text-3xl font-bold">NT$ {{ getRoomsData?.price }}</p>
+          <p class="text-3xl font-bold" v-number-format="getRoomsData?.price"></p>
           <NuxtLink to="/rooms" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
             <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
             <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
