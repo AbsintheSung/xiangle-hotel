@@ -2,10 +2,12 @@
 import { useSignInForm } from "~/composables/signInForm";
 const { errors, email, password, submitSigninForm } = useSignInForm();
 const isLoading = ref<boolean>(false);
+const router = useRouter();
 const handleSignin = async (): Promise<void> => {
   isLoading.value = true;
   try {
     await submitSigninForm();
+    router.push("/");
   } catch (error) {
     console.log(error);
     const errorMessage = (error as Error).message;
