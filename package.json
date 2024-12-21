@@ -17,6 +17,7 @@
     "@vueuse/nuxt": "^11.3.0",
     "dayjs": "^1.11.13",
     "nuxt": "^3.14.159",
+    "sweetalert2": "^11.15.2",
     "swiper": "^11.1.14",
     "vue": "latest",
     "vue-router": "latest",
