@@ -21,6 +21,12 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vee-validate/nuxt',
     '@samk-dev/nuxt-vcalendar',
+    [
+      '@pinia/nuxt',
+      {
+        'autoImports': ['defineStore', 'acceptHMRUpdate'],
+      },
+    ]
   ],
   css: ['~/assets/scss/index.scss', '~/assets/tailwind.css',],
   vite: {
@@ -38,6 +44,9 @@ export default defineNuxtConfig({
         customDomId: '__svg__icons__dom__',
       }),
     ],
+  },
+  pinia: {
+    storesDirs: ['./stores/**'], // 自動匯入 /stores 目錄下的所有 store
   },
   runtimeConfig: {
     // 私有

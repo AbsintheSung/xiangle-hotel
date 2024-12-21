@@ -15,3 +15,16 @@ export type SignUpForm = {
   birthday: string;    // 生日，格式 yyyy/mm/dd
   address: Address;    // 地址
 };
+
+
+export type AuthUser = {
+  address: Address;
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+  birthday: string;
+  createdAt: string;
+  updatedAt: string;
+  id: string;
+}

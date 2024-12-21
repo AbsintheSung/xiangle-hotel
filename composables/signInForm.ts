@@ -15,9 +15,18 @@ type SignInError = {
   };
   message?: string;
 };
+type SignInResponse = {
+  status: boolean;
+  token: string;
+  message?: string;
+
+}
+
 
 export const useSignInForm = () => {
+  const authStore = useAuthStore()
   const config = useRuntimeConfig();
+  const router = useRouter();
   // const { $swal } = useNuxtApp();
   const validationSchema = toTypedSchema(userFormSchema);
   const initialValues: UserFormSchema = {
@@ -36,7 +45,7 @@ export const useSignInForm = () => {
   const submitSigninForm = handleSubmit(
     async (values) => {
       try {
-        await $fetch(`${config.public.apiBase}/api/v1/user/login`, {
+        const response = await $fetch<SignInResponse>(`${config.public.apiBase}/api/v1/user/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -46,14 +55,16 @@ export const useSignInForm = () => {
             password: values.password,
           },
           onResponse({ request, response, options }) {
-            const message = response._data;
+            const signInResposne = response._data;
             const authCookie = useCookie(config.public.cookieName, { path: "/" })
-            authCookie.value = message.token
+            authCookie.value = signInResposne.token
+            authStore.authData = { ...signInResposne.result, address: { ...signInResposne.result.address } }
           }
         });
-        console.log('登入成功')
-        resetForm(); // 初始化表單
-
+        if (response.status) {
+          resetForm(); // 初始化表單
+          router.push('/')
+        }
       } catch (error) {
         const signInError = error as SignInError;
         throw new Error(
