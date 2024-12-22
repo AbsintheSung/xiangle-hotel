@@ -19,7 +19,6 @@ type SignInResponse = {
   status: boolean;
   token: string;
   message?: string;
-
 }
 
 
@@ -56,9 +55,12 @@ export const useSignInForm = () => {
           },
           onResponse({ request, response, options }) {
             const signInResposne = response._data;
-            const authCookie = useCookie(config.public.cookieName, { path: "/" })
+            const authCookie = useCookie(config.public.cookieAuth, { path: "/" })
+            const userCookie = useCookie(config.public.cookieUser, { path: "/" })
             authCookie.value = signInResposne.token
-            authStore.authData = { ...signInResposne.result, address: { ...signInResposne.result.address } }
+            userCookie.value = signInResposne.result
+            authStore.setUserData()
+            // authStore.authData = { ...signInResposne.result, address: { ...signInResposne.result.address } }
           }
         });
         if (response.status) {

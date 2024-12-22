@@ -55,7 +55,8 @@ export default defineNuxtConfig({
     // 公開
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_URL || 'https://nuxr3.zeabur.app',
-      cookieName: process.env.NUXT_PUBLIC_API_URL,
+      cookieUser: process.env.NUXT_PUBLIC_COOKIE_USER,
+      cookieAuth: process.env.NUXT_PUBLIC_COOKIE_AUTH,
     }
   },
   vue: {
