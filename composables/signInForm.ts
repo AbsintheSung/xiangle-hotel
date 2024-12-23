@@ -59,11 +59,11 @@ export const useSignInForm = () => {
             const userCookie = useCookie(config.public.cookieUser, { path: "/" })
             authCookie.value = signInResposne.token
             userCookie.value = signInResposne.result
-            authStore.setUserData()
             // authStore.authData = { ...signInResposne.result, address: { ...signInResposne.result.address } }
           }
         });
         if (response.status) {
+          authStore.setUserData()
           resetForm(); // 初始化表單
           router.push('/')
         }

@@ -40,6 +40,7 @@ export const useAuthStore = defineStore("authStore", () => {
     //useCookie 未設置的話為 undefined，使用userCookie.value ? 可以判斷  undefined 跟 null狀態
     const userCookie = useCookie(config.public.cookieUser);
     authData.value = userCookie.value ? (userCookie.value as unknown as AuthUser) : null;
+    setTrueIsAuthenticated()
   }
 
   //檢查是否登入狀態
@@ -52,7 +53,10 @@ export const useAuthStore = defineStore("authStore", () => {
         },
       });
       if (response.status) {
-        isAuthenticated.value = true
+        // const userCookie = useCookie(config.public.cookieUser);
+        // authData.value = userCookie.value ? (userCookie.value as unknown as AuthUser) : null;
+        // isAuthenticated.value = true
+        setUserData()
       }
     } catch (error) {
       const errorMes = error as CheckoutError
@@ -66,12 +70,40 @@ export const useAuthStore = defineStore("authStore", () => {
     }
   };
 
+  //檢查是否登入狀態 - 回傳布林值
+  const checkAuthBoolen = async () => {
+    try {
+      const response = await $fetch<CheckoutResponse>(`${config.public.apiBase}/api/v1/user/check`, {
+        method: "GET",
+        headers: {
+          Authorization: `${useCookie(config.public.cookieAuth).value}`,
+        },
+      });
+      if (response.status) {
+        return response.status
+      }
+    } catch (error) {
+      const errorMes = error as CheckoutError
+      return errorMes.response?._data?.status
+    }
+  }
+
+  const setTrueIsAuthenticated = () => {
+    isAuthenticated.value = true
+  }
+
+  const setFalseIsAuthenticated = () => {
+    isAuthenticated.value = false
+  }
 
   return {
     authData,
     getIsAuthenticated,
     getAuthData,
     setUserData,
-    checkAuthStatus
+    checkAuthStatus,
+    setTrueIsAuthenticated,
+    setFalseIsAuthenticated,
+    checkAuthBoolen
   };
 });

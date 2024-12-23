@@ -40,6 +40,7 @@ onMounted(() => {
     { immediate: true }
   );
 });
+const authStore = useAuthStore();
 </script>
 <template>
   <header class="w-full z-30 transition-all duration-300 ease-in-out" :class="[{ 'bg-black': isScrolled || !isNeedsBackground }, { fixed: isScrolled || isFixed }]">
@@ -53,8 +54,16 @@ onMounted(() => {
         <li>
           <NuxtLink class="block p-4" to="/rooms">客房旅宿</NuxtLink>
         </li>
-        <li>
+        <li v-if="!authStore.getIsAuthenticated">
           <NuxtLink class="block p-4" to="/auth/signin">會員登入</NuxtLink>
+        </li>
+        <li v-else>
+          <NuxtLink class="block p-4" to="/auth/signin">
+            <div class="flex items-center gap-x-2">
+              <Icon class="text-2xl" name="fluent:person-circle-32-regular" />
+              <p>{{ authStore.getAuthData?.name }}</p>
+            </div>
+          </NuxtLink>
         </li>
         <li class="bg-primary-base rounded-xl">
           <NuxtLink class="block py-4 px-8" to="/">立即訂房</NuxtLink>
@@ -78,8 +87,16 @@ onMounted(() => {
             <li class="w-full text-center">
               <NuxtLink class="block p-4 w-full" to="/rooms">客房旅宿</NuxtLink>
             </li>
-            <li class="w-full text-center">
+            <li v-if="!authStore.getIsAuthenticated" class="w-full text-center">
               <NuxtLink class="block p-4 w-full" to="/auth/signin">會員登入</NuxtLink>
+            </li>
+            <li v-else class="w-full">
+              <NuxtLink class="block p-4" to="/auth/signin">
+                <div class="flex justify-center items-center gap-x-2">
+                  <Icon class="text-2xl" name="fluent:person-circle-32-regular" />
+                  <p>{{ authStore.getAuthData?.name }}</p>
+                </div>
+              </NuxtLink>
             </li>
             <li class="w-full text-center bg-primary-base rounded-xl">
               <NuxtLink class="block p-4 w-full" to="/">立即訂房</NuxtLink>
