@@ -4,14 +4,35 @@ import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { taiwanCity } from "~/content/city";
 import type { SignUpForm } from "~/types/auth";
+import type { Member, PutAuthResponse } from "~/types/user";
+const { $swal } = useNuxtApp();
+const config = useRuntimeConfig();
+const router = useRouter();
+const authStore = useAuthStore();
 const { $dayjs } = useNuxtApp();
 const isEditAuth = ref<boolean>(false);
 const isEditInfo = ref<boolean>(false);
+
+const getUserName = computed(() => authStore.getAuthData?.name);
+const getUserPhone = computed(() => authStore.getAuthData?.phone);
+const getUserBirthday = computed(() => {
+  const year = $dayjs(authStore.getAuthData?.birthday).year().toString();
+  const month = ($dayjs(authStore.getAuthData?.birthday).month() + 1).toString();
+  const day = $dayjs(authStore.getAuthData?.birthday).date().toString();
+  return `${year} 年 ${month} 月 ${day}日`;
+});
+const getUserAddress = computed(() => {
+  const city = authStore.getAuthData?.address.city;
+  const county = authStore.getAuthData?.address.county;
+  const addressDetail = authStore.getAuthData?.address.detail;
+  return `${city}${county}${addressDetail}`;
+});
 
 const handlleEditAuth = (): void => {
   isEditAuth.value = true;
 };
 const handlleEditInfo = (): void => {
+  setNewData();
   isEditInfo.value = true;
 };
 const closeEditAuth = (): void => {
@@ -22,32 +43,43 @@ const closeEditInfo = (): void => {
   isEditInfo.value = false;
   infoFormReset();
 };
-
-const signUpForm = ref<SignUpForm>({
+const restMemberForm: Member = {
+  userId: "",
   name: "",
-  email: "",
-  password: "",
   phone: "",
-  birthday: "", //字串，格式為 yyyy/mm/dd
+  birthday: "1",
   address: {
     zipcode: null, //會傳入 number
     detail: "",
     city: "",
     county: "",
   },
+  // oldPassword: "",
+  // newPassword: "",
+};
+
+//修改的 api 好像可以拆開不傳遞密碼修改的屬性，所以新舊密碼修改直接寫到請求body
+const memberForm = ref<Member>({
+  userId: "",
+  name: "",
+  phone: "",
+  birthday: "1",
+  address: {
+    zipcode: null, //會傳入 number
+    detail: "",
+    city: "",
+    county: "",
+  },
+  // oldPassword: "",
+  // newPassword: "",
 });
 
 //以下為 密碼 更改表單設定
 // 模擬後端提供的舊密碼，用於驗證
-const oldPasswordFromBackend = "oldPassword123";
+
 const userFormSchema = zod
   .object({
-    oldPassword: zod
-      .string()
-      .min(1, { message: "必填" })
-      .refine((val) => val === oldPasswordFromBackend, {
-        message: "舊密碼不正確",
-      }),
+    oldPassword: zod.string().min(1, { message: "必填" }),
     newPassword: zod
       .string()
       .min(8, { message: "至少需要 8 個字元含一個英文字母" })
@@ -77,18 +109,6 @@ const { handleSubmit: saveAuth, resetForm: authFormReset } = useForm({
 const { value: oldPassword, errorMessage: oldPasswordError } = useField("oldPassword");
 const { value: newPassword, errorMessage: newPasswordError } = useField("newPassword");
 const { value: confirmNewPassword, errorMessage: confirmPasswordError } = useField("confirmNewPassword");
-const handleSaveAuth = saveAuth(
-  (values) => {
-    console.log("表單提交成功", values);
-    // signUpForm.value.email = email.value as string;
-    // signUpForm.value.password = password.value as string;
-    // formState.value = "personalInfoForm";
-    // resetForm();
-  },
-  (errors) => {
-    console.log("表單驗證失敗", errors);
-  }
-);
 
 //以下為 基本資料 更改表單設定
 const memberInfoSchema = zod.object({
@@ -126,9 +146,132 @@ const { value: day, errorMessage: dayError } = useField("day");
 const { value: city, errorMessage: cityError } = useField("city");
 const { value: county, errorMessage: countyError } = useField("county");
 const { value: detailAddress, errorMessage: detailAddressError } = useField("detailAddress");
-const handleSaveInfo = saveInfo(
-  (values) => {
+
+type PutAuthErrorResponse = {
+  status: boolean;
+  message: string;
+};
+
+type PutAuthError = {
+  response?: {
+    _data?: PutAuthErrorResponse;
+    status?: number;
+  };
+  message?: string;
+};
+
+const handleSaveAuth = saveAuth(
+  async (values) => {
     console.log("表單提交成功", values);
+    memberForm.value.userId = authStore.getAuthData?._id as string;
+    memberForm.value.name = authStore.getAuthData?.name as string;
+    memberForm.value.phone = authStore.getAuthData?.phone as string;
+    memberForm.value.birthday = $dayjs(authStore.getAuthData?.birthday as string).format("YYYY/MM/DD");
+    memberForm.value.address.city = authStore.getAuthData?.address.city as string;
+    memberForm.value.address.county = authStore.getAuthData?.address.county as string;
+    memberForm.value.address.detail = authStore.getAuthData?.address.detail as string;
+    memberForm.value.address.zipcode = authStore.getAuthData?.address.zipcode;
+    // memberForm.value.oldPassword = oldPassword.value as string;
+    // memberForm.value.newPassword = newPassword.value as string;
+    try {
+      const response = await $fetch<PutAuthResponse>(`${config.public.apiBase}/api/v1/user`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${useCookie(config.public.cookieAuth).value}`,
+        },
+        body: {
+          ...memberForm.value,
+          address: { ...memberForm.value.address },
+          oldPassword: oldPassword.value as string,
+          newPassword: newPassword.value as string,
+        },
+      });
+      if (response.status) {
+        $swal.fire({
+          position: "center",
+          icon: "success",
+          title: "修改成功",
+          text: `密碼修改完成`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        authFormReset();
+        isEditAuth.value = false;
+      }
+      console.log(response);
+    } catch (error) {
+      const errorMes = error as PutAuthError;
+      $swal.fire({
+        position: "center",
+        icon: "error",
+        title: "修改失敗",
+        text: `${errorMes.response?._data?.message}`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
+  },
+  (errors) => {
+    console.log("表單驗證失敗", errors);
+  }
+);
+
+const handleSaveInfo = saveInfo(
+  async (values) => {
+    console.log("表單提交成功", values);
+    const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
+    const districtsData = cityData?.districts.find((districtItem) => districtItem.name === county.value);
+    const birthday: string = `${year.value}/${month.value}/${day.value}`;
+    const zipcode: number = Number(districtsData?.zip);
+    memberForm.value.userId = authStore.getAuthData?._id as string;
+    memberForm.value.name = name.value as string;
+    memberForm.value.phone = phone.value as string;
+    memberForm.value.birthday = birthday;
+    memberForm.value.address.city = city.value as string;
+    memberForm.value.address.county = county.value as string;
+    memberForm.value.address.detail = detailAddress.value as string;
+    memberForm.value.address.zipcode = zipcode;
+    try {
+      const response = await $fetch<PutAuthResponse>(`${config.public.apiBase}/api/v1/user`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${useCookie(config.public.cookieAuth).value}`,
+        },
+        body: {
+          ...memberForm.value,
+          address: { ...memberForm.value.address },
+        },
+      });
+      if (response.status) {
+        await authStore.fetchUserData();
+        infoFormReset();
+        isEditInfo.value = false;
+        $swal.fire({
+          position: "center",
+          icon: "success",
+          title: "修改成功",
+          text: `基本資料修改完成，請重新登入`,
+          showConfirmButton: false,
+          timer: 1500,
+          didClose: () => {
+            window.location.reload();
+          },
+        });
+      }
+      console.log(response);
+    } catch (error) {
+      const errorMes = error as PutAuthError;
+      $swal.fire({
+        position: "center",
+        icon: "error",
+        title: "修改失敗",
+        text: `${errorMes.response?._data?.message}`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
     // signUpForm.value.email = email.value as string;
     // signUpForm.value.password = password.value as string;
     // formState.value = "personalInfoForm";
@@ -138,6 +281,16 @@ const handleSaveInfo = saveInfo(
     console.log("表單驗證失敗", errors);
   }
 );
+const setNewData = () => {
+  name.value = authStore.getAuthData?.name;
+  phone.value = authStore.getAuthData?.phone;
+  year.value = $dayjs(authStore.getAuthData?.birthday).year().toString();
+  month.value = ($dayjs(authStore.getAuthData?.birthday).month() + 1).toString();
+  day.value = $dayjs(authStore.getAuthData?.birthday).date().toString();
+  city.value = authStore.getAuthData?.address.city;
+  county.value = authStore.getAuthData?.address.county;
+  detailAddress.value = authStore.getAuthData?.address.detail;
+};
 
 // 添加一個計算屬性來整合日期錯誤訊息
 const dateErrorMessage = computed(() => {
@@ -180,32 +333,31 @@ const countyOptions = computed(() => {
   return cityData ? cityData.districts : []; // 如果找不到城市，返回空陣列
 });
 
-// 監聽年月的變化，確保日期在合法範圍內
-watch([year, month], ([newYear, newMonth], [oldYear, oldMonth]) => {
-  if (newYear === "" && newMonth === "") return;
-
-  // 如果年份或月份變化，重置日期
-  if (newYear !== oldYear || newMonth !== oldMonth) {
+// 會綁定到 年跟月 的 change事件，確保 日 會是正確的
+const handleDateChange = () => {
+  // 當年或月為空時不處理
+  if (year.value === "" || month.value === "") {
     day.value = "";
+    return;
   }
 
-  // 確保日期在合法範圍內
-  if (newYear && newMonth) {
-    const daysInMonth = $dayjs(`${newYear}-${newMonth}-01`).daysInMonth();
-    if (Number(day.value) > daysInMonth) {
-      day.value = String(daysInMonth); // 限制日期到該月份最大天數
-    }
-  }
-});
+  // 計算選定月份的天數
+  const daysInMonth = $dayjs(`${year.value}-${month.value}-01`).daysInMonth();
 
-//當城市改變時候，初始化地區，確保城市地區一致
-watch(
-  () => city.value,
-  (newCity) => {
-    if (newCity === "") return;
-    county.value = "";
+  // 重置日期
+  day.value = "";
+
+  // 如果已選擇的日期大於當月最大天數，則調整為當月最後一天
+  if (Number(day.value) > daysInMonth) {
+    day.value = String(daysInMonth);
   }
-);
+};
+
+//綁定到 城市 的change事件 改變時候，初始化地區，確保城市地區一致
+const handleCityChange = () => {
+  if (city.value === "") return;
+  county.value = "";
+};
 </script>
 <template>
   <section class="container flex flex-col gap-x-10 gap-y-6 md:flex-row text-white">
@@ -262,19 +414,19 @@ watch(
       <form class="flex flex-col gap-y-6">
         <div class="flex flex-col gap-y-2">
           <label class="font-medium">姓名</label>
-          <input class="font-bold bg-white" type="email" disabled value="Jessica Ｗang" />
+          <input class="font-bold bg-white" type="email" disabled :value="getUserName" />
         </div>
         <div class="flex flex-col gap-y-2">
           <label class="font-medium">手機號碼</label>
-          <input class="font-bold bg-white" type="phone" disabled value="0932000000" />
+          <input class="font-bold bg-white" type="phone" disabled :value="getUserPhone" />
         </div>
         <div class="flex flex-col gap-y-2">
           <label class="font-medium">生日</label>
-          <input class="font-bold bg-white" type="text" disabled value="1990 年 8 月 15 日" />
+          <input class="font-bold bg-white" type="text" disabled :value="getUserBirthday" />
         </div>
         <div class="flex flex-col gap-y-2">
           <label class="font-medium">地址</label>
-          <input class="font-bold bg-white" type="text" disabled value="高雄市新興區六角路 123 號" />
+          <input class="font-bold bg-white" type="text" disabled :value="getUserAddress" />
         </div>
         <button class="py-4 px-8 w-fit primary-base font-bold rounded-lg border border-primary-base text-primary-base" @click.prevent="handlleEditInfo">編輯</button>
       </form>
@@ -300,7 +452,7 @@ watch(
           <label class="font-bold">生日</label>
           <div class="relative w-full flex items-center gap-x-2">
             <div class="relative flex-1 w-full">
-              <select v-model="year" class="appearance-none w-full p-4 text-black font-bold border rounded-lg bg-white cursor-pointer">
+              <select v-model="year" @change="handleDateChange" class="appearance-none w-full p-4 text-black font-bold border rounded-lg bg-white cursor-pointer">
                 <option disabled value="">年</option>
                 <option v-for="y in yearOptions" :key="y" :value="String(y)">
                   {{ y }}
@@ -311,7 +463,7 @@ watch(
               </div>
             </div>
             <div class="relative flex-1 w-full">
-              <select v-model="month" class="appearance-none w-full p-4 text-black font-bold border rounded-lg bg-white cursor-pointer">
+              <select v-model="month" @change="handleDateChange" class="appearance-none w-full p-4 text-black font-bold border rounded-lg bg-white cursor-pointer">
                 <option disabled value="">月</option>
                 <option v-for="m in monthOptions" :key="m" :value="String(m)">
                   {{ m }}
@@ -343,7 +495,7 @@ watch(
           <label class="font-bold">地址</label>
           <div class="relative flex items-center gap-x-2">
             <div class="relative flex-1 w-full">
-              <select v-model="city" class="appearance-none w-full p-4 text-black font-bold border rounded-lg bg-white cursor-pointer">
+              <select v-model="city" @change="handleCityChange" class="appearance-none w-full p-4 text-black font-bold border rounded-lg bg-white cursor-pointer">
                 <option disabled value="">城市</option>
                 <option v-for="cityItem in cityOptions" :key="cityItem" :value="cityItem">{{ cityItem }}</option>
               </select>
@@ -368,7 +520,7 @@ watch(
             </span>
           </Transition>
         </div>
-        <div class="flex gap-x-4">
+        <div class="mt-4 flex gap-x-4">
           <button class="w-full py-4 px-6 primary-base font-bold rounded-lg border border-primary-base text-primary-base md:w-fit lg:px-8" @click.prevent="closeEditInfo">取消</button>
           <button class="w-full py-4 px-6 primary-base font-bold rounded-lg border border-primary-base text-primary-base md:w-fit lg:px-8" @click.prevent="handleSaveInfo">儲存設定</button>
         </div>

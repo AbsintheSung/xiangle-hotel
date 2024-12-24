@@ -1,19 +1,50 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+definePageMeta({
+  middleware: "auth", // 指定要使用的中間件
+});
+const authStore = useAuthStore();
+</script>
 <template>
   <main class="bg-black">
-    <div class="py-10 container text-white md:py-20">
-      <ul class="flex items-center gap-x-2">
+    <section class="py-10 md:py-[120px] bg-user-nav">
+      <div class="container">
+        <div class="flex flex-col gap-x-6 gap-y-4 md:flex-row md:items-center">
+          <img class="w-20 md:w-36" src="/assets/images/desktop/avatar-6.png" />
+          <p class="text-white font-bold text-3xl md:text-5xl">Hello，{{ authStore.getAuthData?.name }}</p>
+        </div>
+      </div>
+    </section>
+    <section class="py-10 container text-white md:py-20">
+      <ul class="font-bold flex items-center gap-x-2">
         <li>
-          <NuxtLink class="p-4" to="/user/member">個人資料</NuxtLink>
+          <NuxtLink to="/user/member">
+            <p class="relative p-4">
+              個人資料
+              <span class="span-active hidden absolute w-1/2 h-1 bg-primary-base rounded-lg bottom-0 left-1/2 -translate-x-1/2"></span>
+            </p>
+          </NuxtLink>
         </li>
         <li>
-          <NuxtLink class="p-4" to="/user/member/history">我的訂單</NuxtLink>
+          <NuxtLink class="p-4" to="/user/member/history">
+            <p class="relative p-4">
+              我的訂單
+              <span class="span-active hidden absolute w-1/2 h-1 bg-primary-base rounded-lg bottom-0 left-1/2 -translate-x-1/2"></span>
+            </p>
+          </NuxtLink>
         </li>
       </ul>
-    </div>
+    </section>
 
     <NuxtPage />
     <!-- 這裡渲染子路由的內容 -->
   </main>
 </template>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.router-link-exact-active {
+  > p {
+    > .span-active {
+      display: inline-block !important;
+    }
+  }
+}
+</style>

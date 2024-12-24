@@ -1,4 +1,5 @@
 import type { AuthUser } from "~/types/auth";
+import type { PutMemberInfoResponse } from "~/types/user";
 type CheckoutErrorResponse = {
   status: boolean;
   token: string;
@@ -88,6 +89,28 @@ export const useAuthStore = defineStore("authStore", () => {
     }
   }
 
+  //取得使用者資訊
+  const fetchUserData = async () => {
+    try {
+      const response = await $fetch<PutMemberInfoResponse>(`${config.public.apiBase}/api/v1/user`, {
+        method: "GET",
+        headers: {
+          Authorization: `${useCookie(config.public.cookieAuth).value}`,
+        },
+      });
+      if (response.status) {
+        //後端api回傳有缺少，所以採用登出方式，重新獲取資料( 登入時後回傳的是完整的 )
+        //此處移除所有 cookie， user/member/index.vue -> 會進入該頁，觸發middleware
+        const authCookie = useCookie(config.public.cookieAuth, { path: "/" })
+        const userCookie = useCookie(config.public.cookieUser, { path: "/" })
+        authCookie.value = null
+        userCookie.value = null
+      }
+    } catch (error) {
+
+    }
+  }
+
   const setTrueIsAuthenticated = () => {
     isAuthenticated.value = true
   }
@@ -104,6 +127,7 @@ export const useAuthStore = defineStore("authStore", () => {
     checkAuthStatus,
     setTrueIsAuthenticated,
     setFalseIsAuthenticated,
-    checkAuthBoolen
+    checkAuthBoolen,
+    fetchUserData
   };
 });

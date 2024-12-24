@@ -58,7 +58,7 @@ const authStore = useAuthStore();
           <NuxtLink class="block p-4" to="/auth/signin">會員登入</NuxtLink>
         </li>
         <li v-else>
-          <NuxtLink class="block p-4" to="/auth/signin">
+          <NuxtLink class="block p-4" to="/user/member">
             <div class="flex items-center gap-x-2">
               <Icon class="text-2xl" name="fluent:person-circle-32-regular" />
               <p>{{ authStore.getAuthData?.name }}</p>
@@ -91,7 +91,7 @@ const authStore = useAuthStore();
               <NuxtLink class="block p-4 w-full" to="/auth/signin">會員登入</NuxtLink>
             </li>
             <li v-else class="w-full">
-              <NuxtLink class="block p-4" to="/auth/signin">
+              <NuxtLink class="block p-4" to="/user/member">
                 <div class="flex justify-center items-center gap-x-2">
                   <Icon class="text-2xl" name="fluent:person-circle-32-regular" />
                   <p>{{ authStore.getAuthData?.name }}</p>
