@@ -111,6 +111,15 @@ export const useAuthStore = defineStore("authStore", () => {
     }
   }
 
+  //登出 移除 cookie，並重新刷新
+  const userlogout = () => {
+    const authCookie = useCookie(config.public.cookieAuth, { path: "/" })
+    const userCookie = useCookie(config.public.cookieUser, { path: "/" })
+    authCookie.value = null
+    userCookie.value = null
+    window.location.reload();
+  }
+
   const setTrueIsAuthenticated = () => {
     isAuthenticated.value = true
   }
@@ -128,6 +137,7 @@ export const useAuthStore = defineStore("authStore", () => {
     setTrueIsAuthenticated,
     setFalseIsAuthenticated,
     checkAuthBoolen,
-    fetchUserData
+    fetchUserData,
+    userlogout
   };
 });

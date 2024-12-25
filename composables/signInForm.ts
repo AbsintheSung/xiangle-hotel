@@ -59,6 +59,7 @@ export const useSignInForm = () => {
             const userCookie = useCookie(config.public.cookieUser, { path: "/" })
             authCookie.value = signInResposne.token
             userCookie.value = signInResposne.result
+            console.log(authCookie.value)
             // authStore.authData = { ...signInResposne.result, address: { ...signInResposne.result.address } }
           }
         });

@@ -91,7 +91,7 @@ const getTotalPrice = computed(() => getTotalNights.value * getRoomPrice.value);
       </div>
       <div class="w-full md:w-5/12">
         <aside class="p-10 flex flex-col gap-y-10 bg-white rounded-[20px]">
-          <div class="sapce-y-2">
+          <div class="space-y-2">
             <p>預訂參考編號： {{ getOrderId }}</p>
             <h3 class="font-bold md:text-2xl">即將到來行程</h3>
           </div>
