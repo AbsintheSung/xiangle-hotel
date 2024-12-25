@@ -2,10 +2,17 @@
 definePageMeta({
   middleware: "auth", // 指定要使用的中間件
 });
+import { useDomStore } from "~/stores/dom";
 const authStore = useAuthStore();
+const domStore = useDomStore();
+const { y: windowScrollY } = useWindowScroll();
+
+const marginTopStyle = computed(() => {
+  return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
+});
 </script>
 <template>
-  <main class="bg-black">
+  <main class="bg-black" :style="marginTopStyle">
     <section class="py-10 md:py-[120px] bg-user-nav">
       <div class="container">
         <div class="flex flex-col gap-x-6 gap-y-4 md:flex-row md:items-center">

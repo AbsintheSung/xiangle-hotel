@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { ResponseOrder } from "~/types/order";
+import { useDomStore } from "~/stores/dom";
+const domStore = useDomStore();
+const { y: windowScrollY } = useWindowScroll();
 const config = useRuntimeConfig();
 const { $dayjs } = useNuxtApp();
 const route = useRoute();
@@ -50,9 +53,13 @@ const getTotalNights = computed(() => {
 });
 
 const getTotalPrice = computed(() => getTotalNights.value * getRoomPrice.value);
+
+const marginTopStyle = computed(() => {
+  return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
+});
 </script>
 <template>
-  <main class="bg-black">
+  <main class="bg-black" :style="marginTopStyle">
     <section class="py-10 container flex flex-col gap-x-6 gap-y-10 md:py-[120px] md:flex-row">
       <div class="w-full text-white flex flex-col gap-y-10 md:w-7/12 md:gap-y-20">
         <div class="space-y-8 md:space-y-10">

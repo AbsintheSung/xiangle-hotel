@@ -4,13 +4,16 @@ import { roomDetailCards } from "@/utils/swiperConfigs";
 import DateDialog from "./components/DateDialog.vue";
 import CheckDialog from "./components/CheckDialog.vue";
 import type { RoomDetailResponse } from "~/types/roomdetail";
+import { useDomStore } from "~/stores/dom";
 const config = useRuntimeConfig();
 const { $swal } = useNuxtApp();
 const route = useRoute();
 const swiperContainer = ref<HTMLElement | null>(null);
+const domStore = useDomStore();
 const { $dayjs } = useNuxtApp();
 const { width: windowWidthSize } = useWindowSize();
 const { width: swiperWidth } = useElementSize(swiperContainer);
+const { y: windowScrollY } = useWindowScroll();
 const GUEST_LIMITS = {
   MIN: 1,
   MAX: 4,
@@ -38,6 +41,10 @@ const minDate = ref($dayjs().toDate()); // 最早可選當天
 const maxDate = ref($dayjs().add(1, "year").toDate()); // 最晚可選下一年同一天
 
 const { data: roomDetail } = await useFetch<RoomDetailResponse>(`${config.public.apiBase}/api/v1/rooms/${route.params.room_id}`);
+
+const marginTopStyle = computed(() => {
+  return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
+});
 
 //判斷是否可以增減
 const guestLimits = computed(() => ({
@@ -219,7 +226,7 @@ watch(dateRange, (newVal) => {
 });
 </script>
 <template>
-  <main class="bg-primary-Tint">
+  <main class="bg-primary-Tint" :style="marginTopStyle">
     <section class="hidden p-12 md:block 2xl:p-20">
       <div class="relative flex gap-x-2">
         <div class="w-1/2 flex items-stretch">

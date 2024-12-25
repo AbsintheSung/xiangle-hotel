@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
+import { useDomStore } from "~/stores/dom";
 const route = useRoute();
 const router = useRouter();
+const domStore = useDomStore();
 const authStore = useAuthStore();
 const windowScroll = useWindowScroll();
 const headerY = ref(windowScroll.y);
@@ -46,9 +48,16 @@ onMounted(() => {
     { immediate: true }
   );
 });
+const headerDom = ref<HTMLElement | null>(null);
+const { height: headerHight } = useElementSize(headerDom);
+watch(headerHight, (newHeight) => {
+  if (newHeight >= 0) {
+    domStore.setHeaderDomHeight(newHeight);
+  }
+});
 </script>
 <template>
-  <header class="w-full z-30 transition-all duration-300 ease-in-out" :class="[{ 'bg-black': isScrolled || !isNeedsBackground }, { fixed: isScrolled || isFixed }]">
+  <header ref="headerDom" class="w-full z-30 transition-all duration-300 ease-in-out" :class="[{ 'bg-black': isScrolled || !isNeedsBackground }, { fixed: isScrolled || isFixed }]">
     <div class="px-3 py-6 flex items-center justify-between 3xl:px-20">
       <h1>
         <NuxtLink to="/">
@@ -94,7 +103,7 @@ onMounted(() => {
           </NuxtLink> -->
         </li>
         <li class="bg-primary-base rounded-xl">
-          <NuxtLink class="block py-4 px-8" to="/">立即訂房</NuxtLink>
+          <NuxtLink class="block py-4 px-8" to="/rooms">立即訂房</NuxtLink>
         </li>
       </ul>
       <div class="md:hidden">
@@ -131,7 +140,7 @@ onMounted(() => {
               <button class="p-4 w-full" @click="authStore.userlogout">會員登出</button>
             </li>
             <li class="w-full text-center bg-primary-base rounded-xl">
-              <NuxtLink class="block p-4 w-full" to="/">立即訂房</NuxtLink>
+              <NuxtLink class="block p-4 w-full" to="/rooms">立即訂房</NuxtLink>
             </li>
           </ul>
         </div>

@@ -3,6 +3,9 @@
 import type { RoomDetailResponse } from "~/types/roomdetail";
 import type { ResponseOrder } from "~/types/order";
 import LoadingOverlay from "./components/LoadingOverlay.vue";
+import { useDomStore } from "~/stores/dom";
+const domStore = useDomStore();
+const { y: windowScrollY } = useWindowScroll();
 const isLoading = ref(false);
 const formRef = ref<HTMLFormElement | null>(null);
 const route = useRoute();
@@ -20,6 +23,10 @@ const bookingData = ref({
   checkInDate: $dayjs(route.query.checkInDate as string).format("YYYY/MM/DD"),
   checkOutDate: $dayjs(route.query.checkOutDate as string).format("YYYY/MM/DD"),
   peopleNum: Number(route.query.peopleNum) as number,
+});
+
+const marginTopStyle = computed(() => {
+  return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
 });
 const getCheckInWeek = computed(() => {
   // 檢查是否符合 YYYY/MM/DD 格式
@@ -292,7 +299,7 @@ const handleMemberInfo = async () => {
 </script>
 <template>
   <LoadingOverlay :is-loading="isLoading" />
-  <main class="py-10 md:py-[120px] bg-primary-Tint">
+  <main class="py-10 md:py-[120px] bg-primary-Tint" :style="marginTopStyle">
     <section class="container flex items-center gap-x-2">
       <NuxtLink class="p-1 w-fit flex items-center justify-center" :to="`/room-detail/${getRoomId}`">
         <Icon class="text-xl" name="fluent:chevron-left-24-filled" />
