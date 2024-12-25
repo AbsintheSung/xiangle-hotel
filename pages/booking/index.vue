@@ -16,7 +16,7 @@ const authStore = useAuthStore();
 const { width: windowWidthSize } = useWindowSize();
 const { $swal } = useNuxtApp();
 const { data: roomDetail } = await useFetch<RoomDetailResponse>(`https://nuxr3.zeabur.app/api/v1/rooms/${route.query.roomId}`);
-console.log("roomDetail", roomDetail.value);
+// console.log("roomDetail", roomDetail.value);
 // 取得 URL 參數
 const bookingData = ref({
   roomId: route.query.roomId as string,
@@ -215,9 +215,9 @@ const handleBooking = handlePersonForm(
         isLoading.value = false;
         router.push(`/order/${response.result._id}`);
       }
-      console.log("訂房回傳", response);
+      // console.log("訂房回傳", response);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     } finally {
       isLoading.value = false;
     }
@@ -238,7 +238,7 @@ const handleBooking = handlePersonForm(
     // console.log(data);
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
     // if (windowWidthSize.value < 768) {
     // Scroll to form with smooth behavior
     formRef.value?.scrollIntoView({

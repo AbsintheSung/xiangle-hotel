@@ -162,7 +162,7 @@ type PutAuthError = {
 
 const handleSaveAuth = saveAuth(
   async (values) => {
-    console.log("表單提交成功", values);
+    // console.log("表單提交成功", values);
     memberForm.value.userId = authStore.getAuthData?._id as string;
     memberForm.value.name = authStore.getAuthData?.name as string;
     memberForm.value.phone = authStore.getAuthData?.phone as string;
@@ -199,7 +199,7 @@ const handleSaveAuth = saveAuth(
         authFormReset();
         isEditAuth.value = false;
       }
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       const errorMes = error as PutAuthError;
       $swal.fire({
@@ -213,13 +213,13 @@ const handleSaveAuth = saveAuth(
     }
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
   }
 );
 
 const handleSaveInfo = saveInfo(
   async (values) => {
-    console.log("表單提交成功", values);
+    // console.log("表單提交成功", values);
     const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
     const districtsData = cityData?.districts.find((districtItem) => districtItem.name === county.value);
     const birthday: string = `${year.value}/${month.value}/${day.value}`;
@@ -260,7 +260,7 @@ const handleSaveInfo = saveInfo(
           },
         });
       }
-      console.log(response);
+      // console.log(response);
     } catch (error) {
       const errorMes = error as PutAuthError;
       $swal.fire({
@@ -278,7 +278,7 @@ const handleSaveInfo = saveInfo(
     // resetForm();
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
   }
 );
 const setNewData = () => {

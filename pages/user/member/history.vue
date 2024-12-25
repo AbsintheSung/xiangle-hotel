@@ -120,7 +120,7 @@ const openCancelModal = () => {
 
 const handleCancelOrder = async () => {
   isCancelLoading.value = true;
-  console.log(getfirstUpcomingOrderId.value);
+  // console.log(getfirstUpcomingOrderId.value);
   try {
     const response = await $fetch<DeleteHistoryResponse>(`${config.public.apiBase}/api/v1/orders/${getfirstUpcomingOrderId.value}`, {
       method: "DELETE",
@@ -129,7 +129,7 @@ const handleCancelOrder = async () => {
       },
     });
     if (response.status) {
-      console.log("重新獲取列表api");
+      // console.log("重新獲取列表api");
       $swal.fire({
         position: "center",
         icon: "success",

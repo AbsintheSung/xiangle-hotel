@@ -75,14 +75,14 @@ const { value: confirmPassword, errorMessage: confirmPasswordError } = useField(
 // 處理表單提交
 const handleSetup = handleSubmit(
   (values) => {
-    console.log("表單提交成功", values);
+    // console.log("表單提交成功", values);
     signUpForm.value.email = email.value as string;
     signUpForm.value.password = password.value as string;
     formState.value = "personalInfoForm";
     resetForm();
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
   }
 );
 
@@ -164,7 +164,7 @@ const handleSignUp = handlePersonForm(
           ...signUpForm.value,
         },
       });
-      console.log("註冊成功");
+      // console.log("註冊成功");
       // 註冊成功後顯示成功消息
       $swal.fire({
         position: "center",
@@ -181,7 +181,7 @@ const handleSignUp = handlePersonForm(
       resetPersonForm();
     } catch (error) {
       const signUpError = error as SignUpError;
-      console.log(signUpError.response?._data);
+      // console.log(signUpError.response?._data);
       $swal.fire({
         position: "center",
         icon: "error",
@@ -197,7 +197,7 @@ const handleSignUp = handlePersonForm(
     // console.log(signUpForm.value);
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
   }
 );
 

@@ -6,7 +6,7 @@ const { y: windowScrollY } = useWindowScroll();
 const config = useRuntimeConfig();
 const { $dayjs } = useNuxtApp();
 const route = useRoute();
-console.log(route.params.order_id);
+// console.log(route.params.order_id);
 // const { data: order } = await useFetch<ResponseOrder>(`/api/order`);
 const { data: order } = await useFetch<ResponseOrder>(`${config.public.apiBase}/api/v1/orders/${route.params.order_id}`, {
   headers: {
@@ -14,7 +14,7 @@ const { data: order } = await useFetch<ResponseOrder>(`${config.public.apiBase}/
     Authorization: `${useCookie(config.public.cookieAuth).value}`,
   },
 });
-console.log(order);
+// console.log(order);
 const ROOM_TiTLES = {
   facilityInfo: "房內設備",
   amenityInfo: "備品提供",

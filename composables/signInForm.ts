@@ -59,7 +59,7 @@ export const useSignInForm = () => {
             const userCookie = useCookie(config.public.cookieUser, { path: "/" })
             authCookie.value = signInResposne.token
             userCookie.value = signInResposne.result
-            console.log(authCookie.value)
+            // console.log(authCookie.value)
             // authStore.authData = { ...signInResposne.result, address: { ...signInResposne.result.address } }
           }
         });
@@ -84,7 +84,7 @@ export const useSignInForm = () => {
       }
     },
     (errors) => {
-      console.log("表單驗證失敗", errors);
+      // console.log("表單驗證失敗", errors);
     }
   );
   return {

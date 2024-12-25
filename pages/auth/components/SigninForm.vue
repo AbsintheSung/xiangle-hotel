@@ -7,7 +7,7 @@ const handleSignin = async (): Promise<void> => {
   try {
     await submitSigninForm();
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     const errorMessage = (error as Error).message;
     const { $swal } = useNuxtApp();
     $swal.fire({

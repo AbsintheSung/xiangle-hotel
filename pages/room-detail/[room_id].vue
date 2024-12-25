@@ -114,7 +114,7 @@ const getTotalPrice = computed(() => {
   if (totalNights.value === 0) {
     return getRoomDetailPrice.value;
   } else {
-    console.log(getRoomDetailPrice.value * totalNights.value);
+    // console.log(getRoomDetailPrice.value * totalNights.value);
     return getRoomDetailPrice.value * totalNights.value;
   }
 });
