@@ -4,10 +4,16 @@ import { roomDetailCards } from "@/utils/swiperConfigs";
 import DateDialog from "./components/DateDialog.vue";
 import CheckDialog from "./components/CheckDialog.vue";
 import type { RoomDetailResponse } from "~/types/roomdetail";
+import { useDomStore } from "~/stores/dom";
+const config = useRuntimeConfig();
+const { $swal } = useNuxtApp();
+const route = useRoute();
 const swiperContainer = ref<HTMLElement | null>(null);
+const domStore = useDomStore();
 const { $dayjs } = useNuxtApp();
 const { width: windowWidthSize } = useWindowSize();
 const { width: swiperWidth } = useElementSize(swiperContainer);
+const { y: windowScrollY } = useWindowScroll();
 const GUEST_LIMITS = {
   MIN: 1,
   MAX: 4,
@@ -34,7 +40,17 @@ const masks = ref({
 const minDate = ref($dayjs().toDate()); // 最早可選當天
 const maxDate = ref($dayjs().add(1, "year").toDate()); // 最晚可選下一年同一天
 
-const { data: roomDetail } = await useFetch<RoomDetailResponse>(`https://nuxr3.zeabur.app/api/v1/rooms/${"66b0912cafe4327b9a56379c"}`);
+const { data: roomDetail } = await useFetch<RoomDetailResponse>(`${config.public.apiBase}/api/v1/rooms/${route.params.room_id}`);
+useSeoMeta({
+  title: `享樂酒店-${roomDetail.value?.result.name}`,
+  description: `享樂酒店-${roomDetail.value?.result.name}：${roomDetail.value?.result.description || ""}`,
+  ogTitle: `享樂酒店-${roomDetail.value?.result.name}`,
+  ogDescription: `享樂酒店-${roomDetail.value?.result.name}：${roomDetail.value?.result.description || ""}`,
+  keywords: `享樂酒店,${roomDetail.value?.result.name},住宿,訂房,酒店預訂, 豪華住宿,`,
+});
+const marginTopStyle = computed(() => {
+  return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
+});
 
 //判斷是否可以增減
 const guestLimits = computed(() => ({
@@ -48,6 +64,8 @@ const imgList = computed(() => {
   if (!roomDetail.value) return [] as string[];
   return [roomDetail.value.result.imageUrl, ...roomDetail.value.result.imageUrlList];
 });
+
+const getRoomId = computed(() => roomDetail.value?.result._id);
 
 //控制 swiper的寬度 顯示與隱藏
 const getSwiperWidth = computed(() => {
@@ -92,6 +110,26 @@ const groupedInfo = computed(() => ({
   amenityInfo: roomDetail.value?.result.amenityInfo,
 }));
 
+const getRoomDetailPrice = computed(() => {
+  if (roomDetail.value && roomDetail.value.result) {
+    return roomDetail.value.result.price;
+  }
+  return 0;
+});
+const getTotalPrice = computed(() => {
+  if (totalNights.value === 0) {
+    return getRoomDetailPrice.value;
+  } else {
+    // console.log(getRoomDetailPrice.value * totalNights.value);
+    return getRoomDetailPrice.value * totalNights.value;
+  }
+});
+
+//針對桌面板
+const formattedTotalPrice = computed(() => {
+  const total = getTotalPrice.value;
+  return `NT$\u00A0${new Intl.NumberFormat("zh-TW").format(total)}`;
+});
 //關閉 date的 dialog
 const closeDateModal = (): void => {
   isDateOpen.value = false;
@@ -154,19 +192,32 @@ const canProceed = computed(() => {
   const isCheckOutValid = $dayjs(dateRange.value.end, dateFormat, true).isValid();
   return isCheckInValid && isCheckOutValid;
 });
-const reservate = (): void => {
+
+const authStore = useAuthStore();
+const reservate = async (): Promise<void> => {
+  const isAuth = await authStore.checkAuthBoolen();
+  if (!isAuth) {
+    $swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "系統警告",
+      text: "請先登入",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+    return;
+  }
   if (canProceed.value) {
     navigateTo({
       path: "/booking",
       query: {
-        roomId: "65251f6095429cd58654bf12",
+        roomId: getRoomId.value,
         checkInDate: dateRange.value.start,
         checkOutDate: dateRange.value.end,
         peopleNum: totalGuests.value,
       },
     });
   }
-  console.log("資料填寫不完整");
 };
 
 // 監聽並格式化日期選擇器輸出
@@ -181,7 +232,7 @@ watch(dateRange, (newVal) => {
 });
 </script>
 <template>
-  <main class="bg-primary-Tint">
+  <main class="bg-primary-Tint" :style="marginTopStyle">
     <section class="hidden p-12 md:block 2xl:p-20">
       <div class="relative flex gap-x-2">
         <div class="w-1/2 flex items-stretch">
@@ -295,7 +346,7 @@ watch(dateRange, (newVal) => {
                 </div>
               </div>
             </div>
-            <p class="font-bold text-primary-base sm:text-2xl" v-number-format="roomDetail?.result.price"></p>
+            <p class="font-bold text-primary-base sm:text-2xl">{{ formattedTotalPrice }}</p>
             <button class="py-4 w-full text-white font-bold bg-primary-base rounded-lg" @click="reservate">立即預定</button>
           </div>
         </div>
@@ -308,7 +359,7 @@ watch(dateRange, (newVal) => {
     <section class="w-full bottom-0 fixed z-10 md:hidden bg-neutral-200">
       <div v-if="!isDateRangeComplete" class="p-3 flex items-center justify-between gap-x-1">
         <div class="flex-1 flex items-center gap-y-1">
-          <p class="font-bold text-primary-base sm:text-2xl" v-number-format="1000"></p>
+          <p class="font-bold text-primary-base sm:text-2xl" v-number-format="getTotalPrice"></p>
           <p>&nbsp; / &nbsp; 晚</p>
         </div>
         <button class="px-8 py-4 text-base font-bold text-white bg-primary-base sm:px-12 rounded-lg" @click="openDateModal">查看可訂日期</button>
@@ -316,7 +367,7 @@ watch(dateRange, (newVal) => {
       <div v-else class="p-3 flex items-center justify-between gap-x-1">
         <div class="flex-1 flex flex-col gap-x-1" @click="openDateModal">
           <div class="flex items-center">
-            <p class="font-bold text-primary-base gap-x-1 sm:text-2xl" v-number-format="1000"></p>
+            <p class="font-bold text-primary-base gap-x-1 sm:text-2xl" v-number-format="getTotalPrice"></p>
             <p>&nbsp;/&nbsp; {{ totalNights }}晚&nbsp;/&nbsp;{{ totalGuests }}人&nbsp;</p>
           </div>
           <p>{{ formattedDateRange }}</p>

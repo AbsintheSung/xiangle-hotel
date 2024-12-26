@@ -1,12 +1,31 @@
 <script setup lang="ts">
 import type { ResponseOrder } from "~/types/order";
+import { useDomStore } from "~/stores/dom";
+const domStore = useDomStore();
+const { y: windowScrollY } = useWindowScroll();
+const config = useRuntimeConfig();
 const { $dayjs } = useNuxtApp();
-const { data: order } = await useFetch<ResponseOrder>(`/api/order`);
-console.log(order);
+const route = useRoute();
+// console.log(route.params.order_id);
+// const { data: order } = await useFetch<ResponseOrder>(`/api/order`);
+const { data: order } = await useFetch<ResponseOrder>(`${config.public.apiBase}/api/v1/orders/${route.params.order_id}`, {
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `${useCookie(config.public.cookieAuth).value}`,
+  },
+});
+// console.log(order);
 const ROOM_TiTLES = {
   facilityInfo: "房內設備",
   amenityInfo: "備品提供",
 };
+const getUserName = computed(() => order.value?.result.userInfo.name);
+const getUserPhone = computed(() => order.value?.result.userInfo.phone);
+const getUserEmail = computed(() => order.value?.result.userInfo.email);
+const getOrderId = computed(() => order.value?.result._id);
+const getPeopleNum = computed(() => order.value?.result.peopleNum);
+const getRoomName = computed(() => order.value?.result.roomId.name);
+const getRoomPrice = computed(() => order.value?.result.roomId.price || 0);
 const groupedInfo = computed(() => ({
   facilityInfo: order.value?.result.roomId.facilityInfo,
   amenityInfo: order.value?.result.roomId.amenityInfo,
@@ -26,13 +45,21 @@ const getTotalNights = computed(() => {
   if (!order.value?.result.checkInDate || !order.value?.result.checkOutDate) {
     return 0; // 如果有一個值為空，返回 0 晚
   }
-  const start = $dayjs(order.value?.result.checkInDate);
-  const end = $dayjs(order.value?.result.checkOutDate);
+  const checkInDate = $dayjs(order.value?.result.checkInDate).format("YYYY/MM/DD");
+  const checkOutDate = $dayjs(order.value?.result.checkOutDate).format("YYYY/MM/DD");
+  const start = $dayjs(checkInDate);
+  const end = $dayjs(checkOutDate);
   return end.diff(start, "day"); // 返回天數差
+});
+
+const getTotalPrice = computed(() => getTotalNights.value * getRoomPrice.value);
+
+const marginTopStyle = computed(() => {
+  return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
 });
 </script>
 <template>
-  <main class="bg-black">
+  <main class="bg-black" :style="marginTopStyle">
     <section class="py-10 container flex flex-col gap-x-6 gap-y-10 md:py-[120px] md:flex-row">
       <div class="w-full text-white flex flex-col gap-y-10 md:w-7/12 md:gap-y-20">
         <div class="space-y-8 md:space-y-10">
@@ -41,7 +68,7 @@ const getTotalNights = computed(() => {
               <Icon class="text-2xl text-white" name="fluent:checkmark-16-filled" />
             </p>
             <div class="flex flex-col gap-y-2 font-bold text-3xl md:text-5xl">
-              <h2>恭喜，Jessica！</h2>
+              <h2>恭喜，{{ getUserName }}！</h2>
               <p>您已預訂成功</p>
             </div>
           </div>
@@ -56,23 +83,23 @@ const getTotalNights = computed(() => {
           <ul class="space-y-6">
             <li>
               <p class="font-medium">姓名</p>
-              <p class="font-bold">Jessica</p>
+              <p class="font-bold">{{ getUserName }}</p>
             </li>
             <li>
               <p class="font-medium">手機號碼</p>
-              <p class="font-bold">+886 912 345 678</p>
+              <p class="font-bold">{{ getUserPhone }}</p>
             </li>
             <li>
               <p class="font-medium">電子信箱</p>
-              <p class="font-bold">jessica@sample.com</p>
+              <p class="font-bold">{{ getUserEmail }}</p>
             </li>
           </ul>
         </div>
       </div>
       <div class="w-full md:w-5/12">
         <aside class="p-10 flex flex-col gap-y-10 bg-white rounded-[20px]">
-          <div class="sapce-y-2">
-            <p>預訂參考編號： HH2302183151222</p>
+          <div class="space-y-2">
+            <p>預訂參考編號： {{ getOrderId }}</p>
             <h3 class="font-bold md:text-2xl">即將到來行程</h3>
           </div>
           <div>
@@ -81,9 +108,9 @@ const getTotalNights = computed(() => {
           <ul class="space-y-6 md:space-y-10">
             <li class="space-y-6">
               <div class="flex font-bold text-xl">
-                <p class="me-4">尊爵雙人房，{{ getTotalNights }} 晚</p>
+                <p class="me-4">{{ getRoomName }}，{{ getTotalNights }} 晚</p>
                 <p class="text-neutral-200">|</p>
-                <p class="ms-4">住宿人數：2 位</p>
+                <p class="ms-4">住宿人數：{{ getPeopleNum }} 位</p>
               </div>
               <div class="font-bold space-y-2">
                 <div class="flex items-stretch">
@@ -96,7 +123,7 @@ const getTotalNights = computed(() => {
                 </div>
               </div>
               <div class="font-bold">
-                <p class="md:text-2xl" v-number-format="order?.result.roomId.price"></p>
+                <p class="md:text-2xl" v-number-format="getTotalPrice"></p>
               </div>
             </li>
             <li class="space-y-6" v-for="(gruopItem, gruopKey) in groupedInfo" :key="gruopKey">

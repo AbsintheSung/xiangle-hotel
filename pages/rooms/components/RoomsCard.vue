@@ -39,7 +39,7 @@ defineProps<{
           <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white" />
           <div class="flex items-center justify-between">
             <p class="font-bold text-primary-base sm:text-2xl" v-number-format="roomItem.price"></p>
-            <NuxtLink to="/rooms" class="flex items-center justify-center">
+            <NuxtLink :to="`/room-detail/${roomItem._id}`" class="flex items-center justify-center">
               <Icon class="text-2xl text-primary-base" name="fluent:arrow-right-16-filled" />
             </NuxtLink>
           </div>

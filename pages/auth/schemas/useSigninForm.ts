@@ -5,7 +5,7 @@ export const userFormSchema = zod.object({
   email: zod.string().email({ message: "請輸入有效的電子郵件地址" }),
   password: zod
     .string()
-    .min(6, { message: "至少需要 6 個字元且含一個英文字母" })
+    .min(8, { message: "至少需要 8 個字元且含一個英文字母" })
     .regex(/[A-Za-z]/, { message: "必須包含至少一個英文字母" }),
 });
 

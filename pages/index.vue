@@ -9,12 +9,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/effect-creative";
 import "swiper/css/pagination";
-
-// const windowScroll = useWindowScroll();
-// const headerY = ref(windowScroll.y);
-// const isScrolled = ref(false);
+const config = useRuntimeConfig();
 const roomsNum = ref(0);
-// const isOpenMenu = ref(false);
+
 const roomSwiper: Ref<typeof Swiper | null> = ref(null);
 const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-1" },
@@ -22,9 +19,13 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
-const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
-const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
-const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
+// const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
+// const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
+// const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
+const { data: newsDataList } = await useFetch<ResponseNews>(`${config.public.apiBase}/api/v1/home/news`);
+const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`${config.public.apiBase}/api/v1/home/culinary`);
+const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
+
 const getNewsDataList = computed(() => {
   return newsDataList.value?.result ?? [];
 });
@@ -47,13 +48,6 @@ const getRoomsData = computed(() => {
 
 const getRoomsDataLength = computed(() => roomsDataList.value?.result.length || 0);
 
-// const handleMenu = () => {
-//   isOpenMenu.value = true;
-// };
-// const handleCloseMenu = () => {
-//   isOpenMenu.value = false;
-// };
-
 const slidePrev = () => {
   roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
   roomSwiper.value?.$el.swiper.autoplay?.start(); //執行上面，自動輪播失效，須重啟
@@ -65,66 +59,9 @@ const slideNext = () => {
   roomSwiper.value?.$el.swiper.autoplay?.start();
   roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
 };
-
-// onMounted(() => {
-//   watch(
-//     () => headerY.value,
-//     (newHeaderY) => {
-//       newHeaderY > 0 ? (isScrolled.value = true) : (isScrolled.value = false);
-//     },
-//     { immediate: true }
-//   );
-// });
 </script>
 
 <template>
-  <!-- <header class="w-full fixed z-30 transition-all duration-300 ease-in-out" :class="{ 'bg-black': isScrolled }">
-    <div class="px-3 py-6 flex items-center justify-between md:px-20">
-      <h1>
-        <RouterLink to="/">
-          <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
-        </RouterLink>
-      </h1>
-      <ul class="hidden items-center gap-x-4 font-bold text-white md:flex">
-        <li>
-          <RouterLink class="block p-4" to="/">客房旅宿</RouterLink>
-        </li>
-        <li>
-          <RouterLink class="block p-4" to="/">會員登入</RouterLink>
-        </li>
-        <li class="bg-primary-base rounded-xl">
-          <RouterLink class="block py-4 px-8" to="/">立即訂房</RouterLink>
-        </li>
-      </ul>
-      <div class="md:hidden">
-        <button>
-          <Icon class="text-white text-3xl" name="gridicons:menu" @click="handleMenu"></Icon>
-        </button>
-      </div>
-    </div>
-    <Transition name="fade">
-      <div v-if="isOpenMenu" class="p-5 fixed inset-0 w-full h-full z-50 bg-black flex flex-col items-center justify-center">
-        <div class="absolute top-5 right-5">
-          <button @click="handleCloseMenu">
-            <Icon class="text-white text-3xl" name="gridicons:cross"></Icon>
-          </button>
-        </div>
-        <div class="w-full">
-          <ul class="flex flex-col items-center gap-y-4 font-bold text-white">
-            <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">客房旅宿</RouterLink>
-            </li>
-            <li class="w-full text-center">
-              <RouterLink class="block p-4 w-full" to="/">會員登入</RouterLink>
-            </li>
-            <li class="w-full text-center bg-primary-base rounded-xl">
-              <RouterLink class="block p-4 w-full" to="/">立即訂房</RouterLink>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </Transition>
-  </header> -->
   <main>
     <section class="relative">
       <Swiper ref="roomSwiper" v-bind="homeMain" class="h-full">
@@ -146,17 +83,17 @@ const slideNext = () => {
             <div class="hidden mt-10 w-[30vw] h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:block" />
           </div>
 
-          <div class="mt-5 mb-10 h-20 w-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:hidden"></div>
-          <div class="ms-auto sm:ms-0 w-[calc(100%-3rem)] sm:w-fit border-t border-r border-[#F5F7F9] rounded-[80px] py-24 backdrop-blur-sm shadow-[0_10px_50px_rgba(0,0,0,0.5)]">
+          <div class="mt-5 mb-8 h-12 w-[2px] bg-gradient-to-r from-[#BE9C7C] to-white md:hidden"></div>
+          <div class="ms-auto py-2 sm:ms-0 w-[calc(100%-3rem)] sm:w-fit border-t border-r border-[#F5F7F9] rounded-[80px] md:py-24 backdrop-blur-sm shadow-[0_10px_50px_rgba(0,0,0,0.5)]">
             <div class="-translate-x-12">
-              <h3 class="flex flex-col gap-y-2 text-5xl lg:text-6xl 2xl:text-8xl text-white font-bold">
+              <h3 class="flex flex-col gap-y-2 text-3xl lg:text-6xl 2xl:text-8xl text-white font-bold">
                 <span>高雄</span>
                 <span>豪華住宿之選</span>
               </h3>
               <p class="mt-6 mb-24 text-base lg:text-2xl 2xl:text-3xl text-white font-semibold">我們致力於為您提供無與倫比的奢華體驗與優質服務</p>
             </div>
             <div class="-translate-x-12">
-              <NuxtLink to="/" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
+              <NuxtLink to="/rooms" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 md:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
                 <p class="z-10 text-base text-black md:text-2xl font-bold group-hover:text-white">立即訂房</p>
                 <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
                 <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
@@ -186,7 +123,7 @@ const slideNext = () => {
                   <img :src="newsItem.image" class="w-full max-h-[294px] h-full rounded-xl" :alt="newsItem.title" />
                 </div>
                 <div class="flex flex-col gap-y-6">
-                  <h3 class="text-2xl md:text-3xl font-bold">{{ newsItem.title }}</h3>
+                  <h3 class="w-fit text-2xl md:text-3xl font-bold hover:cursor-pointer hover:border-b border-black">{{ newsItem.title }}</h3>
                   <p class="font-medium">{{ newsItem.description }}</p>
                 </div>
               </li>
@@ -237,7 +174,7 @@ const slideNext = () => {
             <h2 class="text-4xl lg:text-5xl font-bold">{{ getRoomsData?.name }}</h2>
             <p>{{ getRoomsData?.description }}</p>
           </div>
-          <p class="text-3xl font-bold">NT$ {{ getRoomsData?.price }}</p>
+          <p class="text-3xl font-bold" v-number-format="getRoomsData?.price"></p>
           <NuxtLink to="/rooms" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
             <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
             <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
@@ -262,9 +199,9 @@ const slideNext = () => {
         </div>
         <Swiper v-bind="homeCulinary">
           <SwiperSlide v-for="(culinaryItem, index) in getCulinaryDataList" :key="culinaryItem._id">
-            <div class="relative">
+            <div class="relative overflow-hidden">
               <picture>
-                <img class="w-full object-cover min-h-[400px] max-h-[600px] rounded-xl" :src="culinaryItem.image" :alt="culinaryItem.title" />
+                <img class="w-full object-cover min-h-[400px] max-h-[600px] transition-transform duration-300 ease-in-out hover:scale-110" :src="culinaryItem.image" :alt="culinaryItem.title" />
               </picture>
               <div class="absolute bottom-0 p-4 flex flex-col gap-y-4 text-white backdrop-blur-sm md:p-6 md:gap-y-6">
                 <div class="font-bold text-nowrap flex items-center justify-between">
@@ -325,53 +262,6 @@ const slideNext = () => {
       </div>
     </section>
   </main>
-  <!-- <footer class="py-20 bg-black">
-    <div class="container flex flex-col gap-y-10">
-      <div class="flex flex-col gap-y-10 md:flex-row md:justify-between md:items-center">
-        <div class="flex flex-col gap-y-10">
-          <RouterLink to="/">
-            <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
-          </RouterLink>
-          <div class="flex gap-x-4">
-            <RouterLink to="/">
-              <Icon class="text-white text-2xl" name="lineicons:line"></Icon>
-            </RouterLink>
-            <RouterLink to="/">
-              <Icon class="text-white text-2xl" name="lineicons:instagram-original"></Icon>
-            </RouterLink>
-          </div>
-        </div>
-        <ul class="text-white grid gap-x-20 gap-y-4 md:grid-cols-2 md:gap-y-10">
-          <li>
-            <p class="font-bold">TEL:</p>
-            <p>
-              <a href="tel:+886-7-1234567">+886-7-1234567</a>
-            </p>
-          </li>
-          <li>
-            <p class="font-bold">MAIL:</p>
-            <p>
-              <a href="mailto:elh@hexschool.com">elh@hexschool.com</a>
-            </p>
-          </li>
-          <li>
-            <p class="font-bold">FAX:</p>
-            <p>+886-7-1234567</p>
-          </li>
-          <li>
-            <p class="font-bold">WEB:</p>
-            <p>
-              <a href="https://www.elhhexschool.com.tw" target="_blank" rel="noopener noreferrer">www.elhhexschool.com.tw</a>
-            </p>
-          </li>
-        </ul>
-      </div>
-      <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between text-white">
-        <address>806023 台灣高雄市新興區六角路123號</address>
-        <p>&copy; 享樂酒店 2023 All Rights Reserved.</p>
-      </div>
-    </div>
-  </footer> -->
 </template>
 <style scoped lang="scss">
 .swiper :deep(.swiper-pagination) {

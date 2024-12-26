@@ -1,18 +1,32 @@
 <script setup lang="ts">
 //測試用進入: http://localhost:3000/booking?roomId=65251f6095429cd58654bf12&checkInDate=2024-12-14&checkOutDate=2025-01-12&peopleNum=4
 import type { RoomDetailResponse } from "~/types/roomdetail";
+import type { ResponseOrder } from "~/types/order";
+import LoadingOverlay from "./components/LoadingOverlay.vue";
+import { useDomStore } from "~/stores/dom";
+const domStore = useDomStore();
+const { y: windowScrollY } = useWindowScroll();
+const isLoading = ref(false);
 const formRef = ref<HTMLFormElement | null>(null);
-const { width: windowWidthSize } = useWindowSize();
-const { data: roomDetail } = await useFetch<RoomDetailResponse>(`https://nuxr3.zeabur.app/api/v1/rooms/${"66b0912cafe4327b9a56379c"}`);
-
 const route = useRoute();
+const router = useRouter();
 const { $dayjs } = useNuxtApp();
+const config = useRuntimeConfig();
+const authStore = useAuthStore();
+const { width: windowWidthSize } = useWindowSize();
+const { $swal } = useNuxtApp();
+const { data: roomDetail } = await useFetch<RoomDetailResponse>(`https://nuxr3.zeabur.app/api/v1/rooms/${route.query.roomId}`);
+// console.log("roomDetail", roomDetail.value);
 // 取得 URL 參數
 const bookingData = ref({
   roomId: route.query.roomId as string,
-  checkInDate: route.query.checkInDate as string,
-  checkOutDate: route.query.checkOutDate as string,
+  checkInDate: $dayjs(route.query.checkInDate as string).format("YYYY/MM/DD"),
+  checkOutDate: $dayjs(route.query.checkOutDate as string).format("YYYY/MM/DD"),
   peopleNum: Number(route.query.peopleNum) as number,
+});
+
+const marginTopStyle = computed(() => {
+  return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
 });
 const getCheckInWeek = computed(() => {
   // 檢查是否符合 YYYY/MM/DD 格式
@@ -162,7 +176,7 @@ const addressErrorMessage = computed(() => {
   return hasError ? "請填入和選取正確地址" : undefined;
 });
 const handleBooking = handlePersonForm(
-  (values) => {
+  async (values) => {
     const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
     const districtsData = cityData?.districts.find((districtItem) => districtItem.name === county.value);
     const zipcode: number = Number(districtsData?.zip);
@@ -174,10 +188,57 @@ const handleBooking = handlePersonForm(
     bookingForm.value.address.county = county.value as string;
     bookingForm.value.address.detail = detailAddress.value as string;
     bookingForm.value.address.zipcode = zipcode;
-    console.log("表單提交成功", bookingForm.value);
+    // console.log("表單提交成功", bookingForm.value);
+    isLoading.value = true;
+    try {
+      const response = await $fetch<ResponseOrder>(`${config.public.apiBase}/api/v1/orders`, {
+        method: "POST",
+        headers: {
+          Authorization: `${useCookie(config.public.cookieAuth).value}`,
+        },
+        body: {
+          roomId: getRoomId.value,
+          checkInDate: bookingForm.value.checkInDate,
+          checkOutDate: bookingForm.value.checkOutDate,
+          peopleNum: getPeopleNum.value,
+          userInfo: {
+            address: {
+              ...bookingForm.value.address,
+            },
+            name: bookingForm.value.name,
+            phone: bookingForm.value.phone,
+            email: bookingForm.value.email,
+          },
+        },
+      });
+      if (response.status) {
+        isLoading.value = false;
+        router.push(`/order/${response.result._id}`);
+      }
+      // console.log("訂房回傳", response);
+    } catch (error) {
+      // console.log(error);
+    } finally {
+      isLoading.value = false;
+    }
+    // const data = {
+    //   roomId: getRoomId.value,
+    //   checkInDate: bookingForm.value.checkInDate,
+    //   checkOutDate: bookingForm.value.checkOutDate,
+    //   peopleNum: getPeopleNum.value,
+    //   userInfo: {
+    //     address: {
+    //       ...bookingForm.value.address,
+    //     },
+    //     name: bookingForm.value.name,
+    //     phone: bookingForm.value.phone,
+    //     email: bookingForm.value.email,
+    //   },
+    // };
+    // console.log(data);
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
     // if (windowWidthSize.value < 768) {
     // Scroll to form with smooth behavior
     formRef.value?.scrollIntoView({
@@ -205,25 +266,42 @@ watch([() => city.value, () => isHandleMemberInfo.value], ([newCity, newIsHandle
   }
 });
 
-const handleMemberInfo = () => {
-  console.log("獲取會員資料，並填入");
-  isHandleMemberInfo.value = true;
-  name.value = "Jack";
-  email.value = "e@gmail.com";
-  phone.value = "0911111111";
-  city.value = "高雄市";
-  county.value = "三民區";
-  detailAddress.value = "測試地址";
-};
+const handleMemberInfo = async () => {
+  const isAuth = await authStore.checkAuthBoolen();
+  if (!isAuth) {
+    $swal.fire({
+      position: "center",
+      icon: "warning",
+      title: "系統警告",
+      text: "請重新登入",
+      showConfirmButton: false,
+      timer: 1500,
+    });
+  } else {
+    isHandleMemberInfo.value = true;
+    name.value = authStore.getAuthData?.name as string;
+    email.value = authStore.getAuthData?.email as string;
+    phone.value = authStore.getAuthData?.phone as string;
+    city.value = authStore.getAuthData?.address.city as string;
+    county.value = authStore.getAuthData?.address.county as string;
+    detailAddress.value = authStore.getAuthData?.address.detail as string;
+  }
 
-import LoadingOverlay from "./components/LoadingOverlay.vue";
-const isLoading = ref(false);
+  // console.log("獲取會員資料，並填入");
+  // isHandleMemberInfo.value = true;
+  // name.value = "Jack";
+  // email.value = "e@gmail.com";
+  // phone.value = "0911111111";
+  // city.value = "高雄市";
+  // county.value = "三民區";
+  // detailAddress.value = "測試地址";
+};
 </script>
 <template>
   <LoadingOverlay :is-loading="isLoading" />
-  <main class="py-10 md:py-[120px] bg-primary-Tint">
+  <main class="py-10 md:py-[120px] bg-primary-Tint" :style="marginTopStyle">
     <section class="container flex items-center gap-x-2">
-      <NuxtLink class="p-1 w-fit flex items-center justify-center" :to="`/room-detail/${bookingData.roomId}`">
+      <NuxtLink class="p-1 w-fit flex items-center justify-center" :to="`/room-detail/${getRoomId}`">
         <Icon class="text-xl" name="fluent:chevron-left-24-filled" />
       </NuxtLink>
       <h2 class="text-3xl font-bold">確認訂房資訊</h2>
@@ -235,7 +313,7 @@ const isLoading = ref(false);
           <ul class="flex flex-col gap-y-6">
             <li class="relative flex flex-col gap-y-2">
               <h4 class="px-3 font-bold border-s-4 border-primary-base">選擇房型</h4>
-              <p class="font-medium">尊爵雙人房</p>
+              <p class="font-medium">{{ roomDetail?.result.name }}</p>
               <button class="absolute right-0 top-1/2 font-bold -translate-y-1/2">編輯</button>
             </li>
             <li class="relative flex flex-col gap-y-2">
@@ -248,7 +326,7 @@ const isLoading = ref(false);
             </li>
             <li class="relative flex flex-col gap-y-2">
               <h4 class="px-3 font-bold border-s-4 border-primary-base">房客人數</h4>
-              <p class="font-medium">2人</p>
+              <p class="font-medium">{{ getPeopleNum }}人</p>
               <button class="absolute right-0 top-1/2 font-bold -translate-y-1/2">編輯</button>
             </li>
           </ul>

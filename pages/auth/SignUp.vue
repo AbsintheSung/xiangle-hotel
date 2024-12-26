@@ -6,9 +6,24 @@ import { taiwanCity } from "~/content/city";
 import type { SignUpForm } from "~/types/auth";
 import ProgressLine from "./components/ProgressLine.vue";
 //emailPasswordForm 跟  personalInfoForm 2個狀態表單
+type SignUpErrorResponse = {
+  status: boolean;
+  message: string;
+};
+
+type SignUpError = {
+  response?: {
+    _data?: SignUpErrorResponse;
+    status?: number;
+  };
+  message?: string;
+};
+const { $swal } = useNuxtApp();
+const router = useRouter();
+const { $dayjs } = useNuxtApp();
+const config = useRuntimeConfig();
 const formState = ref("emailPasswordForm");
 const isFormValidated = ref(false);
-const { $dayjs } = useNuxtApp();
 const signUpForm = ref<SignUpForm>({
   name: "",
   email: "",
@@ -29,7 +44,7 @@ const userFormSchema = zod
     email: zod.string().email({ message: "請輸入有效的電子郵件地址" }),
     password: zod
       .string()
-      .min(6, { message: "至少需要 6 個字元且含一個英文字母" })
+      .min(8, { message: "至少需要 8 個字元且含一個英文字母" })
       .regex(/[A-Za-z]/, { message: "必須包含至少一個英文字母" }),
     confirmPassword: zod.string().min(1, { message: "必填" }),
   })
@@ -60,14 +75,14 @@ const { value: confirmPassword, errorMessage: confirmPasswordError } = useField(
 // 處理表單提交
 const handleSetup = handleSubmit(
   (values) => {
-    console.log("表單提交成功", values);
+    // console.log("表單提交成功", values);
     signUpForm.value.email = email.value as string;
     signUpForm.value.password = password.value as string;
     formState.value = "personalInfoForm";
     resetForm();
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
   }
 );
 
@@ -126,8 +141,7 @@ const addressErrorMessage = computed(() => {
 });
 
 const handleSignUp = handlePersonForm(
-  (values) => {
-    console.log("表單提交成功", values);
+  async (values) => {
     const cityData = taiwanCity.find((cityItem) => cityItem.name === city.value);
     const districtsData = cityData?.districts.find((districtItem) => districtItem.name === county.value);
     const birthday: string = `${year.value}/${month.value}/${day.value}`;
@@ -140,12 +154,50 @@ const handleSignUp = handlePersonForm(
     signUpForm.value.address.county = county.value as string;
     signUpForm.value.address.detail = detailAddress.value as string;
     signUpForm.value.address.zipcode = zipcode;
+    try {
+      await $fetch(`${config.public.apiBase}/api/v1/user/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          ...signUpForm.value,
+        },
+      });
+      // console.log("註冊成功");
+      // 註冊成功後顯示成功消息
+      $swal.fire({
+        position: "center",
+        icon: "success",
+        title: "註冊成功",
+        text: "稍後將為您跳轉到登入頁",
+        showConfirmButton: false,
+        timer: 1500,
+        didClose: () => {
+          // 彈窗關閉後跳轉到登入頁面
+          router.push("/auth/signin");
+        },
+      });
+      resetPersonForm();
+    } catch (error) {
+      const signUpError = error as SignUpError;
+      // console.log(signUpError.response?._data);
+      $swal.fire({
+        position: "center",
+        icon: "error",
+        title: "註冊失敗",
+        text: signUpError.response?._data?.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      resetPersonForm();
+      formState.value = "emailPasswordForm";
+    }
 
-    resetPersonForm();
     // console.log(signUpForm.value);
   },
   (errors) => {
-    console.log("表單驗證失敗", errors);
+    // console.log("表單驗證失敗", errors);
   }
 );
 

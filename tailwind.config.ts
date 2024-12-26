@@ -39,7 +39,8 @@ export default <Partial<Config>>{
     },
     extend: {
       backgroundImage: {
-        'home-about': "url('@/assets/images/desktop/home-about.png')"
+        'home-about': "url('@/assets/images/desktop/home-about.png')",
+        'user-nav': "url(@/assets/images/desktop/profile-hero.png)"
       },
       colors: {
         primary: {
