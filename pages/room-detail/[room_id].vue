@@ -8,6 +8,7 @@ import { useDomStore } from "~/stores/dom";
 const config = useRuntimeConfig();
 const { $swal } = useNuxtApp();
 const route = useRoute();
+const authStore = useAuthStore();
 const swiperContainer = ref<HTMLElement | null>(null);
 const domStore = useDomStore();
 const { $dayjs } = useNuxtApp();
@@ -39,6 +40,10 @@ const masks = ref({
 });
 const minDate = ref($dayjs().toDate()); // 最早可選當天
 const maxDate = ref($dayjs().add(1, "year").toDate()); // 最晚可選下一年同一天
+//控制燈箱開關
+const visibleRef = ref<boolean>(false);
+//開啟燈箱後，要顯示的圖片( 圖片是陣列，從位置0開始顯示 )
+const indexRef = ref<number>(0);
 
 const { data: roomDetail } = await useFetch<RoomDetailResponse>(`${config.public.apiBase}/api/v1/rooms/${route.params.room_id}`);
 useSeoMeta({
@@ -193,7 +198,16 @@ const canProceed = computed(() => {
   return isCheckInValid && isCheckOutValid;
 });
 
-const authStore = useAuthStore();
+//燈箱設定
+//開啟燈箱
+const handleLightbox = (): void => {
+  visibleRef.value = true;
+};
+//關閉燈箱
+const handleCloseLightbox = (): void => {
+  visibleRef.value = false;
+};
+
 const reservate = async (): Promise<void> => {
   const isAuth = await authStore.checkAuthBoolen();
   if (!isAuth) {
@@ -256,8 +270,10 @@ watch(dateRange, (newVal) => {
             </div>
           </div>
         </div>
-        <button class="absolute bottom-2 right-2 px-3 py-2 bg-neutral-50 text-primary-base font-bold text-nowrap rounded-lg xl:bottom-10 xl:right-10 xl:px-8 xl:py-4">看更多</button>
+        <button class="absolute bottom-2 right-2 px-3 py-2 bg-neutral-50 text-primary-base font-bold text-nowrap rounded-lg xl:bottom-10 xl:right-10 xl:px-8 xl:py-4" @click="handleLightbox">看更多</button>
       </div>
+      <!-- 燈箱 -->
+      <VueEasyLightbox :visible="visibleRef" :imgs="imgList" :index="indexRef" @hide="handleCloseLightbox" />
     </section>
     <section ref="swiperContainer" class="md:hidden">
       <Swiper v-if="getSwiperWidth" class="h-full" v-bind="roomDetailCards">

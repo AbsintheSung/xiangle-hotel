@@ -26,7 +26,8 @@ export default defineNuxtConfig({
       {
         'autoImports': ['defineStore', 'acceptHMRUpdate'],
       },
-    ]
+    ],
+    'nuxt-easy-lightbox'
   ],
   css: ['~/assets/scss/index.scss', '~/assets/css/tailwind.css', '~/assets/css/page-transitions.css'],
   vite: {
