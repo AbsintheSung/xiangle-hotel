@@ -69,6 +69,33 @@ export default defineNuxtConfig({
     prefix: 'Headless'
   },
   app: {
+    head: {
+      title: '享樂酒店',
+      htmlAttrs: {
+        lang: 'zh-TW'
+      },
+      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      meta: [
+        { charset: 'utf-8' }, // 字符編碼
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          name: 'description',
+          content: '這是一個關於享樂酒店的豪華住宿預訂網站，提供獨特的房型選擇。'
+        },
+        { name: 'keywords', content: '享樂酒店, 酒店預訂, 豪華住宿, 房型' }, // 關鍵字
+        { name: 'author', content: 'Sung' },
+        { name: 'robots', content: 'index, follow' }, // 搜尋引擎索引
+        { name: 'theme-color', content: '#bf9d7d' }, // 網站主題色
+        { property: 'og:title', content: '享樂酒店' }, // Open Graph 標題
+        {
+          property: 'og:description',
+          content: '這是一個關於享樂酒店的豪華住宿預訂網站，提供獨特的房型選擇。'
+        }, // Open Graph 描述
+        { property: 'og:type', content: 'website' }, // Open Graph 類型
+        { property: 'og:url', content: '網站的url' },
+        { property: 'og:image', content: '網站封面的url' }
+      ]
+    },
     pageTransition: { name: 'page', mode: 'default' }
   }
 })

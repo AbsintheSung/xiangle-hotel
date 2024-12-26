@@ -1,4 +1,8 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: "享樂酒店-房型列表",
+  description: "享樂酒店-房型列表總覽",
+});
 import RoomsCard from "./components/RoomsCard.vue";
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";

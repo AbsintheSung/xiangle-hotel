@@ -41,7 +41,13 @@ const minDate = ref($dayjs().toDate()); // 最早可選當天
 const maxDate = ref($dayjs().add(1, "year").toDate()); // 最晚可選下一年同一天
 
 const { data: roomDetail } = await useFetch<RoomDetailResponse>(`${config.public.apiBase}/api/v1/rooms/${route.params.room_id}`);
-
+useSeoMeta({
+  title: `享樂酒店-${roomDetail.value?.result.name}`,
+  description: `享樂酒店-${roomDetail.value?.result.name}：${roomDetail.value?.result.description || ""}`,
+  ogTitle: `享樂酒店-${roomDetail.value?.result.name}`,
+  ogDescription: `享樂酒店-${roomDetail.value?.result.name}：${roomDetail.value?.result.description || ""}`,
+  keywords: `享樂酒店,${roomDetail.value?.result.name},住宿,訂房,酒店預訂, 豪華住宿,`,
+});
 const marginTopStyle = computed(() => {
   return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
 });
