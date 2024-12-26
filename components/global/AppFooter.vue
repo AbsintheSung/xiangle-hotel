@@ -10,16 +10,20 @@ const isHiddeFooter = computed(() => {
     <div class="container flex flex-col gap-y-10">
       <div class="flex flex-col gap-y-10 md:flex-row md:justify-between md:items-center">
         <div class="flex flex-col gap-y-10">
-          <RouterLink to="/">
+          <NuxtLink to="/">
             <TheSvgIcon class="w-[196px] h-[72px]" name="logo-white"></TheSvgIcon>
-          </RouterLink>
+          </NuxtLink>
           <div class="flex gap-x-4">
-            <RouterLink to="/">
-              <Icon class="text-white text-2xl" name="lineicons:line"></Icon>
-            </RouterLink>
-            <RouterLink to="/">
-              <Icon class="text-white text-2xl" name="lineicons:instagram-original"></Icon>
-            </RouterLink>
+            <NuxtLink to="/">
+              <div class="p-1 flex items-center justify-center border border-white rounded-full">
+                <Icon class="text-white text-2xl" name="lineicons:line"></Icon>
+              </div>
+            </NuxtLink>
+            <NuxtLink to="/">
+              <div class="p-1 flex items-center justify-center border border-white rounded-full">
+                <Icon class="text-white text-2xl" name="lineicons:instagram-original"></Icon>
+              </div>
+            </NuxtLink>
           </div>
         </div>
         <ul class="text-white grid gap-x-20 gap-y-4 md:grid-cols-2 md:gap-y-10">

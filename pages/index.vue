@@ -123,7 +123,7 @@ const slideNext = () => {
                   <img :src="newsItem.image" class="w-full max-h-[294px] h-full rounded-xl" :alt="newsItem.title" />
                 </div>
                 <div class="flex flex-col gap-y-6">
-                  <h3 class="text-2xl md:text-3xl font-bold">{{ newsItem.title }}</h3>
+                  <h3 class="w-fit text-2xl md:text-3xl font-bold hover:cursor-pointer hover:border-b border-black">{{ newsItem.title }}</h3>
                   <p class="font-medium">{{ newsItem.description }}</p>
                 </div>
               </li>
@@ -199,9 +199,9 @@ const slideNext = () => {
         </div>
         <Swiper v-bind="homeCulinary">
           <SwiperSlide v-for="(culinaryItem, index) in getCulinaryDataList" :key="culinaryItem._id">
-            <div class="relative">
+            <div class="relative overflow-hidden">
               <picture>
-                <img class="w-full object-cover min-h-[400px] max-h-[600px] rounded-xl" :src="culinaryItem.image" :alt="culinaryItem.title" />
+                <img class="w-full object-cover min-h-[400px] max-h-[600px] transition-transform duration-300 ease-in-out hover:scale-110" :src="culinaryItem.image" :alt="culinaryItem.title" />
               </picture>
               <div class="absolute bottom-0 p-4 flex flex-col gap-y-4 text-white backdrop-blur-sm md:p-6 md:gap-y-6">
                 <div class="font-bold text-nowrap flex items-center justify-between">

@@ -65,15 +65,15 @@ watch(headerHight, (newHeight) => {
         </NuxtLink>
       </h1>
       <ul class="hidden items-center gap-x-4 font-bold text-white md:flex" v-show="!isShowUlList">
-        <li>
+        <li class="hover:text-primary-base">
           <NuxtLink class="block p-4" to="/rooms">客房旅宿</NuxtLink>
         </li>
-        <li v-if="!authStore.getIsAuthenticated">
+        <li v-if="!authStore.getIsAuthenticated" class="hover:text-primary-base">
           <NuxtLink class="block p-4" to="/auth/signin">會員登入</NuxtLink>
         </li>
         <li v-else>
           <Menu as="div" class="relative inline-block text-left">
-            <div>
+            <div class="hover:text-primary-base">
               <MenuButton class="inline-flex w-full justify-center rounded-md px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
                 <div class="flex items-center gap-x-2">
                   <Icon class="text-2xl" name="fluent:person-circle-32-regular" />
@@ -102,7 +102,7 @@ watch(headerHight, (newHeight) => {
             </div>
           </NuxtLink> -->
         </li>
-        <li class="bg-primary-base rounded-xl">
+        <li class="bg-primary-base rounded-xl hover:bg-primary-120">
           <NuxtLink class="block py-4 px-8" to="/rooms">立即訂房</NuxtLink>
         </li>
       </ul>
