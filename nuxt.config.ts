@@ -28,7 +28,7 @@ export default defineNuxtConfig({
       },
     ]
   ],
-  css: ['~/assets/scss/index.scss', '~/assets/tailwind.css',],
+  css: ['~/assets/scss/index.scss', '~/assets/css/tailwind.css', '~/assets/css/page-transitions.css'],
   vite: {
     css: {
       preprocessorOptions: {
@@ -67,5 +67,8 @@ export default defineNuxtConfig({
   },
   headlessui: {
     prefix: 'Headless'
+  },
+  app: {
+    pageTransition: { name: 'page', mode: 'default' }
   }
 })
