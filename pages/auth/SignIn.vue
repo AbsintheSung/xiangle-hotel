@@ -3,7 +3,9 @@ import * as zod from "zod";
 import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import SigninForm from "./components/SigninForm.vue";
-
+definePageMeta({
+  middleware: "guest", // 指定要使用的中間件
+});
 //使用 auth 的 layouts布局
 // definePageMeta({
 //   layout: "auth",

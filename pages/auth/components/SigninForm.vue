@@ -2,10 +2,25 @@
 import { useSignInForm } from "~/composables/signInForm";
 const { errors, email, password, submitSigninForm } = useSignInForm();
 const isLoading = ref<boolean>(false);
+const router = useRouter();
+const { $swal } = useNuxtApp();
 const handleSignin = async (): Promise<void> => {
   isLoading.value = true;
   try {
-    await submitSigninForm();
+    const response = await submitSigninForm();
+    if (response) {
+      $swal.fire({
+        position: "center",
+        icon: "success",
+        title: "登入成功",
+        // text: "登入成功",
+        showConfirmButton: false,
+        timer: 1000,
+        didClose: () => {
+          router.push("/");
+        },
+      });
+    }
   } catch (error) {
     // console.log(error);
     const errorMessage = (error as Error).message;

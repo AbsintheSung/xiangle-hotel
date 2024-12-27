@@ -66,7 +66,8 @@ export const useSignInForm = () => {
         if (response.status) {
           authStore.setUserData()
           resetForm(); // 初始化表單
-          router.push('/')
+          return response.status
+          // router.push('/')
         }
       } catch (error) {
         const signInError = error as SignInError;
