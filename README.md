@@ -71,7 +71,7 @@
       </tr>
       <tr>
         <td>
-            <a href="vchttps://vcalendar.io/alendar"> VCalendar </a>
+            <a href="https://vcalendar.io/"> VCalendar </a>
         </td>
         <td>日期選擇器套件</td>
       </tr>
