@@ -93,8 +93,8 @@ export default defineNuxtConfig({
           content: '這是一個關於享樂酒店的豪華住宿預訂網站，提供獨特的房型選擇。'
         }, // Open Graph 描述
         { property: 'og:type', content: 'website' }, // Open Graph 類型
-        { property: 'og:url', content: '網站的url' },
-        { property: 'og:image', content: '網站封面的url' }
+        { property: 'og:url', content: 'https://dapper-belekoy-9bba56.netlify.app/' },
+        { property: 'og:image', content: 'https://github.com/AbsintheSung/xiangle-hotel/blob/dev/assets/images/demo/readme-demo.png?raw=true' }
       ]
     },
     pageTransition: { name: 'page', mode: 'default' }

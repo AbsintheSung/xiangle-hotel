@@ -60,7 +60,7 @@ defineProps<{
               <template v-else #default>
                 <div class="flex flex-col gap-y-2">
                   <div class="flex items-center justify-start">
-                    <button class="flex items-center justify-center">
+                    <button class="flex items-center justify-center" @click="closeDateModal">
                       <Icon class="text-3xl border-none" name="fluent:dismiss-24-filled" />
                     </button>
                   </div>
