@@ -15,8 +15,7 @@
 
 <img src="https://img.shields.io/badge/Vue.js-black?style=for-the-badge&logo=Vue.js" />
 <img src="https://img.shields.io/badge/Nuxt3-%2300DC82?style=for-the-badge&logo=Nuxt" />
-<img src="https://img.shields.io/badge/JavaScript-%23F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=black&logoSize=auto
-"/>
+<img src="https://img.shields.io/badge/JavaScript-%23F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=black&logoSize=auto"/>
 <img src="https://img.shields.io/badge/TypeScript-%233178C6?style=for-the-badge&logo=typescript&logoColor=white&logoSize=auto" />
 <img src="https://img.shields.io/badge/TailwindCss-%2306B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white&logoSize=auto" />
 
