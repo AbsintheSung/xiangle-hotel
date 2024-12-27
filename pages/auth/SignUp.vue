@@ -6,6 +6,9 @@ import { taiwanCity } from "~/content/city";
 import type { SignUpForm } from "~/types/auth";
 import ProgressLine from "./components/ProgressLine.vue";
 //emailPasswordForm 跟  personalInfoForm 2個狀態表單
+definePageMeta({
+  middleware: "guest", // 指定要使用的中間件
+});
 type SignUpErrorResponse = {
   status: boolean;
   message: string;
