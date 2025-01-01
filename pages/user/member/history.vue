@@ -51,16 +51,22 @@ const getViewOrders = computed(() => getOrderList.value?.slice(0, displayCount.v
 const getfirstUpcomingOrder = computed(() => {
   const now = $dayjs();
   if (userSelectOrder.value === null) {
-    return getOrderList.value
-      ?.filter((order) => $dayjs(order.checkInDate).isAfter(now)) // 過濾出現在之後的訂單
-      .sort((a, b) => $dayjs(a.checkInDate).diff($dayjs(b.checkInDate)))[0]; // 按時間排序 // 取得第一筆
+    // return getOrderList.value
+    //   ?.filter((order) => $dayjs(order.checkInDate).isAfter(now)) // 過濾出現在之後的訂單
+    //   .sort((a, b) => $dayjs(a.checkInDate).diff($dayjs(b.checkInDate)))[0]; // 按時間排序 // 取得第一筆
+    const filterData =
+      getOrderList.value
+        ?.filter((order) => $dayjs(order.checkInDate).isAfter(now)) // 過濾出現在之後的訂單
+        .sort((a, b) => $dayjs(a.checkInDate).diff($dayjs(b.checkInDate)))[0] || // 按時間排序，取得第一筆
+      getOrderList.value?.[0]; // 若 filter 為空則回傳原始列表的第一筆
+    return filterData;
   } else {
     return userSelectOrder.value;
   }
 });
 const getfirstUpcomingOrderId = computed(() => getfirstUpcomingOrder.value._id);
 const getfirstUpcomingOrderTimeState = computed(() => {
-  if (!getfirstUpcomingOrder.value.checkInDate) return false; // 如果沒有 checkInDate，預設為 false
+  if (!getfirstUpcomingOrder.value?.checkInDate) return false; // 如果沒有 checkInDate，預設為 false
   const checkIn = $dayjs(getfirstUpcomingOrder.value.checkInDate); // 將 checkInDate 轉換為 Day.js 日期
   const now = $dayjs(); // 當前時間
   return checkIn.isAfter(now); // 判斷是否在現在時間之後
@@ -162,32 +168,31 @@ const handleCheckCancel = () => {
 };
 </script>
 <template>
-  <TransitionRoot appear :show="isOpenCancel" as="template">
-    <Dialog as="div" @close="closeCancelModal" class="relative z-50" :open="isOpenCancel">
-      <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
-        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
-      </TransitionChild>
-      <div class="px-3 fixed inset-0 overflow-y-auto">
-        <div class="flex w-full min-h-full items-center justify-center text-center">
-          <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
-            <DialogPanel class="py-4 w-full flex flex-col gap-y-4 rounded-2xl bg-white shadow-xl transform overflow-hidden transition-all md:w-2xl md:max-w-2xl">
-              <DialogTitle as="h3" class="text-lg font-bold leading-6 text-gray-900">取消預定</DialogTitle>
-              <div class="py-6 md:py-16">
-                <p class="font-bold">確定要取消此房型的預訂嗎?</p>
-              </div>
-              <div class="px-3 flex gap-x-4 items-center font-bold">
-                <button class="w-full py-4 text-primary-base border border-primary-base rounded-lg" @click="closeCancelModal">關閉視窗</button>
-                <button class="w-full py-4 text-white bg-primary-base rounded-lg" @click="() => handleCancelOrder()">取消預定</button>
-              </div>
-            </DialogPanel>
-          </TransitionChild>
-        </div>
-      </div>
-    </Dialog>
-  </TransitionRoot>
-
   <section class="container flex flex-col gap-x-10 gap-y-6 md:flex-row">
-    <aside class="space-y-6 h-fit p-6 w-full text-black bg-white rounded-[20px] lg:p-10 md:w-7/12 md:space-y-10">
+    <TransitionRoot appear :show="isOpenCancel" as="template">
+      <Dialog as="div" @close="closeCancelModal" class="relative z-50" :open="isOpenCancel">
+        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+        </TransitionChild>
+        <div class="px-3 fixed inset-0 overflow-y-auto">
+          <div class="flex w-full min-h-full items-center justify-center text-center">
+            <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95" enter-to="opacity-100 scale-100" leave="duration-200 ease-in" leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
+              <DialogPanel class="py-4 w-full flex flex-col gap-y-4 rounded-2xl bg-white shadow-xl transform overflow-hidden transition-all md:w-2xl md:max-w-2xl">
+                <DialogTitle as="h3" class="text-lg font-bold leading-6 text-gray-900">取消預定</DialogTitle>
+                <div class="py-6 md:py-16">
+                  <p class="font-bold">確定要取消此房型的預訂嗎?</p>
+                </div>
+                <div class="px-3 flex gap-x-4 items-center font-bold">
+                  <button class="w-full py-4 text-primary-base border border-primary-base rounded-lg" @click="closeCancelModal">關閉視窗</button>
+                  <button class="w-full py-4 text-white bg-primary-base rounded-lg" @click="() => handleCancelOrder()">取消預定</button>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
+    <aside v-if="getOrderList.length !== 0" class="space-y-6 h-fit p-6 w-full text-black bg-white rounded-[20px] lg:p-10 md:w-7/12 md:space-y-10">
       <div class="space-y-2">
         <p>預訂參考編號： {{ getOrderId }}</p>
         <h3 v-if="getfirstUpcomingOrderTimeState" class="font-bold md:text-2xl">即將到來行程</h3>
@@ -235,9 +240,15 @@ const handleCheckCancel = () => {
         <button class="w-full py-4 text-white bg-primary-base rounded-lg">查看詳情</button>
       </div>
     </aside>
+    <div v-else class="space-y-6 h-fit p-6 w-full text-black bg-white rounded-[20px] lg:p-10 md:w-7/12 md:space-y-10">
+      <p>目前無任何行程安排</p>
+    </div>
     <div class="h-fit p-6 w-full text-black bg-white rounded-[20px] lg:p-10 md:w-5/12">
       <h2>訂單紀錄</h2>
-      <ul>
+      <div v-if="getOrderList.length === 0">
+        <p>目前無訂單</p>
+      </div>
+      <ul v-else>
         <li v-for="orderItem in getViewOrders" :key="orderItem._id" @click="handleOrderItem(orderItem)" class="hover:cursor-pointer" :class="{ 'text-primary-base': orderItem._id === getfirstUpcomingOrderId }">
           <div class="py-6 flex gap-x-6 border-b border-neutral-300 md:py-10">
             <div>
@@ -275,7 +286,7 @@ const handleCheckCancel = () => {
           </div>
         </li>
       </ul>
-      <button class="mt-6 py-4 w-full font-bold text-center text-primary-base border border-primary-base rounded-lg md:mt-10" @click="handleOrderMore">查看更多</button>
+      <button v-if="getOrderList.length !== 0" class="mt-6 py-4 w-full font-bold text-center text-primary-base border border-primary-base rounded-lg md:mt-10" @click="handleOrderMore">查看更多</button>
     </div>
   </section>
 </template>

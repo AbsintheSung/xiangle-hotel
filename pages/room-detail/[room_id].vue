@@ -270,7 +270,7 @@ watch(dateRange, (newVal) => {
             </div>
           </div>
         </div>
-        <button class="absolute bottom-2 right-2 px-3 py-2 bg-neutral-50 text-primary-base font-bold text-nowrap rounded-lg xl:bottom-10 xl:right-10 xl:px-8 xl:py-4" @click="handleLightbox">看更多</button>
+        <button class="absolute bottom-2 right-2 px-3 py-2 bg-neutral-50 text-primary-base font-bold text-nowrap rounded-lg xl:bottom-10 xl:right-10 xl:px-8 xl:py-4 hover:bg-primary-base hover:text-white" @click="handleLightbox">看更多</button>
       </div>
       <!-- 燈箱 -->
       <VueEasyLightbox :visible="visibleRef" :imgs="imgList" :index="indexRef" @hide="handleCloseLightbox" />

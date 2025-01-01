@@ -6,6 +6,7 @@ const { y: windowScrollY } = useWindowScroll();
 const config = useRuntimeConfig();
 const { $dayjs } = useNuxtApp();
 const route = useRoute();
+const router = useRouter();
 // console.log(route.params.order_id);
 // const { data: order } = await useFetch<ResponseOrder>(`/api/order`);
 useSeoMeta({
@@ -63,6 +64,9 @@ const getTotalPrice = computed(() => getTotalNights.value * getRoomPrice.value);
 const marginTopStyle = computed(() => {
   return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
 });
+const handleToHistory = () => {
+  router.push("/user/member/history");
+};
 </script>
 <template>
   <main class="bg-black" :style="marginTopStyle">
@@ -82,7 +86,7 @@ const marginTopStyle = computed(() => {
         </div>
         <div class="py-10 md:py-20 border-t border-b border-neutral-200">
           <h3 class="mb-6 font-bold md:mb-10 md:text-2xl">立即查看您的訂單紀錄</h3>
-          <button class="py-4 w-full bg-primary-base rounded-lg sm:w-fit sm:px-10">前往我的訂單</button>
+          <button class="py-4 w-full bg-primary-base rounded-lg sm:w-fit sm:px-10" @click="handleToHistory">前往我的訂單</button>
         </div>
         <div class="space-y-8 md:space-y-10">
           <h3 class="font-bold text-2xl">訂房人資訊</h3>
