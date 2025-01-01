@@ -8,6 +8,12 @@ const { $dayjs } = useNuxtApp();
 const route = useRoute();
 // console.log(route.params.order_id);
 // const { data: order } = await useFetch<ResponseOrder>(`/api/order`);
+useSeoMeta({
+  title: `享樂酒店 - 完成訂房`,
+  description: `你已完成訂房！祝你旅途愉快，期待您的光臨！`,
+  ogTitle: `享樂酒店 - 完成訂房`,
+  ogDescription: `你已完成訂房！祝你旅途愉快，期待您的光臨！`,
+});
 const { data: order } = await useFetch<ResponseOrder>(`${config.public.apiBase}/api/v1/orders/${route.params.order_id}`, {
   headers: {
     "Content-Type": "application/json",

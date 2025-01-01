@@ -1,4 +1,10 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: `享樂酒店 - 我的帳戶`,
+  description: `管理您的帳戶資訊，查看訂單和個人資料。`,
+  ogTitle: `享樂酒店 - 我的帳戶`,
+  ogDescription: `管理您的帳戶資訊，查看訂單和個人資料。`,
+});
 definePageMeta({
   middleware: "auth", // 指定要使用的中間件
 });

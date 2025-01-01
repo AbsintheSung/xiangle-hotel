@@ -6,6 +6,17 @@ import SigninForm from "./components/SigninForm.vue";
 definePageMeta({
   middleware: "guest", // 指定要使用的中間件
 });
+useSeoMeta({
+  title: "享樂酒店 - 登入頁",
+  description: "歡迎登入享樂酒店，開始您的豪華住宿體驗。",
+  keywords: "享樂酒店, 登入, 豪華住宿",
+  author: "Sung",
+  robots: "index, follow",
+  ogTitle: "享樂酒店 - 登入頁",
+  ogDescription: "歡迎登入享樂酒店，開始您的豪華住宿體驗。",
+  ogImage: "",
+  ogUrl: "",
+});
 //使用 auth 的 layouts布局
 // definePageMeta({
 //   layout: "auth",

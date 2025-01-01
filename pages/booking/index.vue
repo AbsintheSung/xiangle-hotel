@@ -15,6 +15,15 @@ const config = useRuntimeConfig();
 const authStore = useAuthStore();
 const { width: windowWidthSize } = useWindowSize();
 const { $swal } = useNuxtApp();
+useSeoMeta({
+  title: "享樂酒店 - 確認與訂房資料填寫",
+  description: "確認您的房型並填寫訂房資料，享受享樂酒店的豪華住宿體驗。",
+  keywords: "享樂酒店, 訂房確認, 豪華住宿, 房型選擇",
+  author: "Sung",
+  robots: "index, follow",
+  ogTitle: "享樂酒店 - 訂房確認頁",
+  ogDescription: "確認房型並完成訂房資料，立即享受享樂酒店的豪華住宿。",
+});
 const { data: roomDetail } = await useFetch<RoomDetailResponse>(`https://nuxr3.zeabur.app/api/v1/rooms/${route.query.roomId}`);
 // console.log("roomDetail", roomDetail.value);
 // 取得 URL 參數
@@ -298,8 +307,8 @@ const handleMemberInfo = async () => {
 };
 </script>
 <template>
-  <LoadingOverlay :is-loading="isLoading" />
   <main class="py-10 md:py-[120px] bg-primary-Tint" :style="marginTopStyle">
+    <LoadingOverlay :is-loading="isLoading" />
     <section class="container flex items-center gap-x-2">
       <NuxtLink class="p-1 w-fit flex items-center justify-center" :to="`/room-detail/${getRoomId}`">
         <Icon class="text-xl" name="fluent:chevron-left-24-filled" />
