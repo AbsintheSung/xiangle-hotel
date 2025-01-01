@@ -6,6 +6,17 @@ import { taiwanCity } from "~/content/city";
 import type { SignUpForm } from "~/types/auth";
 import ProgressLine from "./components/ProgressLine.vue";
 //emailPasswordForm 跟  personalInfoForm 2個狀態表單
+useSeoMeta({
+  title: "享樂酒店 - 註冊頁",
+  description: "歡迎註冊享樂酒店，開始您的豪華住宿體驗。",
+  keywords: "享樂酒店, 註冊, 豪華住宿",
+  author: "Sung",
+  robots: "index, follow",
+  ogTitle: "享樂酒店 - 註冊頁",
+  ogDescription: "歡迎註冊享樂酒店，開始您的豪華住宿體驗。",
+  ogImage: "",
+  ogUrl: "",
+});
 definePageMeta({
   middleware: "guest", // 指定要使用的中間件
 });
