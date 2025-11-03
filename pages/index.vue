@@ -22,16 +22,20 @@ const HomeHeroImgList = ref([
 // const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
 // const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
 // const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
-const { data: newsDataList } = await useFetch<ResponseNews>(`${config.public.apiBase}/api/v1/home/news`);
-const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`${config.public.apiBase}/api/v1/home/culinary`);
-const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
+// const { data: newsDataList } = await useFetch<ResponseNews>(`${config.public.apiBase}/api/v1/home/news`);
+// const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`${config.public.apiBase}/api/v1/home/culinary`);
+// const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
+
+const { data: newsDataList } = await useNews();
+const { data: culinaryDataList } = await useCulinary();
+const { data: roomsDataList } = await useRooms();
 
 const getNewsDataList = computed(() => {
-  return newsDataList.value?.result ?? [];
+  return newsDataList.value ?? [];
 });
 
 const getCulinaryDataList = computed(() => {
-  const data = culinaryDataList.value?.result.map((item) => {
+  const data = culinaryDataList.value?.map((item) => {
     const [month, time] = item.diningTime.split(" ");
     return {
       ...item,
@@ -43,10 +47,10 @@ const getCulinaryDataList = computed(() => {
 });
 
 const getRoomsData = computed(() => {
-  return roomsDataList.value?.result[roomsNum.value];
+  return roomsDataList.value?.[roomsNum.value];
 });
 
-const getRoomsDataLength = computed(() => roomsDataList.value?.result.length || 0);
+const getRoomsDataLength = computed(() => roomsDataList.value?.length || 0);
 
 const slidePrev = () => {
   roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
