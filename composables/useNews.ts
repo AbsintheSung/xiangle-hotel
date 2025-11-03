@@ -1,5 +1,5 @@
 import { getNewsList, NewsApi } from "~/services/api";
-export function useNewsList() {
+export function useNews() {
   return useAsyncData(
     'newsResponse',
     async () => {
