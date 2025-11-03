@@ -8,10 +8,10 @@ export function useSingleRooms(id: string) {
       // 驗證數據
       const result = RoomsApi.singleRoom.responses[200].safeParse(singleRoomResponse);
       if (result.success) {
-        console.log('驗證成功');
+        // console.log('驗證成功');
         return result.data.result;
       } else {
-        console.log('驗證失敗:', result.error.errors);
+        // console.log('驗證失敗:', result.error.errors);
         throw result.error
       }
     }, {
@@ -19,10 +19,10 @@ export function useSingleRooms(id: string) {
     getCachedData() {
       const singleRoomCached = useNuxtData('singleRoomResponse').data.value;
       if (singleRoomCached) {
-        console.log("有緩存，使用緩存");
+        // console.log("有緩存，使用緩存");
         return singleRoomCached; // 返回緩存，不發送請求
       }
-      console.log("無緩存", "發送請求");
+      // console.log("無緩存", "發送請求");
       return null; // 返回 null ，會發送請求
     }
   }
