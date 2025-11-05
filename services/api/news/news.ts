@@ -3,6 +3,7 @@ import { newsSchema } from '~/services/schema';
 import { newsContract } from '~/services/contract';
 import { initContract } from '@ts-rest/core';
 export type NewsResponse = z.infer<typeof newsSchema.newsListResponse>
+export type NewsResult = z.infer<typeof newsSchema.newsListResponse>['result']
 export type NewsItem = z.infer<typeof newsSchema.newsItem>;
 
 

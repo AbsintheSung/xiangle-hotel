@@ -4,6 +4,8 @@ import { roomsContract } from "~/services/contract";
 import { initContract } from '@ts-rest/core';
 export type RoomsListResponse = z.infer<typeof roomsSchema.roomsList>
 export type SingleRoomResponse = z.infer<typeof roomsSchema.singleRoom>
+export type RoomsListResult = z.infer<typeof roomsSchema.roomsList>['result']
+export type SingleRoomResult = z.infer<typeof roomsSchema.singleRoom>['result']
 export type SingleRoomItem = z.infer<typeof roomsSchema.roomItem>
 
 export const RoomsApi = initContract().router({
