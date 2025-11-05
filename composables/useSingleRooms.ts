@@ -1,5 +1,7 @@
 import { getSingleRooms, RoomsApi } from "~/services/api";
-export function useSingleRooms(id: string) {
+import type { AsyncDataOptions } from "#app";
+import type { SingleRoomResult } from "~/services/api";
+export function useSingleRooms(id: string, options?: AsyncDataOptions<SingleRoomResult>) {
   return useAsyncData(
     'singleRoomResponse',
     async () => {
@@ -24,7 +26,9 @@ export function useSingleRooms(id: string) {
       }
       // console.log("無緩存", "發送請求");
       return null; // 返回 null ，會發送請求
-    }
+    },
+    lazy: false,
+    ...options
   }
   );
 }

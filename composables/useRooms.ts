@@ -1,5 +1,7 @@
 import { getRoomsList, RoomsApi } from "~/services/api";
-export function useRooms() {
+import type { AsyncDataOptions } from "#app";
+import type { RoomsListResult } from "~/services/api";
+export function useRooms(options?: AsyncDataOptions<RoomsListResult>) {
   return useAsyncData(
     'roomsResponse',
     async () => {
@@ -24,7 +26,9 @@ export function useRooms() {
       }
       // console.log("無緩存", "發送請求");
       return null; // 返回 null ，會發送請求
-    }
+    },
+    lazy: false,
+    ...options
   }
   );
 }

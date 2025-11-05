@@ -1,6 +1,9 @@
 import { getCulinaryList, CulinaryApi } from "~/services/api";
+import type { AsyncDataOptions } from "#app";
+import type { CulinaryResult } from "~/services/api";
 
-export const useCulinary = () => {
+// AsyncDataOptions<CulinaryResult> : 表示 獲取資料後，要回傳的型別
+export const useCulinary = (options?: AsyncDataOptions<CulinaryResult>) => {
   return useAsyncData("culinaryResponse", async () => {
     const culinaryResponse = await getCulinaryList()
 
@@ -22,7 +25,9 @@ export const useCulinary = () => {
         }
         // console.log("無緩存", "發送請求");
         return null; // 返回 null，會發送請求
-      }
+      },
+      lazy: false,
+      ...options
     }
   )
 }
