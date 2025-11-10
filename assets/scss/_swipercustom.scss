@@ -17,6 +17,10 @@
     background-color: #bf9d7d;
   }
 }
+//首頁大圖輪播
+.home-main-swiper {
+  @extend %swiper-base;
+}
 
 //首頁房型輪播
 .home-room-swiper {

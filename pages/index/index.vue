@@ -59,7 +59,7 @@ const handleNext = (_val: number) => {
 <template>
   <main>
     <section class="relative">
-      <Swiper ref="roomSwiper" v-bind="homeMain" class="h-full">
+      <Swiper ref="roomSwiper" v-bind="homeMain" class="home-main-swiper h-full">
         <SwiperSlide v-for="heroItem in HomeHeroImgList" :key="heroItem.alt">
           <picture>
             <source :srcset="heroItem.imgSrcset" media="(min-width:576px)" />
