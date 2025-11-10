@@ -1,0 +1,35 @@
+%swiper-base {
+  .swiper-pagination {
+    margin: 0 auto;
+    bottom: 24px;
+  }
+
+  .swiper-pagination-bullet {
+    width: 32px;
+    height: 4px;
+    background-color: #f1eae4;
+    border-radius: 100px;
+    opacity: 1;
+  }
+
+  .swiper-pagination-bullet-active {
+    width: 60px;
+    background-color: #bf9d7d;
+  }
+}
+//首頁大圖輪播
+.home-main-swiper {
+  @extend %swiper-base;
+}
+
+//首頁房型輪播
+.home-room-swiper {
+  @extend %swiper-base;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+//首頁美食輪播
+.home-culinary-swiper {
+  @extend %swiper-base;
+}
