@@ -1,0 +1,26 @@
+%swiper-base {
+  .swiper-pagination {
+    margin: 0 auto;
+    bottom: 24px;
+  }
+
+  .swiper-pagination-bullet {
+    width: 32px;
+    height: 4px;
+    background-color: #f1eae4;
+    border-radius: 100px;
+    opacity: 1;
+  }
+
+  .swiper-pagination-bullet-active {
+    width: 60px;
+    background-color: #bf9d7d;
+  }
+}
+
+//首頁房型輪播
+.home-room-swiper {
+  @extend %swiper-base;
+  margin-left: 0;
+  margin-right: 0;
+}
