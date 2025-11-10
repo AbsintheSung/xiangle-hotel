@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
+import RoomsSwiper from "./components/RoomsSwiper.vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { homeMain, homeRooms, homeCulinary } from "@/utils/swiperConfigs";
 import type { ResponseNews, ResponseRooms, ResponseDelicacy } from "@/types/home";
@@ -62,6 +63,14 @@ const slideNext = () => {
   roomSwiper.value?.$el.swiper.slideTo(0, 0);
   roomSwiper.value?.$el.swiper.autoplay?.start();
   roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
+};
+
+const handlePrev = (_val: number) => {
+  roomsNum.value = _val;
+};
+
+const handleNext = (_val: number) => {
+  roomsNum.value = _val;
 };
 </script>
 
@@ -165,7 +174,7 @@ const slideNext = () => {
     </section>
     <section class="relative bg-black py-10 md:py-[120px] overflow-x-hidden">
       <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3" name="deco-line-group-horizontal-full"></TheSvgIcon>
-      <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
+      <!-- <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
         <Swiper ref="roomSwiper" v-bind="homeRooms" class="room-sweiper w-full lg:w-1/2">
           <SwiperSlide v-for="(imgItem, index) in getRoomsData?.imageUrlList" :key="index">
             <picture>
@@ -189,7 +198,8 @@ const slideNext = () => {
             <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
           </div>
         </div>
-      </div>
+      </div> -->
+      <RoomsSwiper class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6" :getRoomsData="getRoomsData" :roomsNum="roomsNum" :getRoomsDataLength="getRoomsDataLength" @prev="handlePrev" @next="handleNext" />
     </section>
     <section class="relative bg-primary-Tint py-20 lg:py-[120px]">
       <TheSvgIcon class="hidden text-primary-base absolute left-10 z-10 w-[180px] h-[1068px] 4xl:block" name="deco-line-group-vertical"></TheSvgIcon>
