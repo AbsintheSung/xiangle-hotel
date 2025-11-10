@@ -4,7 +4,7 @@ import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
 import RoomsSwiper from "./components/RoomsSwiper.vue";
 import CulinarySwiper from "./components/CulinarySwiper.vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { homeMain, homeCulinary } from "@/utils/swiperConfigs";
+import { homeMain } from "@/utils/swiperConfigs";
 // 引入所需的 Swiper 樣式
 import "swiper/css";
 import "swiper/css/navigation";
@@ -214,36 +214,3 @@ const handleNext = (_val: number) => {
     </section>
   </main>
 </template>
-<style scoped lang="scss">
-.swiper :deep(.swiper-pagination) {
-  margin: 0 auto;
-  bottom: 24px;
-}
-
-.swiper :deep(.swiper-pagination-bullet) {
-  width: 32px;
-  height: 4px;
-  background-color: #f1eae4;
-  border-radius: 100px;
-  opacity: 1;
-}
-
-.swiper :deep(.swiper-pagination-bullet-active) {
-  width: 60px;
-  background-color: #bf9d7d;
-}
-.room-sweiper {
-  margin-left: 0px;
-  margin-right: 0px;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
