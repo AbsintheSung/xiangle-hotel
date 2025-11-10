@@ -24,3 +24,8 @@
   margin-left: 0;
   margin-right: 0;
 }
+
+//首頁美食輪播
+.home-culinary-swiper {
+  @extend %swiper-base;
+}
