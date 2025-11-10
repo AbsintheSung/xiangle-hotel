@@ -3,8 +3,7 @@ import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
 import RoomsSwiper from "./components/RoomsSwiper.vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { homeMain, homeRooms, homeCulinary } from "@/utils/swiperConfigs";
-import type { ResponseNews, ResponseRooms, ResponseDelicacy } from "@/types/home";
+import { homeMain, homeCulinary } from "@/utils/swiperConfigs";
 // 引入所需的 Swiper 樣式
 import "swiper/css";
 import "swiper/css/navigation";
@@ -20,12 +19,6 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
-// const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
-// const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
-// const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
-// const { data: newsDataList } = await useFetch<ResponseNews>(`${config.public.apiBase}/api/v1/home/news`);
-// const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`${config.public.apiBase}/api/v1/home/culinary`);
-// const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
 
 const { data: newsDataList } = await useNews();
 const { data: culinaryDataList } = await useCulinary();
@@ -52,18 +45,6 @@ const getRoomsData = computed(() => {
 });
 
 const getRoomsDataLength = computed(() => roomsDataList.value?.length || 0);
-
-const slidePrev = () => {
-  roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
-  roomSwiper.value?.$el.swiper.autoplay?.start(); //執行上面，自動輪播失效，須重啟
-  roomsNum.value = (roomsNum.value - 1 + getRoomsDataLength.value) % getRoomsDataLength.value;
-};
-
-const slideNext = () => {
-  roomSwiper.value?.$el.swiper.slideTo(0, 0);
-  roomSwiper.value?.$el.swiper.autoplay?.start();
-  roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
-};
 
 const handlePrev = (_val: number) => {
   roomsNum.value = _val;
@@ -173,32 +154,7 @@ const handleNext = (_val: number) => {
       </div>
     </section>
     <section class="relative bg-black py-10 md:py-[120px] overflow-x-hidden">
-      <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3" name="deco-line-group-horizontal-full"></TheSvgIcon>
-      <!-- <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
-        <Swiper ref="roomSwiper" v-bind="homeRooms" class="room-sweiper w-full lg:w-1/2">
-          <SwiperSlide v-for="(imgItem, index) in getRoomsData?.imageUrlList" :key="index">
-            <picture>
-              <img class="w-full object-cover max-h-[900px]" :src="imgItem" :alt="imgItem + index" />
-            </picture>
-          </SwiperSlide>
-        </Swiper>
-        <div class="flex flex-col w-full lg:w-1/3 gap-y-10 text-white mt-auto">
-          <div class="flex flex-col gap-y-4">
-            <h2 class="text-4xl lg:text-5xl font-bold">{{ getRoomsData?.name }}</h2>
-            <p>{{ getRoomsData?.description }}</p>
-          </div>
-          <p class="text-3xl font-bold" v-number-format="getRoomsData?.price"></p>
-          <NuxtLink to="/rooms" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
-            <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
-            <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
-            <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
-          </NuxtLink>
-          <div class="flex items-center justify-end text-primary-base">
-            <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
-            <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
-          </div>
-        </div>
-      </div> -->
+      <!-- <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3" name="deco-line-group-horizontal-full"></TheSvgIcon> -->
       <RoomsSwiper class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6" :getRoomsData="getRoomsData" :roomsNum="roomsNum" :getRoomsDataLength="getRoomsDataLength" @prev="handlePrev" @next="handleNext" />
     </section>
     <section class="relative bg-primary-Tint py-20 lg:py-[120px]">
