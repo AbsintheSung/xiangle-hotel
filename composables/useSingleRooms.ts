@@ -3,7 +3,7 @@ import type { AsyncDataOptions } from "#app";
 import type { SingleRoomResult } from "~/services/api";
 export function useSingleRooms(id: string, options?: AsyncDataOptions<SingleRoomResult>) {
   return useAsyncData(
-    'singleRoomResponse',
+    `singleRoomResponse-${id}`,
     async () => {
       const singleRoomResponse = await getSingleRooms(id);
 
@@ -19,12 +19,12 @@ export function useSingleRooms(id: string, options?: AsyncDataOptions<SingleRoom
     }, {
     // useAsyncData & useFetrch 內建 callback，用於緩存數據避免切換頁面仍發送請求。
     getCachedData() {
-      const singleRoomCached = useNuxtData('singleRoomResponse').data.value;
+      const singleRoomCached = useNuxtData(`singleRoomResponse-${id}`).data.value;
       if (singleRoomCached) {
-        // console.log("有緩存，使用緩存");
+        console.log("有緩存，使用緩存");
         return singleRoomCached; // 返回緩存，不發送請求
       }
-      // console.log("無緩存", "發送請求");
+      console.log("無緩存", "發送請求");
       return null; // 返回 null ，會發送請求
     },
     lazy: false,
