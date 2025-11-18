@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import homeHeroImg from "@/assets/images/desktop/home-hero.png";
 import homeHeroImgSm from "@/assets/images/mobile/home-hero-sm.png";
+import RoomsSwiper from "./components/RoomsSwiper.vue";
+import CulinarySwiper from "./components/CulinarySwiper.vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { homeMain, homeRooms, homeCulinary } from "@/utils/swiperConfigs";
-import type { ResponseNews, ResponseRooms, ResponseDelicacy } from "@/types/home";
+import { homeMain } from "@/utils/swiperConfigs";
 // 引入所需的 Swiper 樣式
 import "swiper/css";
 import "swiper/css/navigation";
@@ -19,19 +20,17 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
-// const { data: newsDataList } = await useFetch<ResponseNews>(`/api/new`);
-// const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`/api/culinary`);
-// const { data: roomsDataList } = await useFetch<ResponseRooms>(`/api/rooms`);
-const { data: newsDataList } = await useFetch<ResponseNews>(`${config.public.apiBase}/api/v1/home/news`);
-const { data: culinaryDataList } = await useFetch<ResponseDelicacy>(`${config.public.apiBase}/api/v1/home/culinary`);
-const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
+
+const { data: newsDataList } = await useNews();
+const { data: culinaryDataList } = await useCulinary();
+const { data: roomsDataList } = await useRooms();
 
 const getNewsDataList = computed(() => {
-  return newsDataList.value?.result ?? [];
+  return newsDataList.value ?? [];
 });
 
 const getCulinaryDataList = computed(() => {
-  const data = culinaryDataList.value?.result.map((item) => {
+  const data = culinaryDataList.value?.map((item) => {
     const [month, time] = item.diningTime.split(" ");
     return {
       ...item,
@@ -39,32 +38,28 @@ const getCulinaryDataList = computed(() => {
       time,
     };
   });
-  return data;
+  return data ?? []; //  如果是 undefined 就返回空陣列
 });
 
 const getRoomsData = computed(() => {
-  return roomsDataList.value?.result[roomsNum.value];
+  return roomsDataList.value?.[roomsNum.value];
 });
 
-const getRoomsDataLength = computed(() => roomsDataList.value?.result.length || 0);
+const getRoomsDataLength = computed(() => roomsDataList.value?.length || 0);
 
-const slidePrev = () => {
-  roomSwiper.value?.$el.swiper.slideTo(0, 0); // 第二個參數是速度，設為 0 表示立即跳轉
-  roomSwiper.value?.$el.swiper.autoplay?.start(); //執行上面，自動輪播失效，須重啟
-  roomsNum.value = (roomsNum.value - 1 + getRoomsDataLength.value) % getRoomsDataLength.value;
+const handlePrev = (_val: number) => {
+  roomsNum.value = _val;
 };
 
-const slideNext = () => {
-  roomSwiper.value?.$el.swiper.slideTo(0, 0);
-  roomSwiper.value?.$el.swiper.autoplay?.start();
-  roomsNum.value = (roomsNum.value + 1) % getRoomsDataLength.value;
+const handleNext = (_val: number) => {
+  roomsNum.value = _val;
 };
 </script>
 
 <template>
   <main>
     <section class="relative">
-      <Swiper ref="roomSwiper" v-bind="homeMain" class="h-full">
+      <Swiper ref="roomSwiper" v-bind="homeMain" class="home-main-swiper h-full">
         <SwiperSlide v-for="heroItem in HomeHeroImgList" :key="heroItem.alt">
           <picture>
             <source :srcset="heroItem.imgSrcset" media="(min-width:576px)" />
@@ -160,32 +155,8 @@ const slideNext = () => {
       </div>
     </section>
     <section class="relative bg-black py-10 md:py-[120px] overflow-x-hidden">
-      <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3" name="deco-line-group-horizontal-full"></TheSvgIcon>
-      <div class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6">
-        <Swiper ref="roomSwiper" v-bind="homeRooms" class="room-sweiper w-full lg:w-1/2">
-          <SwiperSlide v-for="(imgItem, index) in getRoomsData?.imageUrlList" :key="index">
-            <picture>
-              <img class="w-full object-cover max-h-[900px]" :src="imgItem" :alt="imgItem + index" />
-            </picture>
-          </SwiperSlide>
-        </Swiper>
-        <div class="flex flex-col w-full lg:w-1/3 gap-y-10 text-white mt-auto">
-          <div class="flex flex-col gap-y-4">
-            <h2 class="text-4xl lg:text-5xl font-bold">{{ getRoomsData?.name }}</h2>
-            <p>{{ getRoomsData?.description }}</p>
-          </div>
-          <p class="text-3xl font-bold" v-number-format="getRoomsData?.price"></p>
-          <NuxtLink to="/rooms" class="relative w-full flex items-center justify-end gap-x-4 bg-white p-5 lg:p-[40px] rounded-md transition duration-300 ease-in-out group overflow-hidden">
-            <p class="z-10 text-base text-nowrap text-black md:text-2xl font-bold group-hover:text-white">查看更多</p>
-            <p class="z-10 h-[1px] bg-black w-28 group-hover:bg-white"></p>
-            <div class="absolute inset-0 bg-primary-base transform -translate-x-full transition-transform duration-300 group-hover:-translate-x-0"></div>
-          </NuxtLink>
-          <div class="flex items-center justify-end text-primary-base">
-            <button class="p-4" @click="slidePrev"><Icon name="material-symbols:arrow-back-rounded"></Icon></button>
-            <button class="p-4" @click="slideNext"><Icon name="material-symbols:arrow-forward"></Icon></button>
-          </div>
-        </div>
-      </div>
+      <!-- <TheSvgIcon class="text-primary-base w-[1920px] static z-10 xl:absolute xl:left-1/3" name="deco-line-group-horizontal-full"></TheSvgIcon> -->
+      <RoomsSwiper class="px-3 flex flex-col md:flex-row items-stretch gap-x-20 gap-y-6" :getRoomsData="getRoomsData" :roomsNum="roomsNum" :getRoomsDataLength="getRoomsDataLength" @prev="handlePrev" @next="handleNext" />
     </section>
     <section class="relative bg-primary-Tint py-20 lg:py-[120px]">
       <TheSvgIcon class="hidden text-primary-base absolute left-10 z-10 w-[180px] h-[1068px] 4xl:block" name="deco-line-group-vertical"></TheSvgIcon>
@@ -197,27 +168,7 @@ const slideNext = () => {
           </h2>
           <div class="w-full h-[2px] bg-gradient-to-r from-[#BE9C7C] to-white sm:w-1/6" />
         </div>
-        <Swiper v-bind="homeCulinary">
-          <SwiperSlide v-for="(culinaryItem, index) in getCulinaryDataList" :key="culinaryItem._id">
-            <div class="relative overflow-hidden">
-              <picture>
-                <img class="w-full object-cover min-h-[400px] max-h-[600px] transition-transform duration-300 ease-in-out hover:scale-110" :src="culinaryItem.image" :alt="culinaryItem.title" />
-              </picture>
-              <div class="absolute bottom-0 p-4 flex flex-col gap-y-4 text-white backdrop-blur-sm md:p-6 md:gap-y-6">
-                <div class="font-bold text-nowrap flex items-center justify-between">
-                  <h3 class="text-2xl">{{ culinaryItem.title }}</h3>
-                  <p class="flex items-center gap-x-2 md:gap-x-4">
-                    <time>{{ culinaryItem.month }}</time>
-                    <time>{{ culinaryItem.time }}</time>
-                  </p>
-                </div>
-                <div>
-                  <p>{{ culinaryItem.description }}</p>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-        </Swiper>
+        <CulinarySwiper class="home-culinary-swiper" :getCulinaryDataList="getCulinaryDataList" />
       </div>
     </section>
     <section class="relative bg-black py-20 md:py-28">
@@ -263,36 +214,3 @@ const slideNext = () => {
     </section>
   </main>
 </template>
-<style scoped lang="scss">
-.swiper :deep(.swiper-pagination) {
-  margin: 0 auto;
-  bottom: 24px;
-}
-
-.swiper :deep(.swiper-pagination-bullet) {
-  width: 32px;
-  height: 4px;
-  background-color: #f1eae4;
-  border-radius: 100px;
-  opacity: 1;
-}
-
-.swiper :deep(.swiper-pagination-bullet-active) {
-  width: 60px;
-  background-color: #bf9d7d;
-}
-.room-sweiper {
-  margin-left: 0px;
-  margin-right: 0px;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>
