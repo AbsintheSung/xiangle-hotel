@@ -45,13 +45,16 @@ const visibleRef = ref<boolean>(false);
 //開啟燈箱後，要顯示的圖片( 圖片是陣列，從位置0開始顯示 )
 const indexRef = ref<number>(0);
 
-const { data: roomDetail } = await useFetch<RoomDetailResponse>(`${config.public.apiBase}/api/v1/rooms/${route.params.room_id}`);
+// const { data: roomDetail } = await useFetch<RoomDetailResponse>(`${config.public.apiBase}/api/v1/rooms/${route.params.room_id}`);
+const roomId = route.params.room_id as string;
+const { data: roomDetail } = await useSingleRooms(roomId);
+
 useSeoMeta({
-  title: `享樂酒店-${roomDetail.value?.result.name}`,
-  description: `享樂酒店-${roomDetail.value?.result.name}：${roomDetail.value?.result.description || ""}`,
-  ogTitle: `享樂酒店-${roomDetail.value?.result.name}`,
-  ogDescription: `享樂酒店-${roomDetail.value?.result.name}：${roomDetail.value?.result.description || ""}`,
-  keywords: `享樂酒店,${roomDetail.value?.result.name},住宿,訂房,酒店預訂, 豪華住宿,`,
+  title: `享樂酒店-${roomDetail.value?.name}`,
+  description: `享樂酒店-${roomDetail.value?.name}：${roomDetail.value?.description || ""}`,
+  ogTitle: `享樂酒店-${roomDetail.value?.name}`,
+  ogDescription: `享樂酒店-${roomDetail.value?.name}：${roomDetail.value?.description || ""}`,
+  keywords: `享樂酒店,${roomDetail.value?.name},住宿,訂房,酒店預訂, 豪華住宿,`,
 });
 const marginTopStyle = computed(() => {
   return windowScrollY.value > 0 ? { marginTop: `${domStore.headerDomHeight}px` } : {};
@@ -65,12 +68,11 @@ const guestLimits = computed(() => ({
 
 //獲取資料圖片，並整合成一個新陣列
 const imgList = computed(() => {
-  // return [data.result.imageUrl, ...data.result.imageUrlList];
   if (!roomDetail.value) return [] as string[];
-  return [roomDetail.value.result.imageUrl, ...roomDetail.value.result.imageUrlList];
+  return [roomDetail.value?.imageUrl, ...roomDetail.value?.imageUrlList];
 });
 
-const getRoomId = computed(() => roomDetail.value?.result._id);
+const getRoomId = computed(() => roomDetail.value?._id);
 
 //控制 swiper的寬度 顯示與隱藏
 const getSwiperWidth = computed(() => {
@@ -110,14 +112,14 @@ const formattedDateRange = computed(() => {
 
 // 使用 computed 分組資料( 房間設備對應 )
 const groupedInfo = computed(() => ({
-  layoutInfo: roomDetail.value?.result.layoutInfo,
-  facilityInfo: roomDetail.value?.result.facilityInfo,
-  amenityInfo: roomDetail.value?.result.amenityInfo,
+  layoutInfo: roomDetail.value?.layoutInfo,
+  facilityInfo: roomDetail.value?.facilityInfo,
+  amenityInfo: roomDetail.value?.amenityInfo,
 }));
 
 const getRoomDetailPrice = computed(() => {
-  if (roomDetail.value && roomDetail.value.result) {
-    return roomDetail.value.result.price;
+  if (roomDetail.value && roomDetail.value) {
+    return roomDetail.value?.price;
   }
   return 0;
 });
@@ -286,8 +288,8 @@ watch(dateRange, (newVal) => {
       <div class="container flex gap-x-6">
         <div class="w-full md:w-7/12">
           <div class="flex flex-col gap-y-4 mb-6 md:mb-20">
-            <h2 class="font-bold text-[32px] md:text-5xl">{{ roomDetail?.result.name }}</h2>
-            <p class="font-medium text-[14px] md:text-base">{{ roomDetail?.result.description }}</p>
+            <h2 class="font-bold text-[32px] md:text-5xl">{{ roomDetail?.name }}</h2>
+            <p class="font-medium text-[14px] md:text-base">{{ roomDetail?.description }}</p>
           </div>
           <ul class="flex flex-col gap-y-6 md:gap-y-20">
             <li>
@@ -295,15 +297,15 @@ watch(dateRange, (newVal) => {
               <ul class="flex items-center flex-wrap gap-x-4">
                 <li class="w-[97px] h-[97px] p-3 bg-white border border-neutral-300 rounded-xl flex flex-col justify-center gap-y-2">
                   <Icon class="shrink-0 text-2xl text-primary-base" name="fluent:slide-size-24-filled" />
-                  <p class="font-bold">{{ roomDetail?.result.areaInfo }}</p>
+                  <p class="font-bold">{{ roomDetail?.areaInfo }}</p>
                 </li>
                 <li class="w-[97px] h-[97px] p-3 bg-white border border-neutral-300 rounded-xl flex flex-col justify-center gap-y-2">
                   <Icon class="shrink-0 text-2xl text-primary-base" name="fluent:bed-24-filled" />
-                  <p class="font-bold">{{ roomDetail?.result.bedInfo }}</p>
+                  <p class="font-bold">{{ roomDetail?.bedInfo }}</p>
                 </li>
                 <li class="w-[97px] h-[97px] p-3 bg-white border border-neutral-300 rounded-xl flex flex-col justify-center gap-y-2">
                   <Icon class="shrink-0 text-2xl text-primary-base" name="fluent:person-24-filled" />
-                  <p class="font-bold">{{ `1-${roomDetail?.result.maxPeople}人` }}</p>
+                  <p class="font-bold">{{ `1-${roomDetail?.maxPeople}人` }}</p>
                 </li>
               </ul>
             </li>
@@ -337,8 +339,8 @@ watch(dateRange, (newVal) => {
           <div class="sticky top-40 p-10 flex flex-col gap-y-10 bg-white rounded-[20px]">
             <p class="pb-4 text-2xl font-bold border-b border-neutral-200">預定房型</p>
             <div class="flex flex-col gap-y-2">
-              <h3 class="text-4xl font-bold">{{ roomDetail?.result.name }}</h3>
-              <p>{{ roomDetail?.result.description }}</p>
+              <h3 class="text-4xl font-bold">{{ roomDetail?.name }}</h3>
+              <p>{{ roomDetail?.description }}</p>
             </div>
             <div class="w-full flex flex-col flex-wrap gap-y-4 gap-x-2 items-center lg:flex-row">
               <div class="w-full p-4 flex-1 flex flex-col border rounded-lg hover:cursor-pointer" @click="openDateModal">

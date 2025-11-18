@@ -16,10 +16,11 @@ const HomeHeroImgList = ref([
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-3" },
   { imgSrc: homeHeroImgSm, imgSrcset: homeHeroImg, alt: "hero banner-4" },
 ]);
-const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
+// const { data: roomsDataList } = await useFetch<ResponseRooms>(`${config.public.apiBase}/api/v1/rooms`);
+const { data: roomsDataList } = await useRooms();
 const getRoomsDataList = computed(() => {
   return (
-    roomsDataList.value?.result.map((room) => {
+    roomsDataList.value?.map((room) => {
       return {
         ...room,
         allImagesList: [room.imageUrl, ...room.imageUrlList],
